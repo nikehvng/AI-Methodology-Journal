@@ -6,47 +6,174 @@
   <title>KI Lernplattform</title>
   <style>
     :root{
-      --bg:#f6f7fb;--card:#ffffff;--line:#c76a6a;--text:#1f2937;--muted:#6b7280;--accent:#7c3aed;--accent2:#06b6d4;
-      --shadow:0 10px 30px rgba(17,24,39,.08);
+      --bg:#0b1020;--bg2:#111831;--card:#121a33;--card2:#17203d;--line:rgba(148,163,184,.18);--text:#e5e7eb;--muted:#94a3b8;--accent:#8b5cf6;--accent2:#22d3ee;--accent3:#10b981;--shadow:0 18px 50px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#fafafa, #eef2ff);color:var(--text)}
-    .wrap{max-width:1400px;margin:0 auto;padding:24px}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(139,92,246,.25), transparent 30%),
+        radial-gradient(circle at top right, rgba(34,211,238,.18), transparent 28%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      min-height:100vh
+    }
+    a{text-decoration:none;color:inherit}
+    .wrap{max-width:1450px;margin:0 auto;padding:24px}
     .grid{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
-    .panel{background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid rgba(124,58,237,.12);border-radius:24px;box-shadow:var(--shadow);padding:20px;position:relative;overflow:hidden}
-    .panel h1,.panel h2,.panel h3{margin:0 0 10px 0}
-    .hero{min-height:250px;display:flex;flex-direction:column;justify-content:space-between}
-    .hero h1{font-size:2rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;color:transparent}
-    .hero p{max-width:60ch;color:var(--muted);line-height:1.6}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
-    .btn{border:0;border-radius:14px;padding:14px 18px;font-weight:700;cursor:pointer;transition:.2s transform,.2s opacity;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .panel,.box,.topic-card,.page-card{
+      background:linear-gradient(180deg,rgba(18,26,51,.92),rgba(23,32,61,.92));
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px)
+    }
+    .panel{padding:22px;position:relative;overflow:hidden}
+    .hero{min-height:270px;display:flex;flex-direction:column;justify-content:space-between}
+    .hero h1{
+      margin:0;
+      font-size:clamp(2rem,4vw,3.4rem);
+      line-height:1.05;
+      background:linear-gradient(90deg,#fff,var(--accent2));
+      -webkit-background-clip:text;
+      color:transparent
+    }
+    .hero p,.subtle{color:var(--muted);line-height:1.6}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      border:0;
+      border-radius:16px;
+      padding:13px 18px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s transform,.2s box-shadow,.2s opacity;
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center
+    }
     .btn:hover{transform:translateY(-2px)}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff}
-    .btn.secondary{background:#fff;border:1px solid #ddd;color:var(--text)}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .stat{background:#fff;border:1px solid #eef; border-radius:18px;padding:16px}
-    .stat strong{display:block;font-size:1.5rem}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),#4f46e5);box-shadow:0 12px 25px rgba(139,92,246,.25)}
+    .btn.secondary{background:#1b2647;border:1px solid rgba(255,255,255,.08)}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.10)}
+    .chip{
+      display:inline-block;
+      background:rgba(139,92,246,.18);
+      color:#ddd6fe;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.82rem;
+      margin-bottom:10px;
+      border:1px solid rgba(139,92,246,.25)
+    }
     .topics{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-    .topic-card{background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(124,58,237,.12);border-radius:20px;padding:16px;cursor:pointer;min-height:140px;transition:.2s transform,.2s box-shadow;text-decoration:none;color:inherit}
-    .topic-card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(124,58,237,.12)}
-    .topic-card h3{margin-bottom:8px}
-    .chip{display:inline-block;background:#ede9fe;color:#5b21b6;padding:6px 10px;border-radius:999px;font-size:.82rem;margin-bottom:10px}
+    .topic-card{
+      padding:16px;
+      min-height:154px;
+      cursor:pointer;
+      transition:.2s transform,.2s border-color,.2s box-shadow;
+      position:relative;
+      overflow:hidden
+    }
+    .topic-card:before,.page-card:before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.08));
+      opacity:0;
+      transition:.2s
+    }
+    .topic-card:hover,.page-card:hover{
+      transform:translateY(-4px);
+      border-color:rgba(34,211,238,.35);
+      box-shadow:0 16px 36px rgba(0,0,0,.38)
+    }
+    .topic-card:hover:before,.page-card:hover:before{opacity:1}
+    .topic-card h3,.page-card h3{margin:6px 0 8px 0;font-size:1.1rem}
     .layout2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
-    .box{background:var(--card);border:1px solid rgba(199,106,106,.35);border-radius:18px;padding:18px;min-height:240px}
-    .quiz-item,.chat-msg{background:#f8fafc;border:1px solid #e5e7eb;border-radius:14px;padding:12px;margin:10px 0}
-    .quiz-options button{width:100%;margin-top:8px;text-align:left}
-    .input-row{display:flex;gap:10px;margin-top:10px}
-    input,textarea,button{font:inherit}
-    input,textarea{width:100%;padding:14px 16px;border-radius:14px;border:1px solid #d1d5db;background:#fff}
-    .progress-bar{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden}
-    .progress-fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#06b6d4);transition:width .4s}
-    .subtle{color:var(--muted);font-size:.95rem}
+    .box{padding:18px;min-height:260px}
+    .progress-bar{
+      height:14px;
+      background:#0f172a;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08)
+    }
+    .progress-fill{
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      transition:width .35s
+    }
+    .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+    .stat{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:16px
+    }
+    .stat strong{display:block;font-size:1.5rem;color:#fff}
+    .example,.note{
+      border-left:4px solid var(--accent2);
+      padding:12px 14px;
+      margin:12px 0;
+      background:rgba(34,211,238,.06);
+      border-radius:12px;
+      color:#dbeafe
+    }
+    .grid-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+    input,textarea,select{
+      width:100%;
+      background:#0f172a;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:14px 15px;
+      font:inherit;
+      outline:none
+    }
+    textarea{min-height:140px;resize:vertical}
+    .field{margin:10px 0}
+    .label{display:block;margin-bottom:6px;color:#cbd5e1;font-size:.93rem}
+    .list{display:grid;gap:12px}
+    .quiz-item,.chat-msg,.page-card{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03)
+    }
+    .quiz-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .detailView{display:none;margin-top:18px;padding:22px}
+    .detailView.active{display:block}
     .back{position:absolute;top:18px;right:18px}
-    .detail{display:none}
-    .detail.active{display:block}
-    .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .example{border-left:4px solid var(--accent2);padding-left:12px;margin:10px 0;color:#334155}
-    @media (max-width: 900px){.grid,.layout2,.mini-grid,.stats,.topics{grid-template-columns:1fr}.back{position:static;display:inline-flex;margin-bottom:12px}}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    .badge-row{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:#cbd5e1;
+      font-size:.82rem
+    }
+    .page-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap
+    }
+    .page-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .small{font-size:.9rem}
+    .divider{height:1px;background:rgba(255,255,255,.08);margin:16px 0}
+    @media (max-width: 980px){
+      .grid,.layout2,.hero-grid,.grid-two,.editor-grid,.topics{grid-template-columns:1fr}
+      .back{position:static;display:inline-flex;margin-bottom:12px}
+    }
   </style>
 </head>
 <body>
@@ -54,37 +181,52 @@
   <div id="homeView" class="grid">
     <section class="panel hero">
       <div>
-        <h1>Klausurvorbereitung</h1>
-        <p>Eine moderne Lernplattform für <strong>Künstliche Intelligenz – Methoden und Anwendungen</strong>. Klicke auf ein Thema, lerne mit Bildern und Beispielen, stelle Fragen im Chat und wiederhole automatisch mit Quizzen.</p>
+        <span class="chip">Klausurvorbereitung • KI</span>
+        <h1>Deine Lernplattform mit editierbaren Themenseiten</h1>
+        <p>Wähle ein Thema, öffne eine eigene Detailseite, bearbeite Inhalte direkt im Browser und füge jederzeit neue Themen hinzu. Das Layout ist bewusst dunkler und moderner gehalten.</p>
       </div>
       <div class="hero-actions">
         <button class="btn primary" id="startLearn">Jetzt lernen</button>
         <button class="btn secondary" id="openProgress">Fortschritt</button>
+        <button class="btn ghost" id="scrollTopics">Themen</button>
       </div>
     </section>
 
     <aside class="panel">
-      <h2>Themenübersicht</h2>
-      <p class="subtle">Wähle ein Thema aus, um die Detailseite zu öffnen. Neue Themen kannst du später einfach im <code>topics</code>-Array ergänzen.</p>
+      <div class="page-head">
+        <div>
+          <h2>Themenübersicht</h2>
+          <p class="subtle">Klicke ein Thema an, um die Detailseite zu öffnen. Alle Inhalte kommen aus den Datenstrukturen unten und sind leicht erweiterbar.</p>
+        </div>
+      </div>
       <div class="topics" id="topicGrid"></div>
     </aside>
   </div>
 
-  <div id="learnView" class="panel detail" style="margin-top:18px;">
+  <section id="learnView" class="panel detailView">
     <button class="btn secondary back" id="backHome">Zurück</button>
-    <span class="chip">Automatische Wiederholung</span>
-    <h2>Jetzt lernen</h2>
-    <p class="subtle">Die Quizzes werden automatisch aus den Themeninhalten generiert. Die Fortschrittsanzeige aktualisiert sich nach jeder beantworteten Frage.</p>
+    <div class="page-head">
+      <div>
+        <span class="chip">Automatisches Lernen</span>
+        <h2>Jetzt lernen</h2>
+        <p class="subtle">Die Quizzes werden aus dem aktuell geöffneten Thema erzeugt. Jede Themenseite kann von dir später direkt editiert werden.</p>
+      </div>
+      <div class="badge-row" id="detailBadges"></div>
+    </div>
     <div id="quizArea"></div>
-  </div>
+  </section>
 
   <div class="layout2">
     <section class="box">
-      <h2>Fragen</h2>
-      <p class="subtle">Chatbot für schnelle Erklärungen, Beispiele und Wiederholungshilfen.</p>
-      <div id="chatLog"></div>
-      <div class="input-row">
-        <input id="chatInput" placeholder="Stelle eine Frage zu KI, ML, Suchverfahren ..." />
+      <div class="page-head">
+        <div>
+          <h2>Fragen</h2>
+          <p class="subtle">Ein einfacher Chatbot für Erklärungen, Beispiele und Wiederholung.</p>
+        </div>
+      </div>
+      <div id="chatLog" class="list"></div>
+      <div class="toolbar">
+        <input id="chatInput" placeholder="Stelle eine Frage zu KI, ML, Suche, Ethik ..." />
         <button class="btn primary" id="sendChat">Senden</button>
       </div>
     </section>
@@ -93,30 +235,106 @@
       <h2>Lernfortschritt</h2>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
       <p id="progressText" class="subtle" style="margin-top:10px;">0 % abgeschlossen</p>
-      <div class="mini-grid" style="margin-top:14px;">
+      <div class="mini-grid">
         <div class="stat"><strong id="doneTopics">0</strong><span class="subtle">gelernten Themen</span></div>
         <div class="stat"><strong id="rightAnswers">0</strong><span class="subtle">richtige Antworten</span></div>
       </div>
-      <div class="example" style="margin-top:16px;">
-        Beispiel: Nach dem Thema „Machine Learning“ kannst du direkt ein Auto-Quiz mit Definition, Modellarten und Anwendungsfällen starten.
+      <div class="example">
+        Der Fortschritt steigt, sobald du eine Themenseite öffnest oder Quizfragen beantwortest.
       </div>
     </section>
   </div>
+
+  <section class="panel" style="margin-top:18px;">
+    <div class="page-head">
+      <div>
+        <span class="chip">Editor</span>
+        <h2>Themen und Seiten bearbeiten</h2>
+        <p class="subtle">Hier kannst du neue Themen anlegen oder bestehende Inhalte überschreiben, ohne den Code neu schreiben zu müssen.</p>
+      </div>
+      <div class="badge-row">
+        <span class="badge">JSON-basiert</span>
+        <span class="badge">Erweiterbar</span>
+        <span class="badge">Browser-Editor</span>
+      </div>
+    </div>
+
+    <div class="editor-grid">
+      <div>
+        <div class="field">
+          <label class="label">Thema auswählen oder neu anlegen</label>
+          <select id="topicSelect"></select>
+        </div>
+        <div class="field">
+          <label class="label">Themen-ID</label>
+          <input id="topicId" placeholder="z. B. deepLearning" />
+        </div>
+        <div class="field">
+          <label class="label">Titel</label>
+          <input id="topicTitle" placeholder="z. B. Deep Learning" />
+        </div>
+        <div class="field">
+          <label class="label">Kurzbeschreibung</label>
+          <input id="topicShort" placeholder="Kurze Zusammenfassung" />
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label class="label">Inhalt der Seite</label>
+          <textarea id="topicContent" placeholder="Hier erklärst du dein Thema ausführlich."></textarea>
+        </div>
+        <div class="field">
+          <label class="label">Beispiel / Abbildungstext</label>
+          <textarea id="topicExample" placeholder="Hier kannst du ein Beispiel oder Bildbeschreibung ergänzen."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-grid">
+      <div>
+        <div class="field">
+          <label class="label">Quizfragen im Format Frage|Antwort pro Zeile</label>
+          <textarea id="topicQuiz" placeholder="Was ist KI?|Ein Feld der Informatik, das intelligentes Verhalten modelliert"></textarea>
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label class="label">Seiten-Badge 1</label>
+          <input id="topicBadge1" placeholder="z. B. Grundlagen" />
+        </div>
+        <div class="field">
+          <label class="label">Seiten-Badge 2</label>
+          <input id="topicBadge2" placeholder="z. B. wichtig für die Klausur" />
+        </div>
+        <div class="field">
+          <label class="label">Seiten-Badge 3</label>
+          <input id="topicBadge3" placeholder="optional" />
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn primary" id="saveTopic">Thema speichern</button>
+      <button class="btn secondary" id="newTopic">Neues Thema</button>
+      <button class="btn ghost" id="deleteTopic">Thema löschen</button>
+    </div>
+    <p class="subtle small">Tipp: Wenn du später echte Unterseiten pro Thema willst, kannst du aus diesen Daten automatisch separate HTML-Dateien erzeugen.</p>
+  </section>
 </div>
 
 <script>
-// 1) Themenliste hier erweitern
-const topics = [
+let topics = [
   {
     id:'ml',
     title:'Machine Learning',
     short:'Grundlagen, Modelle, Training und Evaluation.',
     content:'Machine Learning ist ein Teilgebiet der KI, bei dem Modelle Muster aus Daten lernen. Wichtige Begriffe sind Training, Testdaten, Overfitting und Generalisierung.',
     example:'Beispiel: Ein Spamfilter lernt aus markierten E-Mails, welche Nachrichten wahrscheinlich Spam sind.',
+    badges:['Grundlagen','Klausurrelevant','Beispielthema'],
     quiz:[
       {q:'Was ist Machine Learning?', a:'Ein Verfahren, bei dem Modelle aus Daten lernen'},
       {q:'Was bedeutet Overfitting?', a:'Das Modell passt sich zu stark an Trainingsdaten an'},
-      {q:'Wozu dient Testdaten?', a:'Zur Bewertung der Generalisierung'}
+      {q:'Wozu dienen Testdaten?', a:'Zur Bewertung der Generalisierung'}
     ]
   },
   {
@@ -125,6 +343,7 @@ const topics = [
     short:'Breiten- und Tiefensuche, Heuristiken und Optimierung.',
     content:'Suchverfahren helfen KI-Systemen, Lösungsräume systematisch zu durchsuchen. Unterschieden werden uninformierte und informierte Verfahren.',
     example:'Beispiel: Ein Navigationssystem sucht den kürzesten Weg durch ein Straßennetz.',
+    badges:['Algorithmen','Suche','Effizienz'],
     quiz:[
       {q:'Was ist ein informiertes Suchverfahren?', a:'Ein Verfahren mit zusätzlicher Heuristik'},
       {q:'Wofür steht BFS?', a:'Breitensuche'},
@@ -137,6 +356,7 @@ const topics = [
     short:'Aufbau, Aktivierungsfunktionen und Lernprozesse.',
     content:'Neuronale Netze bestehen aus Schichten von Knoten, die Eingaben gewichten und transformieren. Sie sind besonders stark bei Bild-, Sprach- und Mustererkennung.',
     example:'Beispiel: Eine Bilderkennung erkennt Katzen auf Fotos anhand vieler gelernter Merkmale.',
+    badges:['Deep Learning','Modelle','Praxis'],
     quiz:[
       {q:'Wie heißen die Bausteine eines neuronalen Netzes?', a:'Neuronen bzw. Knoten'},
       {q:'Wofür sind Aktivierungsfunktionen wichtig?', a:'Sie erzeugen Nichtlinearität'},
@@ -149,6 +369,7 @@ const topics = [
     short:'Bias, Datenschutz, Transparenz und Verantwortung.',
     content:'KI-Systeme können Vorurteile übernehmen, Daten missbrauchen oder Entscheidungen schwer erklärbar machen. Daher sind Fairness, Nachvollziehbarkeit und Datenschutz zentrale Themen.',
     example:'Beispiel: Ein Bewerbungsmodell darf keine Gruppen systematisch benachteiligen.',
+    badges:['Ethik','Risiken','Verantwortung'],
     quiz:[
       {q:'Was bedeutet Bias?', a:'Systematische Verzerrung'},
       {q:'Warum ist Transparenz wichtig?', a:'Damit Entscheidungen nachvollziehbar sind'},
@@ -159,94 +380,189 @@ const topics = [
 
 let learned = new Set();
 let rightAnswers = 0;
+let currentTopicId = topics[0].id;
 
-const topicGrid = document.getElementById('topicGrid');
-const quizArea = document.getElementById('quizArea');
-const chatLog = document.getElementById('chatLog');
-const progressFill = document.getElementById('progressFill');
-const progressText = document.getElementById('progressText');
-const doneTopics = document.getElementById('doneTopics');
-const rightAnswersEl = document.getElementById('rightAnswers');
-const homeView = document.getElementById('homeView');
-const learnView = document.getElementById('learnView');
+const els = {
+  topicGrid: document.getElementById('topicGrid'),
+  topicSelect: document.getElementById('topicSelect'),
+  topicId: document.getElementById('topicId'),
+  topicTitle: document.getElementById('topicTitle'),
+  topicShort: document.getElementById('topicShort'),
+  topicContent: document.getElementById('topicContent'),
+  topicExample: document.getElementById('topicExample'),
+  topicQuiz: document.getElementById('topicQuiz'),
+  topicBadge1: document.getElementById('topicBadge1'),
+  topicBadge2: document.getElementById('topicBadge2'),
+  topicBadge3: document.getElementById('topicBadge3'),
+  quizArea: document.getElementById('quizArea'),
+  chatLog: document.getElementById('chatLog'),
+  progressFill: document.getElementById('progressFill'),
+  progressText: document.getElementById('progressText'),
+  doneTopics: document.getElementById('doneTopics'),
+  rightAnswers: document.getElementById('rightAnswers'),
+  homeView: document.getElementById('homeView'),
+  learnView: document.getElementById('learnView'),
+  detailBadges: document.getElementById('detailBadges')
+};
+
+function saveState(){ localStorage.setItem('kiTopics', JSON.stringify(topics)); }
+function loadState(){ const data = localStorage.getItem('kiTopics'); if(data){ try{ topics = JSON.parse(data); }catch(e){} } }
 
 function updateProgress(){
-  const pct = Math.round((learned.size / topics.length) * 100);
-  progressFill.style.width = pct + '%';
-  progressText.textContent = pct + ' % abgeschlossen';
-  doneTopics.textContent = learned.size;
-  rightAnswersEl.textContent = rightAnswers;
+  const pct = Math.round((learned.size / topics.length) * 100) || 0;
+  els.progressFill.style.width = pct + '%';
+  els.progressText.textContent = pct + ' % abgeschlossen';
+  els.doneTopics.textContent = learned.size;
+  els.rightAnswers.textContent = rightAnswers;
 }
 
-function renderTopics(){
-  topicGrid.innerHTML = topics.map(t => `
+function renderTopicGrid(){
+  els.topicGrid.innerHTML = topics.map(t => `
     <a href="#" class="topic-card" data-id="${t.id}">
       <span class="chip">Thema</span>
       <h3>${t.title}</h3>
       <p class="subtle">${t.short}</p>
     </a>
   `).join('');
-  document.querySelectorAll('.topic-card').forEach(card => card.addEventListener('click', e => {
-    e.preventDefault();
-    openTopic(card.dataset.id);
-  }));
+  els.topicSelect.innerHTML = `<option value="">-- Thema wählen --</option>` + topics.map(t => `<option value="${t.id}">${t.title}</option>`).join('');
+  document.querySelectorAll('.topic-card').forEach(card => card.addEventListener('click', e => { e.preventDefault(); openTopic(card.dataset.id); }));
+  els.topicSelect.addEventListener('change', () => fillEditor(els.topicSelect.value));
 }
 
 function openTopic(id){
   const t = topics.find(x => x.id === id);
   if(!t) return;
+  currentTopicId = id;
   learned.add(id);
   updateProgress();
-  homeView.style.display = 'none';
-  learnView.classList.add('active');
-  quizArea.innerHTML = `
-    <div class="box" style="border-color: rgba(124,58,237,.18);">
-      <h3>${t.title}</h3>
+  els.homeView.style.display = 'none';
+  els.learnView.classList.add('active');
+  els.detailBadges.innerHTML = (t.badges || []).map(b => `<span class="badge">${b}</span>`).join('');
+  els.quizArea.innerHTML = `
+    <div class="page-card">
+      <span class="chip">${t.title}</span>
+      <h3>Erklärung</h3>
       <p>${t.content}</p>
       <div class="example">${t.example}</div>
+      <div class="note">Du kannst diese Seite später im Editor unten anpassen und speichern.</div>
     </div>
-    <div class="box" style="margin-top:14px;">
+    <div class="page-card" style="margin-top:14px;">
       <h3>Auto-Quiz</h3>
-      ${t.quiz.map((item, idx) => `
+      ${(t.quiz || []).map((item, idx) => `
         <div class="quiz-item">
           <strong>Frage ${idx+1}:</strong> ${item.q}
-          <div class="quiz-options">
+          <div class="quiz-actions">
             <button class="btn secondary" data-answer="${item.a}">Antwort anzeigen</button>
           </div>
-          <div class="subtle reveal" style="display:none;margin-top:8px;">${item.a}</div>
+          <div class="subtle" style="display:none;margin-top:8px;">${item.a}</div>
         </div>
       `).join('')}
     </div>
   `;
-  quizArea.querySelectorAll('button[data-answer]').forEach(btn => btn.addEventListener('click', () => {
+  els.quizArea.querySelectorAll('button[data-answer]').forEach(btn => btn.addEventListener('click', () => {
     btn.nextElementSibling.style.display = 'block';
     rightAnswers += 1;
     updateProgress();
   }));
 }
 
+function fillEditor(id){
+  const t = topics.find(x => x.id === id);
+  if(!t) return;
+  currentTopicId = t.id;
+  els.topicId.value = t.id || '';
+  els.topicTitle.value = t.title || '';
+  els.topicShort.value = t.short || '';
+  els.topicContent.value = t.content || '';
+  els.topicExample.value = t.example || '';
+  els.topicQuiz.value = (t.quiz || []).map(q => `${q.q}|${q.a}`).join('\n');
+  const badges = t.badges || [];
+  els.topicBadge1.value = badges[0] || '';
+  els.topicBadge2.value = badges[1] || '';
+  els.topicBadge3.value = badges[2] || '';
+}
+
+function collectEditor(){
+  const quiz = els.topicQuiz.value.split('\n').map(line => line.trim()).filter(Boolean).map(line => {
+    const [q,a] = line.split('|');
+    return { q:(q||'').trim(), a:(a||'').trim() };
+  }).filter(x => x.q && x.a);
+  return {
+    id: els.topicId.value.trim(),
+    title: els.topicTitle.value.trim(),
+    short: els.topicShort.value.trim(),
+    content: els.topicContent.value.trim(),
+    example: els.topicExample.value.trim(),
+    badges: [els.topicBadge1.value.trim(), els.topicBadge2.value.trim(), els.topicBadge3.value.trim()].filter(Boolean),
+    quiz
+  };
+}
+
+function saveTopic(){
+  const data = collectEditor();
+  if(!data.id || !data.title) return alert('Bitte mindestens ID und Titel ausfüllen.');
+  const idx = topics.findIndex(t => t.id === currentTopicId || t.id === data.id);
+  if(idx >= 0) topics[idx] = data; else topics.unshift(data);
+  currentTopicId = data.id;
+  saveState();
+  renderTopicGrid();
+  updateProgress();
+  fillEditor(data.id);
+  openTopic(data.id);
+}
+
+function newTopic(){
+  currentTopicId = '';
+  els.topicSelect.value = '';
+  els.topicId.value = '';
+  els.topicTitle.value = '';
+  els.topicShort.value = '';
+  els.topicContent.value = '';
+  els.topicExample.value = '';
+  els.topicQuiz.value = 'Frage|Antwort';
+  els.topicBadge1.value = 'neu';
+  els.topicBadge2.value = '';
+  els.topicBadge3.value = '';
+}
+
+function deleteTopic(){
+  const id = els.topicId.value.trim();
+  if(!id) return;
+  topics = topics.filter(t => t.id !== id);
+  saveState();
+  renderTopicGrid();
+  newTopic();
+  updateProgress();
+}
+
 function botReply(text){
   const lower = text.toLowerCase();
-  if(lower.includes('machine') || lower.includes('lernen')) return 'Machine Learning beschreibt Verfahren, bei denen Modelle aus Daten Muster ableiten. Ein gutes Beispiel ist Spam-Erkennung.';
-  if(lower.includes('heuristik') || lower.includes('suche')) return 'Heuristiken helfen Suchverfahren, schneller gute Lösungen zu finden, ohne jeden Pfad vollständig zu prüfen.';
-  if(lower.includes('bias') || lower.includes('ethik')) return 'Bias sind Verzerrungen in Daten oder Modellen. Bei KI sind Fairness, Transparenz und Datenschutz besonders wichtig.';
-  return 'Ich erkläre dir das gern einfach: Formuliere die Frage mit einem Thema wie Machine Learning, Suchverfahren oder Ethik.';
+  if(lower.includes('machine') || lower.includes('lernen')) return 'Machine Learning bedeutet, dass Modelle aus Daten Muster lernen. Ein typisches Beispiel ist Spam-Erkennung.';
+  if(lower.includes('heuristik') || lower.includes('suche')) return 'Heuristiken helfen Suchverfahren, schneller gute Lösungen zu finden.';
+  if(lower.includes('bias') || lower.includes('ethik')) return 'Bias sind Verzerrungen. Bei KI sind Fairness, Transparenz und Datenschutz besonders wichtig.';
+  return 'Ich kann dir Themen einfach erklären. Frag zum Beispiel nach Machine Learning, Suchverfahren oder Ethik.';
 }
 
 document.getElementById('sendChat').addEventListener('click', () => {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if(!text) return;
-  chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Du:</strong> ${text}</div>`);
-  chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Bot:</strong> ${botReply(text)}</div>`);
+  els.chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Du:</strong> ${text}</div>`);
+  els.chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Bot:</strong> ${botReply(text)}</div>`);
   input.value = '';
 });
 
-document.getElementById('startLearn').addEventListener('click', () => openTopic('ml'));
-document.getElementById('openProgress').addEventListener('click', () => { document.querySelector('.layout2').scrollIntoView({behavior:'smooth'}); });
-document.getElementById('backHome').addEventListener('click', () => { homeView.style.display = 'grid'; learnView.classList.remove('active'); });
+document.getElementById('startLearn').addEventListener('click', () => openTopic(topics[0].id));
+document.getElementById('openProgress').addEventListener('click', () => document.querySelector('.layout2').scrollIntoView({behavior:'smooth'}));
+document.getElementById('scrollTopics').addEventListener('click', () => document.getElementById('topicGrid').scrollIntoView({behavior:'smooth'}));
+document.getElementById('backHome').addEventListener('click', () => { els.homeView.style.display = 'grid'; els.learnView.classList.remove('active'); });
+document.getElementById('saveTopic').addEventListener('click', saveTopic);
+document.getElementById('newTopic').addEventListener('click', newTopic);
+document.getElementById('deleteTopic').addEventListener('click', deleteTopic);
 
-renderTopics();
+loadState();
+renderTopicGrid();
+fillEditor(topics[0].id);
 updateProgress();
 </script>
 </body>
