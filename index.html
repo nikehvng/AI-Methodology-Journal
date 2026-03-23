@@ -259,6 +259,17 @@
       color:var(--accent2);
     }
 
+    .formula {
+      background: rgba(139,92,246,.15);
+      padding: 12px;
+      display: inline-block;
+      font-family: 'Monaco','Consolas','Courier New',monospace;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent);
+      color: var(--accent2);
+      font-weight: 600;
+    }
+
     .toolbar{
       display:flex;
       gap:10px;
@@ -465,70 +476,81 @@ let topics = [
     id:'ml',
     title:'Machine Learning',
     short:'Grundlagen, Modelle, Training und Evaluation.',
-    badges:['Grundlagen','Klausurrelevant','Beispielthema'],
+    badges:['Grundlagen','Klausurrelevant','Vorlesung 4'],
     subpages: [
       {
         id: 'grundlagen',
-        title: 'Grundlagen',
+        title: 'Einführung & Lernarten',
         content: `
           <div class="content-grid">
             <div class="content-section">
-              <h3>Was ist Machine Learning?</h3>
-              <p>Machine Learning ist ein Teilgebiet der Künstlichen Intelligenz, bei dem Computerprogramme aus Daten lernen, ohne explizit programmiert zu werden. Modelle erkennen Muster und machen Vorhersagen.</p>
+              <h3>🎯 Was ist Machine Learning?</h3>
+              <p>Maschinelles Lernen ermöglicht es Algorithmen, <strong>eigenständig Lösungen aus Daten</strong> zu entwickeln.</p>
               <div class="example">
-                <strong>Beispiel:</strong> Ein Spamfilter lernt aus markierten E-Mails, welche Nachrichten Spam sind, anstatt feste Regeln zu verwenden.
+                <strong>3 fundamentale Lernarten:</strong>
               </div>
+              <ul style="background:rgba(34,211,238,.08); padding:16px; border-radius:12px; border-left:4px solid var(--accent2);">
+                <li><strong>Supervised Learning:</strong> Training mit Zielvorgaben (Input/Output). <em>Fokus: Regression & Klassifikation</em></li>
+                <li><strong>Unsupervised Learning:</strong> Suche nach verborgenen Strukturen. <em>Fokus: Clustering & Assoziation</em></li>
+                <li><strong>Reinforcement Learning:</strong> Lernen durch Interaktion und Belohnung (Agent-Umwelt-Prinzip)</li>
+              </ul>
             </div>
             
             <div class="content-section">
-              <h3>Trainingsprozess</h3>
-              <p>1. <strong>Training:</strong> Modell lernt aus Trainingsdaten<br>
-                 2. <strong>Validierung:</strong> Hyperparameter-Optimierung<br>
-                 3. <strong>Test:</strong> Endgültige Bewertung der Generalisierung</p>
+              <h3>📊 Regressionsanalyse</h3>
+              <p>Prognostiziert <strong>numerische Werte</strong> basierend auf historischen Daten.</p>
               <div class="code-block">
-                <strong>Train/Test Split:</strong><br>
-                <code>X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)</code>
+                <strong>Lineare Regression:</strong><br>
+                <code>y = b * x + a</code>
+              </div>
+              <div class="example">
+                <strong>Logistische Regression:</strong> Binäre Klassifikation ("Krank" oder "Gesund") mit S-förmiger Kurve (Sigmoid)
               </div>
             </div>
           </div>
         `,
         quiz: [
-          {q:'Was lernt ein ML-Modell?', a:'Muster aus Daten'},
-          {q:'Wofür dienen Testdaten?', a:'Generalisierung bewerten'},
-          {q:'Was passiert bei Overfitting?', a:'Zu starke Anpassung an Trainingsdaten'}
+          {q:'Was zeichnet Supervised Learning aus?', a:'Training mit Input/Output-Paaren'},
+          {q:'Wofür wird lineare Regression verwendet?', a:'Numerische Werte vorhersagen'},
+          {q:'Welche Lernart nutzt Belohnungen?', a:'Reinforcement Learning'}
         ]
       },
       {
         id: 'algorithmen',
-        title: 'Algorithmen',
+        title: 'Algorithmen & Overfitting',
         content: `
           <div class="content-grid">
             <div class="content-section">
-              <h3>Überwachtes Lernen</h3>
+              <h3>🎲 k-Nearest Neighbors (kNN)</h3>
+              <p><strong>Prinzip:</strong> "Zeige mir deine Freunde und ich sage dir, wer du bist."</p>
               <ul>
-                <li><strong>Regression:</strong> Kontinuierliche Werte vorhersagen</li>
-                <li><strong>Klassifikation:</strong> Kategorien zuweisen</li>
+                <li><strong>Distanz:</strong> Euklidischer Abstand oder Manhattan-Distanz</li>
+                <li><strong>Anwendungen:</strong> Empfehlungssysteme, Bilderkennung, Medizin</li>
               </ul>
               <div class="code-block">
-                <strong>Lineare Regression:</strong><br>
-                <code>from sklearn.linear_model import LinearRegression<br>
-model = LinearRegression().fit(X_train, y_train)</code>
+                <strong>kNN Pseudocode:</strong><br>
+                <code>1. Finde k nächste Nachbarn<br>
+2. Bestimme Mehrheitsklasse<br>
+3. Weise Klasse zu</code>
               </div>
             </div>
             
             <div class="content-section">
-              <h3>Unüberwachtes Lernen</h3>
-              <p>Clustering, Dimensionsreduktion, Assoziationsregeln</p>
+              <h3>⚠️ Overfitting (Überanpassung)</h3>
+              <p><strong>Kritisches Problem:</strong> Modell lernt Trainingsdaten "auswendig" statt zu generalisieren.</p>
+              <div class="note" style="border-left-color: #ef4444; background: rgba(239,68,68,.1);">
+                <strong>Konsequenz:</strong> Schlechte Ergebnisse bei <em>neuen Daten</em>
+              </div>
               <div class="example">
-                <strong>k-Means Clustering:</strong> Automatische Gruppierung von Kunden
+                <strong>Lösungen:</strong> Cross-Validation, Regularisierung, mehr Trainingsdaten
               </div>
             </div>
           </div>
         `,
         quiz: [
-          {q:'Was vorhersagt Regression?', a:'Kontinuierliche Werte'},
-          {q:'Was macht Klassifikation?', a:'Kategorien zuweisen'},
-          {q:'Beispiel für Clustering?', a:'k-Means'}
+          {q:'kNN Prinzip?', a:'Klasse der nächsten Nachbarn'},
+          {q:'Problem bei Overfitting?', a:'Keine Generalisierung auf neue Daten'},
+          {q:'kNN Distanzmaße?', a:'Euklidisch, Manhattan'}
         ]
       }
     ]
@@ -579,7 +601,8 @@ while queue:<br>
           <div class="content-grid">
             <div class="content-section">
               <h3>A*-Algorithmus</h3>
-              <p>f(n) = g(n) + h(n) | g(n)=Pfadkosten | h(n)=Heuristik</p>
+              <p><span class="formula">f(n) = g(n) + h(n)</span><br>
+              <small>g(n)=Pfadkosten | h(n)=Heuristik</small></p>
               <div class="code-block">
                 <strong>A* Priorität:</strong><br>
                 <code>priority_queue = sort by (g(n) + h(n))</code>
@@ -798,7 +821,6 @@ function openTopic(id){
   
   els.homeView.style.display = 'none';
   
-  // Detail View generieren
   els.detailViewContainer.innerHTML = `
     <section id="detailView-${id}" class="panel detailView active">
       <button class="btn secondary back" id="backHome">← Zurück</button>
@@ -826,17 +848,14 @@ function openTopic(id){
 
   document.getElementById('detailBadges').innerHTML = t.badges.map(b => `<span class="badge">${b}</span>`).join('');
   
-  // Subpage Navigation
   document.querySelectorAll('.subpage-card').forEach(card => {
     card.addEventListener('click', () => openSubpage(card.dataset.topic, card.dataset.subpage));
   });
 
-  // Erste Subpage öffnen
   if(t.subpages.length > 0) {
     openSubpage(id, t.subpages[0].id);
   }
 
-  // Back Button
   document.getElementById('backHome').addEventListener('click', backToHome);
 }
 
@@ -862,7 +881,6 @@ function openSubpage(topicId, subpageId){
     </div>
   `;
 
-  // Quiz Event Listener
   document.querySelectorAll('[data-answer]').forEach(btn => {
     btn.addEventListener('click', () => {
       const answer = btn.nextElementSibling;
@@ -882,11 +900,11 @@ function backToHome(){
 
 function botReply(text){
   const lower = text.toLowerCase();
-  if(lower.includes('machine') || lower.includes('ml')) return 'Machine Learning: Modelle lernen Muster aus Daten. Wichtig: Train/Test Split, Overfitting vermeiden, Cross-Validation.';
+  if(lower.includes('machine') || lower.includes('ml')) return 'Machine Learning: Supervised/Unsupervised/Reinforcement Learning. Regression (y=bx+a), kNN, Overfitting vermeiden!';
   if(lower.includes('suche') || lower.includes('bfs') || lower.includes('a*')) return 'Suchverfahren: BFS (vollständig, optimal), A* (f(n)=g(n)+h(n)), Heuristiken müssen admissibel sein.';
   if(lower.includes('netz') || lower.includes('neuron')) return 'Neuronale Netze: Feedforward, Backpropagation, ReLU löst Vanishing Gradient, Adam Optimierer.';
   if(lower.includes('bias') || lower.includes('ethik')) return 'KI-Ethik: Sampling/Label/Algorithmic Bias, GDPR Art.22 (Erklärbarkeit), XAI-Methoden wie SHAP/LIME.';
-  return 'Themen: Machine Learning, Suchverfahren, Neuronale Netze, Ethik. Frag spezifisch!';
+  return 'Themen: Machine Learning (Supervised, kNN, Overfitting), Suchverfahren, Neuronale Netze, Ethik. Frag spezifisch!';
 }
 
 document.getElementById('sendChat').addEventListener('click', () => {
@@ -897,6 +915,7 @@ document.getElementById('sendChat').addEventListener('click', () => {
   els.chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Bot:</strong> ${botReply(text)}</div>`);
   els.chatLog.scrollTop = els.chatLog.scrollHeight;
   input.value = '';
+  input.focus();
 });
 
 document.getElementById('startLearn').addEventListener('click', () => openTopic(topics[0].id));
