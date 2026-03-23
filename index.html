@@ -1,23 +1,84 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>KI Lernplattform</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-body{font-family:'Poppins',sans-serif;margin:0;background:#f9fafb;}
-header{background:linear-gradient(135deg,#6366f1,#22c55e);color:white;padding:30px;text-align:center;font-size:24px;font-weight:600;}
-.container{column-count:3;column-gap:20px;padding:20px;}
-.card{background:white;border-radius:15px;margin-bottom:20px;padding:20px;display:inline-block;width:100%;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
-.topic{cursor:pointer;margin-top:10px;padding:10px;background:#eef2ff;border-radius:8px;}
-.learned{background:#bbf7d0 !important;}
-.content{display:none;margin-top:10px;font-size:14px;color:#374151;}
-button{margin-top:10px;padding:6px 10px;border:none;border-radius:6px;background:#6366f1;color:white;cursor:pointer;}
-.progress-bar{width:100%;background:#e5e7eb;border-radius:10px;overflow:hidden;margin-top:10px;}
-.progress{height:15px;width:0%;background:linear-gradient(90deg,#6366f1,#22c55e);color:white;font-size:12px;text-align:center;}
-.correct{color:green;}
-.wrong{color:red;}
-</style>
+  <meta charset="UTF-8">
+  <title>KI Lernplattform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f9fafb;
+    }
+
+    header {
+      background: linear-gradient(135deg, #6366f1, #22c55e);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .container {
+      column-count: 3;
+      column-gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      padding: 20px;
+      display: inline-block;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #111827;
+    }
+
+    .topic {
+      cursor: pointer;
+      margin-top: 10px;
+      padding: 10px;
+      background: #eef2ff;
+      border-radius: 8px;
+    }
+
+    .content {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress {
+      height: 15px;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #22c55e);
+      text-align: center;
+      color: white;
+      font-size: 12px;
+    }
+
+  </style>
 </head>
 <body>
 
@@ -25,131 +86,98 @@ button{margin-top:10px;padding:6px 10px;border:none;border-radius:6px;background
 
 <div class="container">
 
-<div class="card">
-<h2>Machine Learning</h2>
+  <div class="card">
+    <h2>Warum KI jetzt?</h2>
+    <p>Durch Big Data, steigende Rechenleistung und neue Algorithmen ist KI heute eine Schlüsseltechnologie.</p>
+  </div>
 
-<div class="topic" onclick="toggle(this)">Grundlagen Machine Learning</div>
-<div class="content">Supervised, Unsupervised & Reinforcement Learning</div>
+  <div class="card">
+    <h2>Machine Learning</h2>
 
-<div class="topic" onclick="toggle(this)">kNN</div>
-<div class="content">Nachbarschaftsbasierte Klassifikation</div>
+    <div class="topic" onclick="toggle(this)">Grundlagen Machine Learning</div>
+    <div class="content">
+      <b>Supervised Learning:</b><br>
+      Training mit Ein- und Ausgaben → Klassifikation & Regression<br>
+      Algorithmen: Lineare Regression, Logistische Regression, Naive Bayes, Decision Trees, SVM<br><br>
 
-<div class="topic" onclick="toggle(this)">Regression</div>
-<div class="content">Vorhersage von Werten</div>
+      <b>Unsupervised Learning:</b><br>
+      Keine Labels → Muster erkennen (Clustering, Assoziation)<br>
+      Algorithmen: K-Means, kNN, PCA, Neural Networks<br><br>
 
-</div>
+      <b>Reinforcement Learning:</b><br>
+      Lernen durch Belohnungssystem<br>
+      Algorithmen: Q-Learning, Monte Carlo, SARSA, Policy Gradients
+    </div>
 
-<div class="card">
-<h2>Klausurvorbereitung</h2>
-<div id="progressText">Fortschritt: 0%</div>
-<div class="progress-bar"><div id="progress" class="progress"></div></div>
+    <div class="topic" onclick="toggle(this)">kNN</div>
+    <div class="content">
+      Klassifikation durch Mehrheit der k nächsten Nachbarn.<br>
+      Nutzt z.B. euklidische Distanz.<br>
+      Kleine k → anfällig für Rauschen, große k → stabiler.
+    </div>
 
-<h3>Quiz</h3>
-<div id="quiz"></div>
-<button onclick="generateQuiz()">Neues Quiz</button>
+    <div class="topic" onclick="toggle(this)">Regression</div>
+    <div class="content">
+      Vorhersage von Zielgrößen anhand Daten.<br>
+      Lineare Regression: Zusammenhang zwischen Variablen.<br>
+      Multiple Regression: mehrere Einflussfaktoren.<br>
+      Logistische Regression: Klassifikation (z.B. ja/nein).
+    </div>
 
-<h3 id="score"></h3>
-</div>
+  </div>
+
+  <div class="card">
+    <h2>Klausurvorbereitung</h2>
+    <div id="progressText">Fortschritt: 0%</div>
+    <div class="progress-bar">
+      <div id="progress" class="progress"></div>
+    </div>
+
+    <ul id="exerciseList"></ul>
+  </div>
 
 </div>
 
 <script>
-const topics=document.querySelectorAll('.topic');
-
-function toggle(el){
- const content=el.nextElementSibling;
- content.style.display=content.style.display==='block'?'none':'block';
-}
-
-function markLearned(el){
- el.classList.toggle('learned');
- saveProgress();
-}
-
-topics.forEach(t=>{
- t.addEventListener('dblclick',()=>markLearned(t));
-});
-
-function saveProgress(){
- const learned=[];
- topics.forEach((t,i)=>{
-  if(t.classList.contains('learned')) learned.push(i);
- });
- localStorage.setItem('learnedTopics',JSON.stringify(learned));
- updateProgress();
-}
-
-function loadProgress(){
- const saved=JSON.parse(localStorage.getItem('learnedTopics'))||[];
- saved.forEach(i=>topics[i].classList.add('learned'));
- updateProgress();
-}
-
-function updateProgress(){
- const total=topics.length;
- const learned=document.querySelectorAll('.learned').length;
- const percent=Math.round((learned/total)*100);
- const bar=document.getElementById('progress');
- bar.style.width=percent+'%';
- bar.innerText=percent+'%';
- document.getElementById('progressText').innerText='Fortschritt: '+percent+'%';
-}
-
-function generateQuiz(){
- const quizDiv=document.getElementById('quiz');
- const scoreDiv=document.getElementById('score');
- quizDiv.innerHTML='';
- scoreDiv.innerHTML='';
-
- let score=0;
-
- const questions=[
-  {
-   q:'Was ist Supervised Learning?',
-   options:['Lernen ohne Daten','Lernen mit Ein- und Ausgaben','Nur Clustering'],
-   correct:1
-  },
-  {
-   q:'Was macht kNN?',
-   options:['Optimierung','Nachbarschaftsbasierte Klassifikation','Regression'],
-   correct:1
-  },
-  {
-   q:'Was ist Regression?',
-   options:['Clustering','Vorhersage von Werten','Sortieren'],
-   correct:1
+  function toggle(el) {
+    const content = el.nextElementSibling;
+    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    updateProgress();
   }
- ];
 
- questions.forEach((q,index)=>{
-  const div=document.createElement('div');
-  div.innerHTML='<b>'+q.q+'</b><br>';
+  function updateProgress() {
+    const topics = document.querySelectorAll('.content');
+    let opened = 0;
 
-  q.options.forEach((opt,i)=>{
-   const btn=document.createElement('button');
-   btn.innerText=opt;
-   btn.onclick=()=>{
-    if(i===q.correct){
-     btn.classList.add('correct');
-     score++;
-    } else {
-     btn.classList.add('wrong');
-    }
-    btn.disabled=true;
-    updateScore();
-   };
-   div.appendChild(btn);
-  });
+    topics.forEach(t => {
+      if (t.style.display === 'block') opened++;
+    });
 
-  quizDiv.appendChild(div);
- });
+    const percent = Math.round((opened / topics.length) * 100);
 
- function updateScore(){
-  scoreDiv.innerText='Score: '+score+' / '+questions.length;
- }
-}
+    const bar = document.getElementById('progress');
+    bar.style.width = percent + '%';
+    bar.innerText = percent + '%';
 
-loadProgress();
+    document.getElementById('progressText').innerText = 'Fortschritt: ' + percent + '%';
+
+    generateExercises();
+  }
+
+  function generateExercises() {
+    const list = document.getElementById('exerciseList');
+    list.innerHTML = '';
+
+    const topics = document.querySelectorAll('.topic');
+
+    topics.forEach(t => {
+      const li = document.createElement('li');
+      li.innerText = 'Erkläre: ' + t.innerText;
+      list.appendChild(li);
+    });
+  }
+
+  generateExercises();
 </script>
 
 </body>
