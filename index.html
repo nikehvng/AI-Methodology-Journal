@@ -3,13 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KI Lernplattform</title>
+  <title>Wilkommen im Modul Künstliche Intelligenz - Methoden und Anwendungen</title>
   <style>
     :root{
-      --bg:#0b1020;--bg2:#111831;--card:#121a33;--card2:#17203d;--line:rgba(148,163,184,.18);--text:#e5e7eb;--muted:#94a3b8;--accent:#8b5cf6;--accent2:#22d3ee;--accent3:#10b981;--shadow:0 18px 50px rgba(0,0,0,.35);
+      --bg:#0b1020;
+      --bg2:#111831;
+      --card:#121a33;
+      --card2:#17203d;
+      --line:rgba(148,163,184,.18);
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#8b5cf6;
+      --accent2:#22d3ee;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
     }
+
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
+
     body{
       margin:0;
       font-family:Inter,Arial,sans-serif;
@@ -18,30 +29,72 @@
         radial-gradient(circle at top left, rgba(139,92,246,.25), transparent 30%),
         radial-gradient(circle at top right, rgba(34,211,238,.18), transparent 28%),
         linear-gradient(180deg,var(--bg),var(--bg2));
-      min-height:100vh
+      min-height:100vh;
     }
-    a{text-decoration:none;color:inherit}
-    .wrap{max-width:1450px;margin:0 auto;padding:24px}
-    .grid{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
-    .panel,.box,.topic-card,.page-card{
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .wrap{
+      max-width:1450px;
+      margin:0 auto;
+      padding:24px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.15fr 1fr;
+      gap:18px;
+    }
+
+    .panel,
+    .box,
+    .topic-card,
+    .page-card{
       background:linear-gradient(180deg,rgba(18,26,51,.92),rgba(23,32,61,.92));
       border:1px solid var(--line);
       border-radius:24px;
       box-shadow:var(--shadow);
-      backdrop-filter:blur(12px)
+      backdrop-filter:blur(12px);
     }
-    .panel{padding:22px;position:relative;overflow:hidden}
-    .hero{min-height:270px;display:flex;flex-direction:column;justify-content:space-between}
+
+    .panel{
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero{
+      min-height:270px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
     .hero h1{
       margin:0;
       font-size:clamp(2rem,4vw,3.4rem);
       line-height:1.05;
       background:linear-gradient(90deg,#fff,var(--accent2));
       -webkit-background-clip:text;
-      color:transparent
+      color:transparent;
     }
-    .hero p,.subtle{color:var(--muted);line-height:1.6}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+
+    .hero p,
+    .subtle{
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
     .btn{
       border:0;
       border-radius:16px;
@@ -52,12 +105,28 @@
       color:#fff;
       display:inline-flex;
       align-items:center;
-      justify-content:center
+      justify-content:center;
     }
-    .btn:hover{transform:translateY(-2px)}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),#4f46e5);box-shadow:0 12px 25px rgba(139,92,246,.25)}
-    .btn.secondary{background:#1b2647;border:1px solid rgba(255,255,255,.08)}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.10)}
+
+    .btn:hover{
+      transform:translateY(-2px);
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg,var(--accent),#4f46e5);
+      box-shadow:0 12px 25px rgba(139,92,246,.25);
+    }
+
+    .btn.secondary{
+      background:#1b2647;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,.10);
+    }
+
     .chip{
       display:inline-block;
       background:rgba(139,92,246,.18);
@@ -66,65 +135,116 @@
       border-radius:999px;
       font-size:.82rem;
       margin-bottom:10px;
-      border:1px solid rgba(139,92,246,.25)
+      border:1px solid rgba(139,92,246,.25);
     }
-    .topics{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
+    .topics{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+
     .topic-card{
       padding:16px;
       min-height:154px;
       cursor:pointer;
       transition:.2s transform,.2s border-color,.2s box-shadow;
       position:relative;
-      overflow:hidden
+      overflow:hidden;
     }
-    .topic-card:before,.page-card:before{
+
+    .topic-card:before,
+    .page-card:before{
       content:'';
       position:absolute;
       inset:0;
       background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.08));
       opacity:0;
-      transition:.2s
+      transition:.2s;
     }
-    .topic-card:hover,.page-card:hover{
+
+    .topic-card:hover,
+    .page-card:hover{
       transform:translateY(-4px);
       border-color:rgba(34,211,238,.35);
-      box-shadow:0 16px 36px rgba(0,0,0,.38)
+      box-shadow:0 16px 36px rgba(0,0,0,.38);
     }
-    .topic-card:hover:before,.page-card:hover:before{opacity:1}
-    .topic-card h3,.page-card h3{margin:6px 0 8px 0;font-size:1.1rem}
-    .layout2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
-    .box{padding:18px;min-height:260px}
+
+    .topic-card:hover:before,
+    .page-card:hover:before{
+      opacity:1;
+    }
+
+    .topic-card h3,
+    .page-card h3{
+      margin:6px 0 8px 0;
+      font-size:1.1rem;
+    }
+
+    .layout2{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .box{
+      padding:18px;
+      min-height:260px;
+    }
+
     .progress-bar{
       height:14px;
       background:#0f172a;
       border-radius:999px;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.08)
+      border:1px solid rgba(255,255,255,.08);
     }
+
     .progress-fill{
       height:100%;
       width:0;
       background:linear-gradient(90deg,var(--accent),var(--accent2));
-      transition:width .35s
+      transition:width .35s;
     }
-    .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+
     .stat{
       background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
       border-radius:18px;
-      padding:16px
+      padding:16px;
     }
-    .stat strong{display:block;font-size:1.5rem;color:#fff}
-    .example,.note{
+
+    .stat strong{
+      display:block;
+      font-size:1.5rem;
+      color:#fff;
+    }
+
+    .example,
+    .note{
       border-left:4px solid var(--accent2);
       padding:12px 14px;
       margin:12px 0;
       background:rgba(34,211,238,.06);
       border-radius:12px;
-      color:#dbeafe
+      color:#dbeafe;
     }
-    .grid-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:10px 0 16px;
+    }
+
     input,textarea,select{
       width:100%;
       background:#0f172a;
@@ -133,46 +253,108 @@
       border-radius:14px;
       padding:14px 15px;
       font:inherit;
-      outline:none
+      outline:none;
     }
-    textarea{min-height:140px;resize:vertical}
-    .field{margin:10px 0}
-    .label{display:block;margin-bottom:6px;color:#cbd5e1;font-size:.93rem}
-    .list{display:grid;gap:12px}
-    .quiz-item,.chat-msg,.page-card{
+
+    textarea{
+      min-height:140px;
+      resize:vertical;
+    }
+
+    .field{
+      margin:10px 0;
+    }
+
+    .label{
+      display:block;
+      margin-bottom:6px;
+      color:#cbd5e1;
+      font-size:.93rem;
+    }
+
+    .list{
+      display:grid;
+      gap:12px;
+    }
+
+    .quiz-item,
+    .chat-msg,
+    .page-card{
       padding:14px;
       border-radius:18px;
       border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03)
+      background:rgba(255,255,255,.03);
     }
-    .quiz-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .detailView{display:none;margin-top:18px;padding:22px}
-    .detailView.active{display:block}
-    .back{position:absolute;top:18px;right:18px}
-    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-    .badge-row{display:flex;gap:8px;flex-wrap:wrap}
+
+    .quiz-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .detailView{
+      display:none;
+      margin-top:18px;
+      padding:22px;
+    }
+
+    .detailView.active{
+      display:block;
+    }
+
+    .back{
+      position:absolute;
+      top:18px;
+      right:18px;
+    }
+
+    .badge-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
     .badge{
       padding:7px 10px;
       border-radius:999px;
       background:rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.08);
       color:#cbd5e1;
-      font-size:.82rem
+      font-size:.82rem;
     }
+
     .page-head{
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
       gap:12px;
-      flex-wrap:wrap
+      flex-wrap:wrap;
     }
-    .page-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .small{font-size:.9rem}
-    .divider{height:1px;background:rgba(255,255,255,.08);margin:16px 0}
+
+    .editor-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .small{
+      font-size:.9rem;
+    }
+
     @media (max-width: 980px){
-      .grid,.layout2,.hero-grid,.grid-two,.editor-grid,.topics{grid-template-columns:1fr}
-      .back{position:static;display:inline-flex;margin-bottom:12px}
+      .grid,
+      .layout2,
+      .editor-grid,
+      .topics{
+        grid-template-columns:1fr;
+      }
+
+      .back{
+        position:static;
+        display:inline-flex;
+        margin-bottom:12px;
+      }
     }
   </style>
 </head>
@@ -182,8 +364,8 @@
     <section class="panel hero">
       <div>
         <span class="chip">Klausurvorbereitung • KI</span>
-        <h1>Deine Lernplattform mit editierbaren Themenseiten</h1>
-        <p>Wähle ein Thema, öffne eine eigene Detailseite, bearbeite Inhalte direkt im Browser und füge jederzeit neue Themen hinzu. Das Layout ist bewusst dunkler und moderner gehalten.</p>
+        <h1>Wilkommen im Modul Künstliche Intelligenz - Methoden und Anwendungen</h1>
+        <p>Wähle ein Thema, öffne eine eigene Detailseite und lerne mit automatisch erzeugten Quizzes, Beispielen und einer modernen, dunklen Oberfläche.</p>
       </div>
       <div class="hero-actions">
         <button class="btn primary" id="startLearn">Jetzt lernen</button>
@@ -196,7 +378,7 @@
       <div class="page-head">
         <div>
           <h2>Themenübersicht</h2>
-          <p class="subtle">Klicke ein Thema an, um die Detailseite zu öffnen. Alle Inhalte kommen aus den Datenstrukturen unten und sind leicht erweiterbar.</p>
+          <p class="subtle">Klicke ein Thema an, um die Detailseite zu öffnen.</p>
         </div>
       </div>
       <div class="topics" id="topicGrid"></div>
@@ -209,7 +391,7 @@
       <div>
         <span class="chip">Automatisches Lernen</span>
         <h2>Jetzt lernen</h2>
-        <p class="subtle">Die Quizzes werden aus dem aktuell geöffneten Thema erzeugt. Jede Themenseite kann von dir später direkt editiert werden.</p>
+        <p class="subtle">Die Quizzes werden aus dem aktuell geöffneten Thema erzeugt.</p>
       </div>
       <div class="badge-row" id="detailBadges"></div>
     </div>
@@ -244,82 +426,6 @@
       </div>
     </section>
   </div>
-
-  <section class="panel" style="margin-top:18px;">
-    <div class="page-head">
-      <div>
-        <span class="chip">Editor</span>
-        <h2>Themen und Seiten bearbeiten</h2>
-        <p class="subtle">Hier kannst du neue Themen anlegen oder bestehende Inhalte überschreiben, ohne den Code neu schreiben zu müssen.</p>
-      </div>
-      <div class="badge-row">
-        <span class="badge">JSON-basiert</span>
-        <span class="badge">Erweiterbar</span>
-        <span class="badge">Browser-Editor</span>
-      </div>
-    </div>
-
-    <div class="editor-grid">
-      <div>
-        <div class="field">
-          <label class="label">Thema auswählen oder neu anlegen</label>
-          <select id="topicSelect"></select>
-        </div>
-        <div class="field">
-          <label class="label">Themen-ID</label>
-          <input id="topicId" placeholder="z. B. deepLearning" />
-        </div>
-        <div class="field">
-          <label class="label">Titel</label>
-          <input id="topicTitle" placeholder="z. B. Deep Learning" />
-        </div>
-        <div class="field">
-          <label class="label">Kurzbeschreibung</label>
-          <input id="topicShort" placeholder="Kurze Zusammenfassung" />
-        </div>
-      </div>
-      <div>
-        <div class="field">
-          <label class="label">Inhalt der Seite</label>
-          <textarea id="topicContent" placeholder="Hier erklärst du dein Thema ausführlich."></textarea>
-        </div>
-        <div class="field">
-          <label class="label">Beispiel / Abbildungstext</label>
-          <textarea id="topicExample" placeholder="Hier kannst du ein Beispiel oder Bildbeschreibung ergänzen."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="editor-grid">
-      <div>
-        <div class="field">
-          <label class="label">Quizfragen im Format Frage|Antwort pro Zeile</label>
-          <textarea id="topicQuiz" placeholder="Was ist KI?|Ein Feld der Informatik, das intelligentes Verhalten modelliert"></textarea>
-        </div>
-      </div>
-      <div>
-        <div class="field">
-          <label class="label">Seiten-Badge 1</label>
-          <input id="topicBadge1" placeholder="z. B. Grundlagen" />
-        </div>
-        <div class="field">
-          <label class="label">Seiten-Badge 2</label>
-          <input id="topicBadge2" placeholder="z. B. wichtig für die Klausur" />
-        </div>
-        <div class="field">
-          <label class="label">Seiten-Badge 3</label>
-          <input id="topicBadge3" placeholder="optional" />
-        </div>
-      </div>
-    </div>
-
-    <div class="toolbar">
-      <button class="btn primary" id="saveTopic">Thema speichern</button>
-      <button class="btn secondary" id="newTopic">Neues Thema</button>
-      <button class="btn ghost" id="deleteTopic">Thema löschen</button>
-    </div>
-    <p class="subtle small">Tipp: Wenn du später echte Unterseiten pro Thema willst, kannst du aus diesen Daten automatisch separate HTML-Dateien erzeugen.</p>
-  </section>
 </div>
 
 <script>
@@ -384,16 +490,6 @@ let currentTopicId = topics[0].id;
 
 const els = {
   topicGrid: document.getElementById('topicGrid'),
-  topicSelect: document.getElementById('topicSelect'),
-  topicId: document.getElementById('topicId'),
-  topicTitle: document.getElementById('topicTitle'),
-  topicShort: document.getElementById('topicShort'),
-  topicContent: document.getElementById('topicContent'),
-  topicExample: document.getElementById('topicExample'),
-  topicQuiz: document.getElementById('topicQuiz'),
-  topicBadge1: document.getElementById('topicBadge1'),
-  topicBadge2: document.getElementById('topicBadge2'),
-  topicBadge3: document.getElementById('topicBadge3'),
   quizArea: document.getElementById('quizArea'),
   chatLog: document.getElementById('chatLog'),
   progressFill: document.getElementById('progressFill'),
@@ -404,9 +500,6 @@ const els = {
   learnView: document.getElementById('learnView'),
   detailBadges: document.getElementById('detailBadges')
 };
-
-function saveState(){ localStorage.setItem('kiTopics', JSON.stringify(topics)); }
-function loadState(){ const data = localStorage.getItem('kiTopics'); if(data){ try{ topics = JSON.parse(data); }catch(e){} } }
 
 function updateProgress(){
   const pct = Math.round((learned.size / topics.length) * 100) || 0;
@@ -424,27 +517,33 @@ function renderTopicGrid(){
       <p class="subtle">${t.short}</p>
     </a>
   `).join('');
-  els.topicSelect.innerHTML = `<option value="">-- Thema wählen --</option>` + topics.map(t => `<option value="${t.id}">${t.title}</option>`).join('');
-  document.querySelectorAll('.topic-card').forEach(card => card.addEventListener('click', e => { e.preventDefault(); openTopic(card.dataset.id); }));
-  els.topicSelect.addEventListener('change', () => fillEditor(els.topicSelect.value));
+
+  document.querySelectorAll('.topic-card').forEach(card =>
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      openTopic(card.dataset.id);
+    })
+  );
 }
 
 function openTopic(id){
   const t = topics.find(x => x.id === id);
   if(!t) return;
+
   currentTopicId = id;
   learned.add(id);
   updateProgress();
   els.homeView.style.display = 'none';
   els.learnView.classList.add('active');
   els.detailBadges.innerHTML = (t.badges || []).map(b => `<span class="badge">${b}</span>`).join('');
+
   els.quizArea.innerHTML = `
     <div class="page-card">
       <span class="chip">${t.title}</span>
       <h3>Erklärung</h3>
       <p>${t.content}</p>
       <div class="example">${t.example}</div>
-      <div class="note">Du kannst diese Seite später im Editor unten anpassen und speichern.</div>
+      <div class="note">Diese Seite öffnet sich, wenn du auf ein Thema klickst.</div>
     </div>
     <div class="page-card" style="margin-top:14px;">
       <h3>Auto-Quiz</h3>
@@ -459,80 +558,14 @@ function openTopic(id){
       `).join('')}
     </div>
   `;
-  els.quizArea.querySelectorAll('button[data-answer]').forEach(btn => btn.addEventListener('click', () => {
-    btn.nextElementSibling.style.display = 'block';
-    rightAnswers += 1;
-    updateProgress();
-  }));
-}
 
-function fillEditor(id){
-  const t = topics.find(x => x.id === id);
-  if(!t) return;
-  currentTopicId = t.id;
-  els.topicId.value = t.id || '';
-  els.topicTitle.value = t.title || '';
-  els.topicShort.value = t.short || '';
-  els.topicContent.value = t.content || '';
-  els.topicExample.value = t.example || '';
-  els.topicQuiz.value = (t.quiz || []).map(q => `${q.q}|${q.a}`).join('\n');
-  const badges = t.badges || [];
-  els.topicBadge1.value = badges[0] || '';
-  els.topicBadge2.value = badges[1] || '';
-  els.topicBadge3.value = badges[2] || '';
-}
-
-function collectEditor(){
-  const quiz = els.topicQuiz.value.split('\n').map(line => line.trim()).filter(Boolean).map(line => {
-    const [q,a] = line.split('|');
-    return { q:(q||'').trim(), a:(a||'').trim() };
-  }).filter(x => x.q && x.a);
-  return {
-    id: els.topicId.value.trim(),
-    title: els.topicTitle.value.trim(),
-    short: els.topicShort.value.trim(),
-    content: els.topicContent.value.trim(),
-    example: els.topicExample.value.trim(),
-    badges: [els.topicBadge1.value.trim(), els.topicBadge2.value.trim(), els.topicBadge3.value.trim()].filter(Boolean),
-    quiz
-  };
-}
-
-function saveTopic(){
-  const data = collectEditor();
-  if(!data.id || !data.title) return alert('Bitte mindestens ID und Titel ausfüllen.');
-  const idx = topics.findIndex(t => t.id === currentTopicId || t.id === data.id);
-  if(idx >= 0) topics[idx] = data; else topics.unshift(data);
-  currentTopicId = data.id;
-  saveState();
-  renderTopicGrid();
-  updateProgress();
-  fillEditor(data.id);
-  openTopic(data.id);
-}
-
-function newTopic(){
-  currentTopicId = '';
-  els.topicSelect.value = '';
-  els.topicId.value = '';
-  els.topicTitle.value = '';
-  els.topicShort.value = '';
-  els.topicContent.value = '';
-  els.topicExample.value = '';
-  els.topicQuiz.value = 'Frage|Antwort';
-  els.topicBadge1.value = 'neu';
-  els.topicBadge2.value = '';
-  els.topicBadge3.value = '';
-}
-
-function deleteTopic(){
-  const id = els.topicId.value.trim();
-  if(!id) return;
-  topics = topics.filter(t => t.id !== id);
-  saveState();
-  renderTopicGrid();
-  newTopic();
-  updateProgress();
+  els.quizArea.querySelectorAll('button[data-answer]').forEach(btn =>
+    btn.addEventListener('click', () => {
+      btn.nextElementSibling.style.display = 'block';
+      rightAnswers += 1;
+      updateProgress();
+    })
+  );
 }
 
 function botReply(text){
@@ -555,14 +588,12 @@ document.getElementById('sendChat').addEventListener('click', () => {
 document.getElementById('startLearn').addEventListener('click', () => openTopic(topics[0].id));
 document.getElementById('openProgress').addEventListener('click', () => document.querySelector('.layout2').scrollIntoView({behavior:'smooth'}));
 document.getElementById('scrollTopics').addEventListener('click', () => document.getElementById('topicGrid').scrollIntoView({behavior:'smooth'}));
-document.getElementById('backHome').addEventListener('click', () => { els.homeView.style.display = 'grid'; els.learnView.classList.remove('active'); });
-document.getElementById('saveTopic').addEventListener('click', saveTopic);
-document.getElementById('newTopic').addEventListener('click', newTopic);
-document.getElementById('deleteTopic').addEventListener('click', deleteTopic);
+document.getElementById('backHome').addEventListener('click', () => {
+  els.homeView.style.display = 'grid';
+  els.learnView.classList.remove('active');
+});
 
-loadState();
 renderTopicGrid();
-fillEditor(topics[0].id);
 updateProgress();
 </script>
 </body>
