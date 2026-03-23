@@ -1,184 +1,253 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KI Lernplattform</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      background: #f9fafb;
+    :root{
+      --bg:#f6f7fb;--card:#ffffff;--line:#c76a6a;--text:#1f2937;--muted:#6b7280;--accent:#7c3aed;--accent2:#06b6d4;
+      --shadow:0 10px 30px rgba(17,24,39,.08);
     }
-
-    header {
-      background: linear-gradient(135deg, #6366f1, #22c55e);
-      color: white;
-      padding: 30px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: 600;
-    }
-
-    .container {
-      column-count: 3;
-      column-gap: 20px;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 15px;
-      margin-bottom: 20px;
-      padding: 20px;
-      display: inline-block;
-      width: 100%;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    h2 {
-      margin-top: 0;
-      color: #111827;
-    }
-
-    .topic {
-      cursor: pointer;
-      margin-top: 10px;
-      padding: 10px;
-      background: #eef2ff;
-      border-radius: 8px;
-    }
-
-    .content {
-      display: none;
-      margin-top: 10px;
-      font-size: 14px;
-      color: #374151;
-    }
-
-    .progress-bar {
-      width: 100%;
-      background: #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-
-    .progress {
-      height: 15px;
-      width: 0%;
-      background: linear-gradient(90deg, #6366f1, #22c55e);
-      text-align: center;
-      color: white;
-      font-size: 12px;
-    }
-
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#fafafa, #eef2ff);color:var(--text)}
+    .wrap{max-width:1400px;margin:0 auto;padding:24px}
+    .grid{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
+    .panel{background:rgba(255,255,255,.72);backdrop-filter:blur(10px);border:1px solid rgba(124,58,237,.12);border-radius:24px;box-shadow:var(--shadow);padding:20px;position:relative;overflow:hidden}
+    .panel h1,.panel h2,.panel h3{margin:0 0 10px 0}
+    .hero{min-height:250px;display:flex;flex-direction:column;justify-content:space-between}
+    .hero h1{font-size:2rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;color:transparent}
+    .hero p{max-width:60ch;color:var(--muted);line-height:1.6}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+    .btn{border:0;border-radius:14px;padding:14px 18px;font-weight:700;cursor:pointer;transition:.2s transform,.2s opacity;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .btn:hover{transform:translateY(-2px)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),#4f46e5);color:#fff}
+    .btn.secondary{background:#fff;border:1px solid #ddd;color:var(--text)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .stat{background:#fff;border:1px solid #eef; border-radius:18px;padding:16px}
+    .stat strong{display:block;font-size:1.5rem}
+    .topics{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .topic-card{background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(124,58,237,.12);border-radius:20px;padding:16px;cursor:pointer;min-height:140px;transition:.2s transform,.2s box-shadow;text-decoration:none;color:inherit}
+    .topic-card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(124,58,237,.12)}
+    .topic-card h3{margin-bottom:8px}
+    .chip{display:inline-block;background:#ede9fe;color:#5b21b6;padding:6px 10px;border-radius:999px;font-size:.82rem;margin-bottom:10px}
+    .layout2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
+    .box{background:var(--card);border:1px solid rgba(199,106,106,.35);border-radius:18px;padding:18px;min-height:240px}
+    .quiz-item,.chat-msg{background:#f8fafc;border:1px solid #e5e7eb;border-radius:14px;padding:12px;margin:10px 0}
+    .quiz-options button{width:100%;margin-top:8px;text-align:left}
+    .input-row{display:flex;gap:10px;margin-top:10px}
+    input,textarea,button{font:inherit}
+    input,textarea{width:100%;padding:14px 16px;border-radius:14px;border:1px solid #d1d5db;background:#fff}
+    .progress-bar{height:14px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .progress-fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#06b6d4);transition:width .4s}
+    .subtle{color:var(--muted);font-size:.95rem}
+    .back{position:absolute;top:18px;right:18px}
+    .detail{display:none}
+    .detail.active{display:block}
+    .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .example{border-left:4px solid var(--accent2);padding-left:12px;margin:10px 0;color:#334155}
+    @media (max-width: 900px){.grid,.layout2,.mini-grid,.stats,.topics{grid-template-columns:1fr}.back{position:static;display:inline-flex;margin-bottom:12px}}
   </style>
 </head>
 <body>
+<div class="wrap">
+  <div id="homeView" class="grid">
+    <section class="panel hero">
+      <div>
+        <h1>Klausurvorbereitung</h1>
+        <p>Eine moderne Lernplattform für <strong>Künstliche Intelligenz – Methoden und Anwendungen</strong>. Klicke auf ein Thema, lerne mit Bildern und Beispielen, stelle Fragen im Chat und wiederhole automatisch mit Quizzen.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn primary" id="startLearn">Jetzt lernen</button>
+        <button class="btn secondary" id="openProgress">Fortschritt</button>
+      </div>
+    </section>
 
-<header>KI Lernplattform – KI Methoden und Anwendungen</header>
-
-<div class="container">
-
-  <div class="card">
-    <h2>Warum KI jetzt?</h2>
-    <p>Durch Big Data, steigende Rechenleistung und neue Algorithmen ist KI heute eine Schlüsseltechnologie.</p>
+    <aside class="panel">
+      <h2>Themenübersicht</h2>
+      <p class="subtle">Wähle ein Thema aus, um die Detailseite zu öffnen. Neue Themen kannst du später einfach im <code>topics</code>-Array ergänzen.</p>
+      <div class="topics" id="topicGrid"></div>
+    </aside>
   </div>
 
-  <div class="card">
-    <h2>Machine Learning</h2>
-
-    <div class="topic" onclick="toggle(this)">Grundlagen Machine Learning</div>
-    <div class="content">
-      <b>Supervised Learning:</b><br>
-      Training mit Ein- und Ausgaben → Klassifikation & Regression<br>
-      Algorithmen: Lineare Regression, Logistische Regression, Naive Bayes, Decision Trees, SVM<br><br>
-
-      <b>Unsupervised Learning:</b><br>
-      Keine Labels → Muster erkennen (Clustering, Assoziation)<br>
-      Algorithmen: K-Means, kNN, PCA, Neural Networks<br><br>
-
-      <b>Reinforcement Learning:</b><br>
-      Lernen durch Belohnungssystem<br>
-      Algorithmen: Q-Learning, Monte Carlo, SARSA, Policy Gradients
-    </div>
-
-    <div class="topic" onclick="toggle(this)">kNN</div>
-    <div class="content">
-      Klassifikation durch Mehrheit der k nächsten Nachbarn.<br>
-      Nutzt z.B. euklidische Distanz.<br>
-      Kleine k → anfällig für Rauschen, große k → stabiler.
-    </div>
-
-    <div class="topic" onclick="toggle(this)">Regression</div>
-    <div class="content">
-      Vorhersage von Zielgrößen anhand Daten.<br>
-      Lineare Regression: Zusammenhang zwischen Variablen.<br>
-      Multiple Regression: mehrere Einflussfaktoren.<br>
-      Logistische Regression: Klassifikation (z.B. ja/nein).
-    </div>
-
+  <div id="learnView" class="panel detail" style="margin-top:18px;">
+    <button class="btn secondary back" id="backHome">Zurück</button>
+    <span class="chip">Automatische Wiederholung</span>
+    <h2>Jetzt lernen</h2>
+    <p class="subtle">Die Quizzes werden automatisch aus den Themeninhalten generiert. Die Fortschrittsanzeige aktualisiert sich nach jeder beantworteten Frage.</p>
+    <div id="quizArea"></div>
   </div>
 
-  <div class="card">
-    <h2>Klausurvorbereitung</h2>
-    <div id="progressText">Fortschritt: 0%</div>
-    <div class="progress-bar">
-      <div id="progress" class="progress"></div>
-    </div>
+  <div class="layout2">
+    <section class="box">
+      <h2>Fragen</h2>
+      <p class="subtle">Chatbot für schnelle Erklärungen, Beispiele und Wiederholungshilfen.</p>
+      <div id="chatLog"></div>
+      <div class="input-row">
+        <input id="chatInput" placeholder="Stelle eine Frage zu KI, ML, Suchverfahren ..." />
+        <button class="btn primary" id="sendChat">Senden</button>
+      </div>
+    </section>
 
-    <ul id="exerciseList"></ul>
+    <section class="box">
+      <h2>Lernfortschritt</h2>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <p id="progressText" class="subtle" style="margin-top:10px;">0 % abgeschlossen</p>
+      <div class="mini-grid" style="margin-top:14px;">
+        <div class="stat"><strong id="doneTopics">0</strong><span class="subtle">gelernten Themen</span></div>
+        <div class="stat"><strong id="rightAnswers">0</strong><span class="subtle">richtige Antworten</span></div>
+      </div>
+      <div class="example" style="margin-top:16px;">
+        Beispiel: Nach dem Thema „Machine Learning“ kannst du direkt ein Auto-Quiz mit Definition, Modellarten und Anwendungsfällen starten.
+      </div>
+    </section>
   </div>
-
 </div>
 
 <script>
-  function toggle(el) {
-    const content = el.nextElementSibling;
-    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+// 1) Themenliste hier erweitern
+const topics = [
+  {
+    id:'ml',
+    title:'Machine Learning',
+    short:'Grundlagen, Modelle, Training und Evaluation.',
+    content:'Machine Learning ist ein Teilgebiet der KI, bei dem Modelle Muster aus Daten lernen. Wichtige Begriffe sind Training, Testdaten, Overfitting und Generalisierung.',
+    example:'Beispiel: Ein Spamfilter lernt aus markierten E-Mails, welche Nachrichten wahrscheinlich Spam sind.',
+    quiz:[
+      {q:'Was ist Machine Learning?', a:'Ein Verfahren, bei dem Modelle aus Daten lernen'},
+      {q:'Was bedeutet Overfitting?', a:'Das Modell passt sich zu stark an Trainingsdaten an'},
+      {q:'Wozu dient Testdaten?', a:'Zur Bewertung der Generalisierung'}
+    ]
+  },
+  {
+    id:'search',
+    title:'Suchverfahren',
+    short:'Breiten- und Tiefensuche, Heuristiken und Optimierung.',
+    content:'Suchverfahren helfen KI-Systemen, Lösungsräume systematisch zu durchsuchen. Unterschieden werden uninformierte und informierte Verfahren.',
+    example:'Beispiel: Ein Navigationssystem sucht den kürzesten Weg durch ein Straßennetz.',
+    quiz:[
+      {q:'Was ist ein informiertes Suchverfahren?', a:'Ein Verfahren mit zusätzlicher Heuristik'},
+      {q:'Wofür steht BFS?', a:'Breitensuche'},
+      {q:'Wofür nutzt man Heuristiken?', a:'Um Suche effizienter zu machen'}
+    ]
+  },
+  {
+    id:'nn',
+    title:'Neuronale Netze',
+    short:'Aufbau, Aktivierungsfunktionen und Lernprozesse.',
+    content:'Neuronale Netze bestehen aus Schichten von Knoten, die Eingaben gewichten und transformieren. Sie sind besonders stark bei Bild-, Sprach- und Mustererkennung.',
+    example:'Beispiel: Eine Bilderkennung erkennt Katzen auf Fotos anhand vieler gelernter Merkmale.',
+    quiz:[
+      {q:'Wie heißen die Bausteine eines neuronalen Netzes?', a:'Neuronen bzw. Knoten'},
+      {q:'Wofür sind Aktivierungsfunktionen wichtig?', a:'Sie erzeugen Nichtlinearität'},
+      {q:'Wofür werden neuronale Netze oft genutzt?', a:'Für Bild- und Spracherkennung'}
+    ]
+  },
+  {
+    id:'ethics',
+    title:'Ethik & Risiken',
+    short:'Bias, Datenschutz, Transparenz und Verantwortung.',
+    content:'KI-Systeme können Vorurteile übernehmen, Daten missbrauchen oder Entscheidungen schwer erklärbar machen. Daher sind Fairness, Nachvollziehbarkeit und Datenschutz zentrale Themen.',
+    example:'Beispiel: Ein Bewerbungsmodell darf keine Gruppen systematisch benachteiligen.',
+    quiz:[
+      {q:'Was bedeutet Bias?', a:'Systematische Verzerrung'},
+      {q:'Warum ist Transparenz wichtig?', a:'Damit Entscheidungen nachvollziehbar sind'},
+      {q:'Was schützt Datenschutz?', a:'Persönliche Informationen'}
+    ]
+  }
+];
+
+let learned = new Set();
+let rightAnswers = 0;
+
+const topicGrid = document.getElementById('topicGrid');
+const quizArea = document.getElementById('quizArea');
+const chatLog = document.getElementById('chatLog');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const doneTopics = document.getElementById('doneTopics');
+const rightAnswersEl = document.getElementById('rightAnswers');
+const homeView = document.getElementById('homeView');
+const learnView = document.getElementById('learnView');
+
+function updateProgress(){
+  const pct = Math.round((learned.size / topics.length) * 100);
+  progressFill.style.width = pct + '%';
+  progressText.textContent = pct + ' % abgeschlossen';
+  doneTopics.textContent = learned.size;
+  rightAnswersEl.textContent = rightAnswers;
+}
+
+function renderTopics(){
+  topicGrid.innerHTML = topics.map(t => `
+    <a href="#" class="topic-card" data-id="${t.id}">
+      <span class="chip">Thema</span>
+      <h3>${t.title}</h3>
+      <p class="subtle">${t.short}</p>
+    </a>
+  `).join('');
+  document.querySelectorAll('.topic-card').forEach(card => card.addEventListener('click', e => {
+    e.preventDefault();
+    openTopic(card.dataset.id);
+  }));
+}
+
+function openTopic(id){
+  const t = topics.find(x => x.id === id);
+  if(!t) return;
+  learned.add(id);
+  updateProgress();
+  homeView.style.display = 'none';
+  learnView.classList.add('active');
+  quizArea.innerHTML = `
+    <div class="box" style="border-color: rgba(124,58,237,.18);">
+      <h3>${t.title}</h3>
+      <p>${t.content}</p>
+      <div class="example">${t.example}</div>
+    </div>
+    <div class="box" style="margin-top:14px;">
+      <h3>Auto-Quiz</h3>
+      ${t.quiz.map((item, idx) => `
+        <div class="quiz-item">
+          <strong>Frage ${idx+1}:</strong> ${item.q}
+          <div class="quiz-options">
+            <button class="btn secondary" data-answer="${item.a}">Antwort anzeigen</button>
+          </div>
+          <div class="subtle reveal" style="display:none;margin-top:8px;">${item.a}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  quizArea.querySelectorAll('button[data-answer]').forEach(btn => btn.addEventListener('click', () => {
+    btn.nextElementSibling.style.display = 'block';
+    rightAnswers += 1;
     updateProgress();
-  }
+  }));
+}
 
-  function updateProgress() {
-    const topics = document.querySelectorAll('.content');
-    let opened = 0;
+function botReply(text){
+  const lower = text.toLowerCase();
+  if(lower.includes('machine') || lower.includes('lernen')) return 'Machine Learning beschreibt Verfahren, bei denen Modelle aus Daten Muster ableiten. Ein gutes Beispiel ist Spam-Erkennung.';
+  if(lower.includes('heuristik') || lower.includes('suche')) return 'Heuristiken helfen Suchverfahren, schneller gute Lösungen zu finden, ohne jeden Pfad vollständig zu prüfen.';
+  if(lower.includes('bias') || lower.includes('ethik')) return 'Bias sind Verzerrungen in Daten oder Modellen. Bei KI sind Fairness, Transparenz und Datenschutz besonders wichtig.';
+  return 'Ich erkläre dir das gern einfach: Formuliere die Frage mit einem Thema wie Machine Learning, Suchverfahren oder Ethik.';
+}
 
-    topics.forEach(t => {
-      if (t.style.display === 'block') opened++;
-    });
+document.getElementById('sendChat').addEventListener('click', () => {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Du:</strong> ${text}</div>`);
+  chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Bot:</strong> ${botReply(text)}</div>`);
+  input.value = '';
+});
 
-    const percent = Math.round((opened / topics.length) * 100);
+document.getElementById('startLearn').addEventListener('click', () => openTopic('ml'));
+document.getElementById('openProgress').addEventListener('click', () => { document.querySelector('.layout2').scrollIntoView({behavior:'smooth'}); });
+document.getElementById('backHome').addEventListener('click', () => { homeView.style.display = 'grid'; learnView.classList.remove('active'); });
 
-    const bar = document.getElementById('progress');
-    bar.style.width = percent + '%';
-    bar.innerText = percent + '%';
-
-    document.getElementById('progressText').innerText = 'Fortschritt: ' + percent + '%';
-
-    generateExercises();
-  }
-
-  function generateExercises() {
-    const list = document.getElementById('exerciseList');
-    list.innerHTML = '';
-
-    const topics = document.querySelectorAll('.topic');
-
-    topics.forEach(t => {
-      const li = document.createElement('li');
-      li.innerText = 'Erkläre: ' + t.innerText;
-      list.appendChild(li);
-    });
-  }
-
-  generateExercises();
+renderTopics();
+updateProgress();
 </script>
-
 </body>
 </html>
