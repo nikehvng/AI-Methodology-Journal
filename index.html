@@ -5,21 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI Lernplattform</title>
 <style>
-/* ======= Hintergrund ======= */
+
+/* ======= Hintergrund (Clean Dark Blue) ======= */
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
-  background: radial-gradient(ellipse at bottom, #0d1b2a 0%, #000814 100%);
+  background-color: #0d1b2a;
   color: #f0f0f0;
-  background-attachment: fixed;
-  overflow-x: hidden;
-}
-body::before {
-  content: "";
-  position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: transparent url('https://i.ibb.co/2nLgZPQ/stars.png') repeat top center;
-  z-index: -1;
 }
 
 /* ======= Container ======= */
@@ -40,36 +32,48 @@ h1 { margin: 0; }
 }
 .card {
   background-color: #1a2a4c;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 1.5rem;
   flex: 1 1 300px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
 .card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
 }
-.card h2 { margin-top: 0; text-align: center; }
-.card ul { list-style: none; padding-left: 0; }
+.card h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+/* ======= Listen (Themen & Quizzes als Boxen) ======= */
+.card ul {
+  list-style: none;
+  padding-left: 0;
+}
 .card ul li {
-  margin: 0.5rem 0;
-  padding: 0.3rem 0.5rem;
+  margin: 0.6rem 0;
+  padding: 0.6rem;
   background-color: #112240;
-  border-radius: 6px;
-  transition: background 0.2s;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.2s;
 }
-.card ul li:hover { background-color: #1f3a6d; }
+.card ul li:hover {
+  background-color: #1f3a6d;
+  transform: translateX(5px);
+}
 
 /* ======= Vorlesungsseiten ======= */
 .lecture-content, .quiz-section {
   display: none;
   background-color: #1a2a4c;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 1.5rem;
   margin-top: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
 }
 .active { display: block; }
 
@@ -79,30 +83,48 @@ button {
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
   margin-top: 1rem;
-  transition: background 0.2s;
+  margin-right: 0.5rem;
+  transition: all 0.2s;
 }
 button:hover { background-color: #2c387e; }
 
-/* ======= Quiz Styling ======= */
-.quiz-section ul { list-style: none; padding-left: 0; }
-.quiz-section ul li { margin: 0.5rem 0; cursor: pointer; padding: 0.3rem 0.5rem; border-radius: 6px; transition: background 0.2s; }
-.quiz-section ul li:hover { background-color: #112240; }
+.back-btn {
+  background-color: #bb86fc;
+}
+.back-btn:hover {
+  background-color: #3700b3;
+}
 
-/* ======= Back Button ======= */
-.back-btn { background-color: #bb86fc; }
-.back-btn:hover { background-color: #3700b3; }
+/* ======= Quiz ======= */
+.quiz-section ul {
+  list-style: none;
+  padding-left: 0;
+}
+.quiz-section ul li {
+  margin: 0.6rem 0;
+  padding: 0.6rem;
+  border-radius: 8px;
+  background-color: #112240;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quiz-section ul li:hover {
+  background-color: #1f3a6d;
+}
+
 </style>
 </head>
 <body>
+
 <div class="container">
   <header>
     <h1>KI Methoden & Anwendungen</h1>
   </header>
 
-  <!-- ======= Dashboard ======= -->
+  <!-- Dashboard -->
   <div class="dashboard" id="dashboard">
     <div class="card">
       <h2>Vorlesungen</h2>
@@ -119,9 +141,7 @@ button:hover { background-color: #2c387e; }
 
     <div class="card">
       <h2>Was steht heute an?</h2>
-      <ul id="spacedRepetitionList">
-        <!-- JS fügt Themen ein -->
-      </ul>
+      <ul id="spacedRepetitionList"></ul>
     </div>
 
     <div class="card">
@@ -138,151 +158,134 @@ button:hover { background-color: #2c387e; }
     </div>
   </div>
 
-  <!-- ======= Vorlesungsinhalte ======= -->
   <div id="lectureContainer"></div>
-
-  <!-- ======= Quiz Inhalte ======= -->
   <div id="quizContainer"></div>
 </div>
 
 <script>
-// ======= Vorlesungsdaten =======
+
+// Daten
 const lectures = [
   {
     title: "Warum Künstliche Intelligenz jetzt?",
     intro: "KI hat in den letzten Jahren enorme Fortschritte gemacht.",
-    explanation: "Künstliche Intelligenz umfasst Systeme, die Aufgaben lösen können, die typischerweise menschliche Intelligenz erfordern, z.B. maschinelles Lernen, Sprachverarbeitung, Bilderkennung.",
-    merksatz: "KI ist überall – von Smartphones bis zur Industrieautomatisierung.",
+    explanation: "KI umfasst Systeme, die Aufgaben lösen, die menschliche Intelligenz erfordern.",
+    merksatz: "KI ist überall.",
     quiz: ["Welche Aufgaben kann KI erledigen?", "Sprachverarbeitung", "Bildklassifikation", "Mathematische Berechnungen", "Alle oben genannten", 4]
   },
   {
     title: "Maschinelles Lernen",
-    intro: "Maschinelles Lernen ist ein Teilgebiet der KI.",
-    explanation: "ML-Systeme lernen Muster aus Daten und treffen Vorhersagen oder Entscheidungen ohne explizite Programmierung.",
-    merksatz: "Daten sind das Öl des maschinellen Lernens.",
-    quiz: ["Was ist ML?", "Manuelles Programmieren", "Systeme lernen aus Daten", "Zufällige Entscheidungen", "Keine der Antworten", 2]
+    intro: "Teilgebiet der KI.",
+    explanation: "Systeme lernen aus Daten.",
+    merksatz: "Daten = Grundlage.",
+    quiz: ["Was ist ML?", "Manuelles Programmieren", "Lernen aus Daten", "Zufall", "Keine", 2]
   },
   {
     title: "Neuronale Netze",
-    intro: "Neuronale Netze sind inspiriert vom menschlichen Gehirn.",
-    explanation: "Sie bestehen aus Neuronen-Schichten, die komplexe Muster und Zusammenhänge erkennen können.",
-    merksatz: "Tiefe Netze lernen tiefe Muster.",
-    quiz: ["Wofür werden neuronale Netze verwendet?", "Bilderkennung", "Sprachverarbeitung", "Alle Aufgaben der KI", "Keine", 3]
+    intro: "Inspiriert vom Gehirn.",
+    explanation: "Mehrere Schichten verarbeiten Daten.",
+    merksatz: "Tiefe Netze = tiefe Muster.",
+    quiz: ["Wofür genutzt?", "Bilderkennung", "Alles", "Nichts", "Nur Text", 2]
   },
   {
     title: "Natürliche Sprachverarbeitung",
-    intro: "NLP ermöglicht Computern das Verstehen menschlicher Sprache.",
-    explanation: "Anwendungen umfassen Chatbots, Übersetzungen und Textanalyse.",
-    merksatz: "Sprache verstehen = KI verstehen.",
-    quiz: ["Was ist NLP?", "Datenbankmanagement", "Sprachverarbeitung", "Hardwareentwicklung", "Keine", 2]
+    intro: "Sprache verstehen.",
+    explanation: "Chatbots & Übersetzung.",
+    merksatz: "Sprache = Schlüssel.",
+    quiz: ["Was ist NLP?", "Hardware", "Sprache", "Datenbank", "Keine", 2]
   },
   {
     title: "Computer Vision",
-    intro: "Computer Vision analysiert Bilder und Videos.",
-    explanation: "Anwendungen reichen von Gesichtserkennung bis autonomes Fahren.",
-    merksatz: "Bilder sehen = Computer Vision.",
-    quiz: ["Wofür wird Computer Vision genutzt?", "Gesichtserkennung", "Autonomes Fahren", "Alle visuellen Analysen", "Keine", 3]
+    intro: "Bilder analysieren.",
+    explanation: "Gesichtserkennung etc.",
+    merksatz: "Sehen = CV.",
+    quiz: ["Anwendung?", "Gesicht", "Autonomes Fahren", "Alle", "Keine", 3]
   },
   {
     title: "Robotik",
-    intro: "Robotik kombiniert KI und Maschinenbau.",
-    explanation: "Roboter führen Aufgaben autonom oder halb-autonom aus.",
-    merksatz: "Roboter + KI = autonome Systeme.",
-    quiz: ["Robotik ist...", "Kunsthandwerk", "Automatisierung von Aufgaben", "Nur Industrie 4.0", "Keine", 2]
+    intro: "Maschinen + KI.",
+    explanation: "Automatisierte Aufgaben.",
+    merksatz: "KI + Hardware.",
+    quiz: ["Robotik ist?", "Automatisierung", "Kunst", "Nichts", "Nur Theorie", 1]
   },
   {
     title: "KI in der Praxis",
-    intro: "KI wird in vielen Branchen eingesetzt.",
-    explanation: "Von Medizin über Finanzen bis Industrie – KI verändert Prozesse und Entscheidungen.",
-    merksatz: "Praxisnähe macht KI greifbar.",
-    quiz: ["Wo wird KI angewendet?", "Medizin", "Finanzen", "Industrie", "Alle genannten", 4]
+    intro: "Überall eingesetzt.",
+    explanation: "Medizin, Industrie etc.",
+    merksatz: "Praxis = wichtig.",
+    quiz: ["Wo genutzt?", "Medizin", "Industrie", "Alle", "Keine", 3]
   }
 ];
 
-// ======= Spaced Repetition =======
+// Spaced Repetition
 const todayTopics = [
-  {name: "Warum Künstliche Intelligenz jetzt?", lastSeen: "2026-03-25"},
   {name: "Maschinelles Lernen", lastSeen: "2026-03-26"},
-  {name: "Neuronale Netze", lastSeen: "2026-03-27"},
-  {name: "Computer Vision", lastSeen: "2026-03-28"}
+  {name: "Neuronale Netze", lastSeen: "2026-03-27"}
 ];
+
 function showTodayTopics() {
   const list = document.getElementById('spacedRepetitionList');
   list.innerHTML = '';
-  const today = new Date();
   todayTopics.forEach(t => {
-    const last = new Date(t.lastSeen);
-    const diff = Math.floor((today - last)/(1000*60*60*24));
-    if(diff >= 1){
-      const li = document.createElement('li');
-      li.textContent = t.name;
-      li.onclick = () => { 
-        const index = lectures.findIndex(l => l.title === t.name);
-        openLecture(index);
-      };
-      list.appendChild(li);
-    }
+    const li = document.createElement('li');
+    li.textContent = t.name;
+    li.onclick = () => {
+      const index = lectures.findIndex(l => l.title === t.name);
+      openLecture(index);
+    };
+    list.appendChild(li);
   });
 }
 showTodayTopics();
 
-// ======= Vorlesungen anzeigen =======
+// Navigation
 function openLecture(index){
-  const container = document.getElementById('lectureContainer');
-  container.innerHTML = '';
-  const lecture = lectures[index];
-  const div = document.createElement('div');
-  div.className = 'lecture-content active';
-  div.innerHTML = `
-    <h2>${lecture.title}</h2>
-    <p><strong>Einleitung:</strong> ${lecture.intro}</p>
-    <p><strong>Erklärung:</strong> ${lecture.explanation}</p>
-    <p><strong>Merksatz:</strong> ${lecture.merksatz}</p>
-    <button onclick="openQuiz(${index})">Zum Quiz: ${lecture.title}</button>
-    <button class="back-btn" onclick="backToDashboard()">Zurück zum Dashboard</button>
-  `;
-  container.appendChild(div);
-  document.getElementById('dashboard').style.display = 'flex';
   document.getElementById('dashboard').style.display = 'none';
+  const lecture = lectures[index];
+  document.getElementById('lectureContainer').innerHTML = `
+    <div class="lecture-content active">
+      <h2>${lecture.title}</h2>
+      <p><strong>Einleitung:</strong> ${lecture.intro}</p>
+      <p><strong>Erklärung:</strong> ${lecture.explanation}</p>
+      <p><strong>Merksatz:</strong> ${lecture.merksatz}</p>
+      <button onclick="openQuiz(${index})">Zum Quiz</button>
+      <button class="back-btn" onclick="back()">Zurück</button>
+    </div>
+  `;
 }
 
-// ======= Quizzes anzeigen =======
 function openQuiz(index){
-  const container = document.getElementById('quizContainer');
-  container.innerHTML = '';
-  const lecture = lectures[index];
-  const div = document.createElement('div');
-  div.className = 'quiz-section active';
-  div.innerHTML = `
-    <h2>Quiz: ${lecture.title}</h2>
-    <p>${lecture.quiz[0]}</p>
-    <ul>
-      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[1]}</li>
-      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[2]}</li>
-      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[3]}</li>
-      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[4]}</li>
-    </ul>
-    <button class="back-btn" onclick="backToDashboard()">Zurück zum Dashboard</button>
-  `;
-  container.appendChild(div);
   document.getElementById('dashboard').style.display = 'none';
+  const q = lectures[index].quiz;
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-section active">
+      <h2>Quiz: ${lectures[index].title}</h2>
+      <p>${q[0]}</p>
+      <ul>
+        <li onclick="check(this,1,${q[5]})">${q[1]}</li>
+        <li onclick="check(this,2,${q[5]})">${q[2]}</li>
+        <li onclick="check(this,3,${q[5]})">${q[3]}</li>
+        <li onclick="check(this,4,${q[5]})">${q[4]}</li>
+      </ul>
+      <button class="back-btn" onclick="back()">Zurück</button>
+    </div>
+  `;
 }
 
-function checkAnswer(element, correctIndex){
-  const ul = element.parentNode;
-  const items = Array.from(ul.children);
-  items.forEach((li, i) => {
-    if(i+1 === correctIndex) li.style.backgroundColor = 'green';
-    else li.style.backgroundColor = 'red';
-  });
+function check(el,i,correct){
+  const items = el.parentNode.children;
+  for(let j=0;j<items.length;j++){
+    items[j].style.backgroundColor = (j+1===correct) ? "green" : "red";
+  }
 }
 
-// ======= Zurück zum Dashboard =======
-function backToDashboard(){
-  document.getElementById('lectureContainer').innerHTML = '';
-  document.getElementById('quizContainer').innerHTML = '';
-  document.getElementById('dashboard').style.display = 'flex';
+function back(){
+  document.getElementById('lectureContainer').innerHTML='';
+  document.getElementById('quizContainer').innerHTML='';
+  document.getElementById('dashboard').style.display='flex';
 }
+
 </script>
+
 </body>
 </html>
