@@ -48,7 +48,7 @@ h1 { margin: 0; }
   text-align: center;
 }
 
-/* ======= Listen (Themen & Quizzes als Boxen) ======= */
+/* ======= Listen (Themen & Quizzes & Notizen) ======= */
 .card ul {
   list-style: none;
   padding-left: 0;
@@ -133,6 +133,28 @@ textarea:focus {
   outline: 2px solid #3f51b5;
 }
 
+/* ======= Notiz-Boxen ======= */
+#notesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.note-box {
+  background-color: #112240;
+  padding: 0.8rem;
+  border-radius: 10px;
+  flex: 1 1 150px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.note-box:hover {
+  background-color: #1f3a6d;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
 </style>
 </head>
 <body>
@@ -182,6 +204,7 @@ textarea:focus {
         <li>Gedanken festhalten</li>
         <li>Lerninhalte ergänzen</li>
       </ul>
+      <div id="notesList"></div>
     </div>
   </div>
 
@@ -194,55 +217,13 @@ textarea:focus {
 <script>
 // ======= Vorlesungsdaten =======
 const lectures = [
-  {
-    title: "Warum Künstliche Intelligenz jetzt?",
-    intro: "KI hat in den letzten Jahren enorme Fortschritte gemacht.",
-    explanation: "KI umfasst Systeme, die Aufgaben lösen, die menschliche Intelligenz erfordern.",
-    merksatz: "KI ist überall.",
-    quiz: ["Welche Aufgaben kann KI erledigen?", "Sprachverarbeitung", "Bildklassifikation", "Mathematische Berechnungen", "Alle oben genannten", 4]
-  },
-  {
-    title: "Maschinelles Lernen",
-    intro: "Teilgebiet der KI.",
-    explanation: "Systeme lernen aus Daten.",
-    merksatz: "Daten = Grundlage.",
-    quiz: ["Was ist ML?", "Manuelles Programmieren", "Lernen aus Daten", "Zufall", "Keine", 2]
-  },
-  {
-    title: "Neuronale Netze",
-    intro: "Inspiriert vom Gehirn.",
-    explanation: "Mehrere Schichten verarbeiten Daten.",
-    merksatz: "Tiefe Netze = tiefe Muster.",
-    quiz: ["Wofür genutzt?", "Bilderkennung", "Alles", "Nichts", "Nur Text", 2]
-  },
-  {
-    title: "Natürliche Sprachverarbeitung",
-    intro: "Sprache verstehen.",
-    explanation: "Chatbots & Übersetzung.",
-    merksatz: "Sprache = Schlüssel.",
-    quiz: ["Was ist NLP?", "Hardware", "Sprache", "Datenbank", "Keine", 2]
-  },
-  {
-    title: "Computer Vision",
-    intro: "Bilder analysieren.",
-    explanation: "Gesichtserkennung etc.",
-    merksatz: "Sehen = CV.",
-    quiz: ["Anwendung?", "Gesicht", "Autonomes Fahren", "Alle", "Keine", 3]
-  },
-  {
-    title: "Robotik",
-    intro: "Maschinen + KI.",
-    explanation: "Automatisierte Aufgaben.",
-    merksatz: "KI + Hardware.",
-    quiz: ["Robotik ist?", "Automatisierung", "Kunst", "Nichts", "Nur Theorie", 1]
-  },
-  {
-    title: "KI in der Praxis",
-    intro: "Überall eingesetzt.",
-    explanation: "Medizin, Industrie etc.",
-    merksatz: "Praxis = wichtig.",
-    quiz: ["Wo genutzt?", "Medizin", "Industrie", "Alle", "Keine", 3]
-  }
+  {title:"Warum Künstliche Intelligenz jetzt?", intro:"KI hat in den letzten Jahren enorme Fortschritte gemacht.", explanation:"KI umfasst Systeme, die Aufgaben lösen, die menschliche Intelligenz erfordern.", merksatz:"KI ist überall.", quiz:["Welche Aufgaben kann KI erledigen?","Sprachverarbeitung","Bildklassifikation","Mathematische Berechnungen","Alle oben genannten",4]},
+  {title:"Maschinelles Lernen", intro:"Teilgebiet der KI.", explanation:"Systeme lernen aus Daten.", merksatz:"Daten = Grundlage.", quiz:["Was ist ML?","Manuelles Programmieren","Lernen aus Daten","Zufall","Keine",2]},
+  {title:"Neuronale Netze", intro:"Inspiriert vom Gehirn.", explanation:"Mehrere Schichten verarbeiten Daten.", merksatz:"Tiefe Netze = tiefe Muster.", quiz:["Wofür genutzt?","Bilderkennung","Alles","Nichts","Nur Text",2]},
+  {title:"Natürliche Sprachverarbeitung", intro:"Sprache verstehen.", explanation:"Chatbots & Übersetzung.", merksatz:"Sprache = Schlüssel.", quiz:["Was ist NLP?","Hardware","Sprache","Datenbank","Keine",2]},
+  {title:"Computer Vision", intro:"Bilder analysieren.", explanation:"Gesichtserkennung etc.", merksatz:"Sehen = CV.", quiz:["Anwendung?","Gesicht","Autonomes Fahren","Alle","Keine",3]},
+  {title:"Robotik", intro:"Maschinen + KI.", explanation:"Automatisierte Aufgaben.", merksatz:"KI + Hardware.", quiz:["Robotik ist?","Automatisierung","Kunst","Nichts","Nur Theorie",1]},
+  {title:"KI in der Praxis", intro:"Überall eingesetzt.", explanation:"Medizin, Industrie etc.", merksatz:"Praxis = wichtig.", quiz:["Wo genutzt?","Medizin","Industrie","Alle","Keine",3]}
 ];
 
 // Spaced Repetition
@@ -310,12 +291,13 @@ function check(el,i,correct){
 // ======= Notizen =======
 function openNotes(){
   document.getElementById('dashboard').style.display = 'none';
-  const savedNotes = localStorage.getItem('notes') || '';
+  const savedNotes = JSON.parse(localStorage.getItem('notesArray') || "[]");
+  let textareaContent = savedNotes[0] || "";
   document.getElementById('notesContainer').innerHTML = `
     <div class="notes-section active">
       <h2>Notizen</h2>
       <p>Hier kannst du deine eigenen Gedanken und Lerninhalte festhalten:</p>
-      <textarea id="notesArea" placeholder="Schreibe hier deine Notizen...">${savedNotes}</textarea>
+      <textarea id="notesArea" placeholder="Schreibe hier deine Notizen...">${textareaContent}</textarea>
       <br>
       <button onclick="saveNotes()">Speichern</button>
       <button class="back-btn" onclick="back()">Zurück</button>
@@ -323,10 +305,50 @@ function openNotes(){
   `;
 }
 
+// Notizen speichern
 function saveNotes(){
-  const text = document.getElementById('notesArea').value;
-  localStorage.setItem('notes', text);
-  alert("Notizen gespeichert!");
+  let text = document.getElementById('notesArea').value;
+  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
+  if(text && !notesArray.includes(text)) notesArray.push(text);
+  localStorage.setItem('notesArray', JSON.stringify(notesArray));
+  alert("Notiz gespeichert!");
+  renderNotesBoxes();
+}
+
+// Notiz-Kästchen im Dashboard
+function renderNotesBoxes(){
+  const notesList = document.getElementById('notesList');
+  notesList.innerHTML = '';
+  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
+  notesArray.forEach((note,i)=>{
+    const div = document.createElement('div');
+    div.className='note-box';
+    div.textContent = note.length>30 ? note.substring(0,27)+'...' : note;
+    div.onclick = ()=>{
+      document.getElementById('dashboard').style.display='none';
+      document.getElementById('notesContainer').innerHTML=`
+        <div class="notes-section active">
+          <h2>Notiz bearbeiten</h2>
+          <textarea id="notesArea">${note}</textarea>
+          <br>
+          <button onclick="updateNote(${i})">Speichern</button>
+          <button class="back-btn" onclick="back()">Zurück</button>
+        </div>
+      `;
+    };
+    notesList.appendChild(div);
+  });
+}
+renderNotesBoxes();
+
+function updateNote(index){
+  let text = document.getElementById('notesArea').value;
+  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
+  notesArray[index]=text;
+  localStorage.setItem('notesArray', JSON.stringify(notesArray));
+  alert("Notiz aktualisiert!");
+  renderNotesBoxes();
+  back();
 }
 
 // ======= Zurück zum Dashboard =======
