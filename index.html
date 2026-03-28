@@ -3,927 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wilkommen im Modul Künstliche Intelligenz - Methoden und Anwendungen</title>
+  <title>KI Lernplattform</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root{
-      --bg:#0b1020;
-      --bg2:#111831;
-      --card:#121a33;
-      --card2:#17203d;
-      --line:rgba(148,163,184,.18);
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --accent:#8b5cf6;
-      --accent2:#22d3ee;
-      --shadow:0 18px 50px rgba(0,0,0,.35);
-      --code-bg:#0f172a;
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-
-    body{
-      margin:0;
-      font-family:Inter,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(139,92,246,.25), transparent 30%),
-        radial-gradient(circle at top right, rgba(34,211,238,.18), transparent 28%),
-        linear-gradient(180deg,var(--bg),var(--bg2));
-      min-height:100vh;
-    }
-
-    a{
-      text-decoration:none;
-      color:inherit;
-    }
-
-    .wrap{
-      max-width:1450px;
-      margin:0 auto;
-      padding:24px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:1.15fr 1fr;
-      gap:18px;
-    }
-
-    .panel,
-    .box,
-    .topic-card,
-    .page-card,
-    .content-section{
-      background:linear-gradient(180deg,rgba(18,26,51,.92),rgba(23,32,61,.92));
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(12px);
-    }
-
-    .panel{
-      padding:22px;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .hero{
-      min-height:270px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
-
-    .hero h1{
-      margin:0;
-      font-size:clamp(2rem,4vw,3.4rem);
-      line-height:1.05;
-      background:linear-gradient(90deg,#fff,var(--accent2));
-      -webkit-background-clip:text;
-      color:transparent;
-    }
-
-    .hero p,
-    .subtle{
-      color:var(--muted);
-      line-height:1.6;
-    }
-
-    .hero-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .btn{
-      border:0;
-      border-radius:16px;
-      padding:13px 18px;
-      font-weight:700;
-      cursor:pointer;
-      transition:.2s transform,.2s box-shadow,.2s opacity;
-      color:#fff;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .btn:hover{
-      transform:translateY(-2px);
-    }
-
-    .btn.primary{
-      background:linear-gradient(135deg,var(--accent),#4f46e5);
-      box-shadow:0 12px 25px rgba(139,92,246,.25);
-    }
-
-    .btn.secondary{
-      background:#1b2647;
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .btn.ghost{
-      background:transparent;
-      border:1px solid rgba(255,255,255,.10);
-    }
-
-    .chip{
-      display:inline-block;
-      background:rgba(139,92,246,.18);
-      color:#ddd6fe;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:.82rem;
-      margin-bottom:10px;
-      border:1px solid rgba(139,92,246,.25);
-    }
-
-    .topics{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:14px;
-    }
-
-    .topic-card{
-      padding:16px;
-      min-height:154px;
-      cursor:pointer;
-      transition:.2s transform,.2s border-color,.2s box-shadow;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .topic-card:before,
-    .page-card:before,
-    .content-section:before{
-      content:'';
-      position:absolute;
-      inset:0;
-      background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.08));
-      opacity:0;
-      transition:.2s;
-    }
-
-    .topic-card:hover,
-    .page-card:hover,
-    .content-section:hover{
-      transform:translateY(-4px);
-      border-color:rgba(34,211,238,.35);
-      box-shadow:0 16px 36px rgba(0,0,0,.38);
-    }
-
-    .topic-card:hover:before,
-    .page-card:hover:before,
-    .content-section:hover:before{
-      opacity:1;
-    }
-
-    .topic-card h3,
-    .page-card h3{
-      margin:6px 0 8px 0;
-      font-size:1.1rem;
-    }
-
-    .layout2{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:18px;
-      margin-top:18px;
-    }
-
-    .box{
-      padding:18px;
-      min-height:260px;
-    }
-
-    .progress-bar{
-      height:14px;
-      background:#0f172a;
-      border-radius:999px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .progress-fill{
-      height:100%;
-      width:0;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      transition:width .35s;
-    }
-
-    .mini-grid{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-      margin-top:14px;
-    }
-
-    .stat{
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .stat strong{
-      display:block;
-      font-size:1.5rem;
-      color:#fff;
-    }
-
-    .example,
-    .note,
-    .code-example{
-      border-left:4px solid var(--accent2);
-      padding:12px 14px;
-      margin:12px 0;
-      background:rgba(34,211,238,.06);
-      border-radius:12px;
-      color:#dbeafe;
-    }
-
-    .code-block{
-      background:var(--code-bg);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      padding:18px;
-      margin:16px 0;
-      overflow-x:auto;
-      font-family:'Monaco','Consolas','Courier New',monospace;
-      font-size:.88rem;
-    }
-
-    .code-block strong{
-      color:var(--accent2);
-    }
-
-    .formula {
-      background: rgba(139,92,246,.15);
-      padding: 12px;
-      display: inline-block;
-      font-family: 'Monaco','Consolas','Courier New',monospace;
-      border-radius: 12px;
-      border-left: 4px solid var(--accent);
-      color: var(--accent2);
-      font-weight: 600;
-    }
-
-    .toolbar{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:10px 0 16px;
-    }
-
-    input,textarea,select{
-      width:100%;
-      background:#0f172a;
-      color:var(--text);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:14px;
-      padding:14px 15px;
-      font:inherit;
-      outline:none;
-    }
-
-    textarea{
-      min-height:140px;
-      resize:vertical;
-    }
-
-    .field{
-      margin:10px 0;
-    }
-
-    .label{
-      display:block;
-      margin-bottom:6px;
-      color:#cbd5e1;
-      font-size:.93rem;
-    }
-
-    .list{
-      display:grid;
-      gap:12px;
-    }
-
-    .quiz-item,
-    .chat-msg,
-    .page-card,
-    .subpage-card{
-      padding:14px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-    }
-
-    .quiz-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .detailView{
-      display:none;
-      margin-top:18px;
-      padding:22px;
-    }
-
-    .detailView.active{
-      display:block;
-    }
-
-    .back{
-      position:absolute;
-      top:18px;
-      right:18px;
-    }
-
-    .badge-row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .badge{
-      padding:7px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      color:#cbd5e1;
-      font-size:.82rem;
-    }
-
-    .page-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .content-grid{
-      display:grid;
-      gap:18px;
-      margin-top:18px;
-    }
-
-    .subpage-nav{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin:20px 0;
-    }
-
-    .subpage-card{
-      flex:1;
-      min-width:200px;
-      cursor:pointer;
-      transition:.2s all;
-    }
-
-    .subpage-card:hover{
-      background:rgba(139,92,246,.1);
-      border-color:var(--accent);
-    }
-
-    .small{
-      font-size:.9rem;
-    }
-
-    @media (max-width: 980px){
-      .grid,
-      .layout2,
-      .topics,
-      .content-grid{
-        grid-template-columns:1fr;
-      }
-
-      .back{
-        position:static;
-        display:inline-flex;
-        margin-bottom:12px;
-      }
-    }
+    body { margin: 0; font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; }
+    header { padding: 20px 40px; background: #020617; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; }
+    nav a { margin-left: 20px; text-decoration: none; color: #94a3b8; }
+    nav a:hover { color: white; }
+    .container { padding: 40px; }
+    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .card { background: #020617; padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .progress-bar { height: 8px; background: #1e293b; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+    .progress { height: 100%; background: linear-gradient(90deg, #22c55e, #4ade80); width: 0%; }
+    .btn { display: inline-block; margin-top: 10px; padding: 10px 15px; background: #22c55e; color: black; border-radius: 10px; text-decoration: none; font-weight: 600; }
+    .lesson { background: #020617; padding: 20px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .skill { margin-top: 10px; font-size: 14px; color: #38bdf8; }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div id="homeView" class="grid">
-    <section class="panel hero">
-      <div>
-        <span class="chip">Klausurvorbereitung • KI</span>
-        <h1>Wilkommen im Modul Künstliche Intelligenz - Methoden und Anwendungen</h1>
-        <p>Wähle ein Thema, öffne eine eigene Detailseite und lerne mit automatisch erzeugten Quizzes, Beispielen und einer modernen, dunklen Oberfläche.</p>
-      </div>
-      <div class="hero-actions">
-        <button class="btn primary" id="startLearn">Jetzt lernen</button>
-        <button class="btn secondary" id="openProgress">Fortschritt</button>
-        <button class="btn ghost" id="scrollTopics">Themen</button>
-      </div>
-    </section>
 
-    <aside class="panel">
-      <div class="page-head">
-        <div>
-          <h2>Themenübersicht</h2>
-          <p class="subtle">Klicke ein Thema an, um die Detailseite zu öffnen.</p>
-        </div>
-      </div>
-      <div class="topics" id="topicGrid"></div>
-    </aside>
+<header>
+  <h1>KI Lernplattform</h1>
+  <nav>
+    <a href="#">Dashboard</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <section class="dashboard">
+
+    <div class="card">
+      <h3>Fortschritt</h3>
+      <div class="progress-bar"><div class="progress" id="progressBar"></div></div>
+      <p id="progressText"></p>
+    </div>
+
+    <div class="card">
+      <h3>Skills</h3>
+      <div id="skills"></div>
+    </div>
+
+    <div class="card">
+      <h3>Wiederholung</h3>
+      <div id="review"></div>
+    </div>
+
+  </section>
+
+  <h2>Vorlesungen</h2>
+
+  <div class="lesson">
+    <span>Einführung in KI</span>
+    <button class="btn" onclick="completeLesson('intro')">Abschließen</button>
   </div>
 
-  <!-- Detail Views für jedes Thema -->
-  <section id="detailViewContainer"></section>
-
-  <div class="layout2">
-    <section class="box">
-      <div class="page-head">
-        <div>
-          <h2>Fragen</h2>
-          <p class="subtle">Ein einfacher Chatbot für Erklärungen, Beispiele und Wiederholung.</p>
-        </div>
-      </div>
-      <div id="chatLog" class="list"></div>
-      <div class="toolbar">
-        <input id="chatInput" placeholder="Stelle eine Frage zu KI, ML, Suche, Ethik ..." />
-        <button class="btn primary" id="sendChat">Senden</button>
-      </div>
-    </section>
-
-    <section class="box">
-      <h2>Lernfortschritt</h2>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <p id="progressText" class="subtle" style="margin-top:10px;">0 % abgeschlossen</p>
-      <div class="mini-grid">
-        <div class="stat"><strong id="doneTopics">0</strong><span class="subtle">gelernten Themen</span></div>
-        <div class="stat"><strong id="rightAnswers">0</strong><span class="subtle">richtige Antworten</span></div>
-      </div>
-      <div class="example">
-        Der Fortschritt steigt, sobald du eine Themenseite öffnest oder Quizfragen beantwortest.
-      </div>
-    </section>
+  <div class="lesson">
+    <span>Lineare Regression</span>
+    <button class="btn" onclick="completeLesson('regression')">Abschließen</button>
   </div>
+
+  <div class="lesson">
+    <span>Klassifikation</span>
+    <button class="btn" onclick="completeLesson('classification')">Abschließen</button>
+  </div>
+
 </div>
 
 <script>
-let topics = [
-  {
-    id:'ml',
-    title:'Machine Learning',
-    short:'Grundlagen, Modelle, Training und Evaluation.',
-    badges:['Grundlagen','Klausurrelevant','Vorlesung 4'],
-    subpages: [
-      {
-        id: 'grundlagen',
-        title: 'Einführung & Lernarten',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>🎯 Was ist Machine Learning?</h3>
-              <p>Maschinelles Lernen ermöglicht es Algorithmen, <strong>eigenständig Lösungen aus Daten</strong> zu entwickeln.</p>
-              <div class="example">
-                <strong>3 fundamentale Lernarten:</strong>
-              </div>
-              <ul style="background:rgba(34,211,238,.08); padding:16px; border-radius:12px; border-left:4px solid var(--accent2);">
-                <li><strong>Supervised Learning:</strong> Training mit Zielvorgaben (Input/Output). <em>Fokus: Regression & Klassifikation</em></li>
-                <li><strong>Unsupervised Learning:</strong> Suche nach verborgenen Strukturen. <em>Fokus: Clustering & Assoziation</em></li>
-                <li><strong>Reinforcement Learning:</strong> Lernen durch Interaktion und Belohnung (Agent-Umwelt-Prinzip)</li>
-              </ul>
-            </div>
-            
-            <div class="content-section">
-              <h3>📊 Regressionsanalyse</h3>
-              <p>Prognostiziert <strong>numerische Werte</strong> basierend auf historischen Daten.</p>
-              <div class="code-block">
-                <strong>Lineare Regression:</strong><br>
-                <code>y = b * x + a</code>
-              </div>
-              <div class="example">
-                <strong>Logistische Regression:</strong> Binäre Klassifikation ("Krank" oder "Gesund") mit S-förmiger Kurve (Sigmoid)
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'Was zeichnet Supervised Learning aus?', a:'Training mit Input/Output-Paaren'},
-          {q:'Wofür wird lineare Regression verwendet?', a:'Numerische Werte vorhersagen'},
-          {q:'Welche Lernart nutzt Belohnungen?', a:'Reinforcement Learning'}
-        ]
-      },
-      {
-        id: 'algorithmen',
-        title: 'Algorithmen & Overfitting',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>🎲 k-Nearest Neighbors (kNN)</h3>
-              <p><strong>Prinzip:</strong> "Zeige mir deine Freunde und ich sage dir, wer du bist."</p>
-              <ul>
-                <li><strong>Distanz:</strong> Euklidischer Abstand oder Manhattan-Distanz</li>
-                <li><strong>Anwendungen:</strong> Empfehlungssysteme, Bilderkennung, Medizin</li>
-              </ul>
-              <div class="code-block">
-                <strong>kNN Pseudocode:</strong><br>
-                <code>1. Finde k nächste Nachbarn<br>
-2. Bestimme Mehrheitsklasse<br>
-3. Weise Klasse zu</code>
-              </div>
-            </div>
-            
-            <div class="content-section">
-              <h3>⚠️ Overfitting (Überanpassung)</h3>
-              <p><strong>Kritisches Problem:</strong> Modell lernt Trainingsdaten "auswendig" statt zu generalisieren.</p>
-              <div class="note" style="border-left-color: #ef4444; background: rgba(239,68,68,.1);">
-                <strong>Konsequenz:</strong> Schlechte Ergebnisse bei <em>neuen Daten</em>
-              </div>
-              <div class="example">
-                <strong>Lösungen:</strong> Cross-Validation, Regularisierung, mehr Trainingsdaten
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'kNN Prinzip?', a:'Klasse der nächsten Nachbarn'},
-          {q:'Problem bei Overfitting?', a:'Keine Generalisierung auf neue Daten'},
-          {q:'kNN Distanzmaße?', a:'Euklidisch, Manhattan'}
-        ]
-      }
-    ]
-  },
-  {
-    id:'search',
-    title:'Suchverfahren',
-    short:'Breiten- und Tiefensuche, Heuristiken und Optimierung.',
-    badges:['Algorithmen','Suche','Effizienz'],
-    subpages: [
-      {
-        id: 'uninformiert',
-        title: 'Uninformierte Suche',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>Breitensuche (BFS)</h3>
-              <p>Erstellt vollständigen Baum schichtweise. Optimal für ungewichte Graphen.</p>
-              <div class="code-block">
-                <strong>Pseudocode:</strong><br>
-                <code>queue = [start]<br>
-while queue:<br>
-&nbsp;&nbsp;current = queue.pop(0)<br>
-&nbsp;&nbsp;if goal: return current<br>
-&nbsp;&nbsp;queue += neighbors(current)</code>
-              </div>
-            </div>
-            
-            <div class="content-section">
-              <h3>Tiefensuche (DFS)</h3>
-              <p>Geht so tief wie möglich, bevor zurückgekehrt wird. Speichereffizient.</p>
-              <div class="example">
-                <strong>8-Puzzle:</strong> BFS garantiert kürzeste Lösung
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'Wofür ist BFS optimal?', a:'Ungewichte Graphen'},
-          {q:'Was ist Speichereffizient?', a:'DFS'},
-          {q:'BFS Eigenschaft?', a:'Vollständig, optimal'}
-        ]
-      },
-      {
-        id: 'informiert',
-        title: 'Informierte Suche',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>A*-Algorithmus</h3>
-              <p><span class="formula">f(n) = g(n) + h(n)</span><br>
-              <small>g(n)=Pfadkosten | h(n)=Heuristik</small></p>
-              <div class="code-block">
-                <strong>A* Priorität:</strong><br>
-                <code>priority_queue = sort by (g(n) + h(n))</code>
-              </div>
-            </div>
-            
-            <div class="content-section">
-              <h3>Heuristiken</h3>
-              <ul>
-                <li><strong>Admissibel:</strong> Nie überschätzt</li>
-                <li><strong>Konsistent:</strong> Dreieckungleichung</li>
-              </ul>
-              <div class="example">
-                <strong>Manhattan:</strong> |Δx| + |Δy| für 8-Puzzle
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'A* Kostenfunktion?', a:'f(n) = g(n) + h(n)'},
-          {q:'Admissibel bedeutet?', a:'Nie überschätzen'},
-          {q:'Manhattan Heuristik?', a:'|Δx| + |Δy|'}
-        ]
-      }
-    ]
-  },
-  {
-    id:'nn',
-    title:'Neuronale Netze',
-    short:'Aufbau, Aktivierungsfunktionen und Lernprozesse.',
-    badges:['Deep Learning','Modelle','Praxis'],
-    subpages: [
-      {
-        id: 'aufbau',
-        title: 'Netzaufbau',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>Schichten</h3>
-              <p>Input → Hidden → Output | Feedforward</p>
-              <div class="code-block">
-                <strong>MLP Architektur:</strong><br>
-                <code>Input(784) → Hidden(256) → Hidden(128) → Output(10)</code>
-              </div>
-            </div>
-            
-            <div class="content-section">
-              <h3>Aktivierungsfunktionen</h3>
-              <ul>
-                <li><strong>Sigmoid:</strong> 0-1, Logistische Funktion</li>
-                <li><strong>ReLU:</strong> max(0,x), Schnell</li>
-                <li><strong>Softmax:</strong> Wahrscheinlichkeiten</li>
-              </ul>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'ReLU Funktion?', a:'max(0,x)'},
-          {q:'Softmax Zweck?', a:'Wahrscheinlichkeiten'},
-          {q:'Vanishing Gradient?', a:'Sigmoid'}
-        ]
-      },
-      {
-        id: 'training',
-        title: 'Training',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>Backpropagation</h3>
-              <p>Kettenregel für Gradienten | Fehler rückwärts propagieren</p>
-              <div class="code-block">
-                <strong>Gradient Descent:</strong><br>
-                <code>w = w - learning_rate * ∇L</code>
-              </div>
-            </div>
-            
-            <div class="content-section">
-              <h3>Optimierer</h3>
-              <ul>
-                <li><strong>SGD:</strong> Stochastisch</li>
-                <li><strong>Adam:</strong> Adaptiv, Momentum</li>
-              </ul>
-              <div class="example">
-                <strong>MNIST:</strong> 98% Genauigkeit mit CNN
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'Backpropagation nutzt?', a:'Kettenregel'},
-          {q:'Adam Eigenschaft?', a:'Adaptiv'},
-          {q:'Learning Rate Zweck?', a:'Schrittgröße'}
-        ]
-      }
-    ]
-  },
-  {
-    id:'ethics',
-    title:'Ethik & Risiken',
-    short:'Bias, Datenschutz, Transparenz und Verantwortung.',
-    badges:['Ethik','Risiken','Verantwortung'],
-    subpages: [
-      {
-        id: 'bias',
-        title: 'Bias & Fairness',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>Arten von Bias</h3>
-              <ul>
-                <li><strong>Sampling Bias:</strong> Ungleichmäßige Daten</li>
-                <li><strong>Label Bias:</strong> Fehlmarkierungen</li>
-                <li><strong>Algorithmic Bias:</strong> Modellverstärkung</li>
-              </ul>
-            </div>
-            
-            <div class="content-section">
-              <h3>Metriken</h3>
-              <p>Demographic Parity, Equalized Odds, Equal Opportunity</p>
-              <div class="example">
-                <strong>COMPAS:</strong> 2x höhere Haftwahrscheinlichkeit für Afroamerikaner
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'Sampling Bias Ursache?', a:'Ungleichmäßige Daten'},
-          {q:'COMPAS Problem?', a:'Rassenvorurteile'},
-          {q:'Fairness Metrik?', a:'Demographic Parity'}
-        ]
-      },
-      {
-        id: 'datenschutz',
-        title: 'Datenschutz & Transparenz',
-        content: `
-          <div class="content-grid">
-            <div class="content-section">
-              <h3>GDPR Anforderungen</h3>
-              <ul>
-                <li>Recht auf Erklärung (Art. 22)</li>
-                <li>Datensparsamkeit</li>
-                <li>Recht auf Löschung</li>
-              </ul>
-            </div>
-            
-            <div class="content-section">
-              <h3>Explainable AI</h3>
-              <p>LIME, SHAP, Counterfactuals</p>
-              <div class="code-block">
-                <strong>SHAP:</strong><br>
-                <code>explainer = shap.Explainer(model)<br>shap_values = explainer(X)</code>
-              </div>
-            </div>
-          </div>
-        `,
-        quiz: [
-          {q:'GDPR Art. 22?', a:'Recht auf Erklärung'},
-          {q:'XAI Methode?', a:'SHAP'},
-          {q:'Datensparsamkeit?', a:'Nur notwendige Daten'}
-        ]
-      }
-    ]
-  }
-];
 
-let learned = new Set();
-let rightAnswers = 0;
-let currentTopicId = topics[0].id;
-let currentSubpageId = '';
+const lessons = ['intro', 'regression', 'classification'];
 
-const els = {
-  topicGrid: document.getElementById('topicGrid'),
-  detailViewContainer: document.getElementById('detailViewContainer'),
-  chatLog: document.getElementById('chatLog'),
-  progressFill: document.getElementById('progressFill'),
-  progressText: document.getElementById('progressText'),
-  doneTopics: document.getElementById('doneTopics'),
-  rightAnswersEl: document.getElementById('rightAnswers'),
-  homeView: document.getElementById('homeView')
-};
+function completeLesson(lesson) {
+  localStorage.setItem(lesson, 'done');
 
-function updateProgress(){
-  const pct = Math.round((learned.size / topics.length) * 100) || 0;
-  els.progressFill.style.width = pct + '%';
-  els.progressText.textContent = pct + ' % abgeschlossen';
-  els.doneTopics.textContent = learned.size;
-  els.rightAnswersEl.textContent = rightAnswers;
+  let reviewDate = new Date();
+  reviewDate.setDate(reviewDate.getDate() + 2);
+  localStorage.setItem(lesson + '_review', reviewDate);
+
+  updateUI();
 }
 
-function renderTopicGrid(){
-  els.topicGrid.innerHTML = topics.map(t => `
-    <a href="#" class="topic-card" data-id="${t.id}">
-      <span class="chip">Thema</span>
-      <h3>${t.title}</h3>
-      <p class="subtle">${t.short}</p>
-    </a>
-  `).join('');
+function updateUI() {
+  let completed = lessons.filter(l => localStorage.getItem(l) === 'done').length;
+  let progress = (completed / lessons.length) * 100;
 
-  document.querySelectorAll('.topic-card').forEach(card =>
-    card.addEventListener('click', e => {
-      e.preventDefault();
-      openTopic(card.dataset.id);
-    })
-  );
-}
+  document.getElementById('progressBar').style.width = progress + '%';
+  document.getElementById('progressText').innerText = completed + ' von ' + lessons.length + ' abgeschlossen';
 
-function openTopic(id){
-  const t = topics.find(x => x.id === id);
-  if(!t) return;
+  let skills = [];
+  if (localStorage.getItem('regression') === 'done') skills.push('Regression verstehen');
+  if (localStorage.getItem('classification') === 'done') skills.push('Klassifikation anwenden');
 
-  currentTopicId = id;
-  if(!learned.has(id)) {
-    learned.add(id);
-    updateProgress();
-  }
-  
-  els.homeView.style.display = 'none';
-  
-  els.detailViewContainer.innerHTML = `
-    <section id="detailView-${id}" class="panel detailView active">
-      <button class="btn secondary back" id="backHome">← Zurück</button>
-      <div class="page-head">
-        <div>
-          <span class="chip">${t.title}</span>
-          <h2>${t.title}</h2>
-          <p class="subtle">Wähle ein Unterthema für detaillierte Inhalte und Übungen.</p>
-        </div>
-        <div class="badge-row" id="detailBadges"></div>
-      </div>
-      
-      <div class="subpage-nav">
-        ${t.subpages.map(sp => `
-          <div class="subpage-card" data-topic="${id}" data-subpage="${sp.id}">
-            <h4>${sp.title}</h4>
-            <p class="subtle small">${sp.quiz.length} Übungsfragen</p>
-          </div>
-        `).join('')}
-      </div>
-      
-      <div id="subpageContent"></div>
-    </section>
-  `;
+  document.getElementById('skills').innerHTML = skills.map(s => '<div class="skill">✔ ' + s + '</div>').join('');
 
-  document.getElementById('detailBadges').innerHTML = t.badges.map(b => `<span class="badge">${b}</span>`).join('');
-  
-  document.querySelectorAll('.subpage-card').forEach(card => {
-    card.addEventListener('click', () => openSubpage(card.dataset.topic, card.dataset.subpage));
+  let reviewHTML = '';
+  let today = new Date();
+
+  lessons.forEach(l => {
+    let reviewDate = new Date(localStorage.getItem(l + '_review'));
+    if (today >= reviewDate) {
+      reviewHTML += `<div class="skill">🔁 Wiederhole: ${l}</div>`;
+    }
   });
 
-  if(t.subpages.length > 0) {
-    openSubpage(id, t.subpages[0].id);
-  }
-
-  document.getElementById('backHome').addEventListener('click', backToHome);
+  document.getElementById('review').innerHTML = reviewHTML || 'Keine Wiederholungen nötig';
 }
 
-function openSubpage(topicId, subpageId){
-  const topic = topics.find(t => t.id === topicId);
-  const subpage = topic.subpages.find(sp => sp.id === subpageId);
-  if(!subpage) return;
+updateUI();
 
-  currentSubpageId = subpageId;
-  document.getElementById('subpageContent').innerHTML = `
-    ${subpage.content}
-    <div class="content-section" style="margin-top:24px;">
-      <h3>🧠 Übungsquiz (${subpage.quiz.length} Fragen)</h3>
-      ${subpage.quiz.map((item, idx) => `
-        <div class="quiz-item">
-          <strong>Frage ${idx+1}:</strong> ${item.q}
-          <div class="quiz-actions">
-            <button class="btn secondary" data-answer="${item.a}">📖 Antwort zeigen</button>
-          </div>
-          <div class="subtle" style="display:none;margin-top:8px;font-weight:500;">${item.a}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-
-  document.querySelectorAll('[data-answer]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const answer = btn.nextElementSibling;
-      answer.style.display = 'block';
-      btn.textContent = '✅ Gelernt';
-      btn.disabled = true;
-      rightAnswers += 1;
-      updateProgress();
-    });
-  });
-}
-
-function backToHome(){
-  els.homeView.style.display = 'grid';
-  els.detailViewContainer.innerHTML = '';
-}
-
-function botReply(text){
-  const lower = text.toLowerCase();
-  if(lower.includes('machine') || lower.includes('ml')) return 'Machine Learning: Supervised/Unsupervised/Reinforcement Learning. Regression (y=bx+a), kNN, Overfitting vermeiden!';
-  if(lower.includes('suche') || lower.includes('bfs') || lower.includes('a*')) return 'Suchverfahren: BFS (vollständig, optimal), A* (f(n)=g(n)+h(n)), Heuristiken müssen admissibel sein.';
-  if(lower.includes('netz') || lower.includes('neuron')) return 'Neuronale Netze: Feedforward, Backpropagation, ReLU löst Vanishing Gradient, Adam Optimierer.';
-  if(lower.includes('bias') || lower.includes('ethik')) return 'KI-Ethik: Sampling/Label/Algorithmic Bias, GDPR Art.22 (Erklärbarkeit), XAI-Methoden wie SHAP/LIME.';
-  return 'Themen: Machine Learning (Supervised, kNN, Overfitting), Suchverfahren, Neuronale Netze, Ethik. Frag spezifisch!';
-}
-
-document.getElementById('sendChat').addEventListener('click', () => {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if(!text) return;
-  els.chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Du:</strong> ${text}</div>`);
-  els.chatLog.insertAdjacentHTML('beforeend', `<div class="chat-msg"><strong>Bot:</strong> ${botReply(text)}</div>`);
-  els.chatLog.scrollTop = els.chatLog.scrollHeight;
-  input.value = '';
-  input.focus();
-});
-
-document.getElementById('startLearn').addEventListener('click', () => openTopic(topics[0].id));
-document.getElementById('openProgress').addEventListener('click', () => document.querySelector('.layout2').scrollIntoView({behavior:'smooth'}));
-document.getElementById('scrollTopics').addEventListener('click', () => document.getElementById('topicGrid').scrollIntoView({behavior:'smooth'}));
-
-renderTopicGrid();
-updateProgress();
 </script>
+
 </body>
 </html>
+
+<!--
+STRUKTUR:
+/index.html
+/lessons/template.html
+/lessons/intro.html
+/lessons/regression.html
+/lessons/classification.html
+-->
