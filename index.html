@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI Lernplattform</title>
 <style>
-
 /* ======= Hintergrund (Clean Dark Blue) ======= */
 body {
   margin: 0;
@@ -148,13 +147,29 @@ textarea:focus {
   cursor: pointer;
   transition: all 0.2s;
   border: 1px solid rgba(255,255,255,0.1);
+  position: relative;
 }
 .note-box:hover {
   background-color: #1f3a6d;
   transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
-
+.note-box button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #b71c1c;
+  border: none;
+  border-radius: 50%;
+  padding: 0 6px;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.note-box button:hover {
+  background-color: #ff1744;
+}
 </style>
 </head>
 <body>
@@ -323,8 +338,12 @@ function renderNotesBoxes(){
   notesArray.forEach((note,i)=>{
     const div = document.createElement('div');
     div.className='note-box';
-    div.textContent = note.length>30 ? note.substring(0,27)+'...' : note;
-    div.onclick = ()=>{
+
+    // Text der Notiz
+    const noteText = document.createElement('span');
+    noteText.textContent = note.length>30 ? note.substring(0,27)+'...' : note;
+    noteText.style.cursor = 'pointer';
+    noteText.onclick = ()=>{
       document.getElementById('dashboard').style.display='none';
       document.getElementById('notesContainer').innerHTML=`
         <div class="notes-section active">
@@ -336,6 +355,17 @@ function renderNotesBoxes(){
         </div>
       `;
     };
+    div.appendChild(noteText);
+
+    // Löschen-Button
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '✖';
+    delBtn.onclick = (e)=>{
+      e.stopPropagation();
+      deleteNote(i);
+    };
+    div.appendChild(delBtn);
+
     notesList.appendChild(div);
   });
 }
@@ -351,6 +381,15 @@ function updateNote(index){
   back();
 }
 
+function deleteNote(index){
+  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
+  if(confirm("Willst du diese Notiz wirklich löschen?")){
+    notesArray.splice(index,1);
+    localStorage.setItem('notesArray', JSON.stringify(notesArray));
+    renderNotesBoxes();
+  }
+}
+
 // ======= Zurück zum Dashboard =======
 function back(){
   document.getElementById('lectureContainer').innerHTML='';
@@ -358,7 +397,6 @@ function back(){
   document.getElementById('notesContainer').innerHTML='';
   document.getElementById('dashboard').style.display='flex';
 }
-
 </script>
 
 </body>
