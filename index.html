@@ -1,250 +1,266 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Künstliche Intelligenz – Lernplattform</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      color: #333;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI Lernplattform</title>
+<style>
+/* ======= Allgemeines Styling ======= */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #121212;
+  color: #f0f0f0;
+}
+.container {
+  width: 90%;
+  margin: auto;
+  padding-bottom: 2rem;
+}
+header {
+  text-align: center;
+  padding: 2rem 0;
+}
+h1 { margin: 0; }
 
-    header {
-      text-align: center;
-      padding: 20px;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      font-size: 24px;
-      font-weight: bold;
-    }
+/* ======= Dashboard ======= */
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+.card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  flex: 1 1 300px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.card:hover { transform: scale(1.05); }
+.card h2 { margin-top: 0; }
+.card ul { list-style: none; padding-left: 0; }
+.card ul li { margin: 0.5rem 0; }
 
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      padding: 20px;
-    }
+/* ======= Vorlesungsseiten ======= */
+.lecture-content, .quiz-section {
+  display: none;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+.active { display: block; }
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
+/* ======= Buttons ======= */
+button {
+  background-color: #6200ee;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+button:hover { background-color: #3700b3; }
 
-    .card h2 {
-      margin-top: 0;
-      font-size: 18px;
-    }
+/* ======= Quiz Styling ======= */
+.quiz-section ul { list-style: none; padding-left: 0; }
+.quiz-section ul li { margin: 0.5rem 0; cursor: pointer; padding: 0.3rem 0.5rem; border-radius: 6px; }
+.quiz-section ul li:hover { background-color: #333; }
 
-    .lecture-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .lecture {
-      padding: 12px;
-      border-radius: 8px;
-      background: #eef2ff;
-      cursor: pointer;
-      transition: 0.2s;
-      text-decoration: none;
-      color: black;
-    }
-
-    .lecture:hover {
-      background: #dbeafe;
-      transform: translateY(-2px);
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 20px;
-      background: #e5e7eb;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .progress {
-      height: 100%;
-      width: 30%;
-      background: #3b82f6;
-    }
-
-    footer {
-      margin-top: 20px;
-      padding: 20px;
-      text-align: center;
-      background: white;
-    }
-
-    @media(max-width: 900px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+/* ======= Back Button ======= */
+.back-btn {
+  background-color: #bb86fc;
+  margin-top: 1rem;
+}
+.back-btn:hover { background-color: #3700b3; }
+</style>
 </head>
 <body>
-
-<header>
-  Künstliche Intelligenz – Methoden & Anwendungen
-</header>
-
 <div class="container">
+  <header>
+    <h1>KI Methoden & Anwendungen</h1>
+  </header>
 
-  <!-- Vorlesungen -->
-  <div class="card">
-    <h2>Vorlesungen</h2>
-    <div class="lecture-list">
-      <a class="lecture" href="lesson1.html">Warum KI jetzt?</a>
-      <a class="lecture" href="lesson2.html">Machine Learning</a>
-      <a class="lecture" href="lesson3.html">Big Data</a>
-      <a class="lecture" href="#">Thema 4</a>
-      <a class="lecture" href="#">Thema 5</a>
-      <a class="lecture" href="#">Thema 6</a>
-      <a class="lecture" href="#">Thema 7</a>
+  <!-- ======= Dashboard ======= -->
+  <div class="dashboard" id="dashboard">
+    <div class="card">
+      <h2>Vorlesungen</h2>
+      <ul>
+        <li onclick="openLecture(0)">Warum Künstliche Intelligenz jetzt?</li>
+        <li onclick="openLecture(1)">Maschinelles Lernen</li>
+        <li onclick="openLecture(2)">Neuronale Netze</li>
+        <li onclick="openLecture(3)">Natürliche Sprachverarbeitung</li>
+        <li onclick="openLecture(4)">Computer Vision</li>
+        <li onclick="openLecture(5)">Robotik</li>
+        <li onclick="openLecture(6)">KI in der Praxis</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Was steht heute an?</h2>
+      <ul id="spacedRepetitionList">
+        <!-- Wird per JS befüllt -->
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Quizzes</h2>
+      <ul>
+        <li onclick="openQuiz(0)">Quiz 1</li>
+        <li onclick="openQuiz(1)">Quiz 2</li>
+        <li onclick="openQuiz(2)">Quiz 3</li>
+      </ul>
     </div>
   </div>
 
-  <!-- Was steht heute an -->
-  <div class="card">
-    <h2>Was steht heute an?</h2>
-    <ul id="today-list"></ul>
-    <script>
-      // Spaced Repetition Daten (kann später erweitert werden)
-      const lessons = [
-        { title: "Warum KI jetzt?", url: "lesson1.html", lastReviewed: 0, interval: 1 },
-        { title: "Machine Learning", url: "lesson2.html", lastReviewed: 0, interval: 1 },
-        { title: "Big Data", url: "lesson3.html", lastReviewed: 0, interval: 1 }
-      ];
+  <!-- ======= Vorlesungsinhalte ======= -->
+  <div id="lectureContainer"></div>
 
-      const today = new Date().setHours(0,0,0,0);
-
-      function loadProgress() {
-        const saved = JSON.parse(localStorage.getItem("spacedData"));
-        return saved || lessons;
-      }
-
-      function saveProgress(data) {
-        localStorage.setItem("spacedData", JSON.stringify(data));
-      }
-
-      function getDueLessons(data) {
-        return data.filter(l => {
-          const nextReview = l.lastReviewed + l.interval * 24 * 60 * 60 * 1000;
-          return nextReview <= today;
-        });
-      }
-
-      function markReviewed(index) {
-        const data = loadProgress();
-        data[index].lastReviewed = today;
-        data[index].interval *= 2; // einfache Verdopplung (Spaced Repetition)
-        saveProgress(data);
-        render();
-      }
-
-      function render() {
-        const list = document.getElementById("today-list");
-        list.innerHTML = "";
-        const data = loadProgress();
-        const due = getDueLessons(data);
-
-        if (due.length === 0) {
-          list.innerHTML = "<li>Heute nichts zu wiederholen 🎉</li>";
-          return;
-        }
-
-        due.forEach((lesson, index) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <a href="${lesson.url}">${lesson.title}</a>
-            <button onclick="markReviewed(${index})">Erledigt</button>
-          `;
-          list.appendChild(li);
-        });
-      }
-
-      render();
-    </script>
-  </div>
-
-  <!-- Fortschritt -->
-  <div class="card">
-    <h2>Fortschritt</h2>
-    <div class="progress-bar">
-      <div class="progress"></div>
-    </div>
-    <p>30% abgeschlossen</p>
-  </div>
-
-  <!-- Platzhalter -->
-  <div class="card">
-    <h2>Platzhalter</h2>
-    <p>Hier kannst du später zusätzliche Inhalte einbauen (z. B. Notizen, Videos, etc.)</p>
-  </div>
+  <!-- ======= Quiz Inhalte ======= -->
+  <div id="quizContainer"></div>
 
 </div>
 
-<footer>
-  © 2026 Lernplattform KI
-</footer>
+<script>
+// ======= Daten für Vorlesungen =======
+const lectures = [
+  {
+    title: "Warum Künstliche Intelligenz jetzt?",
+    intro: "KI hat in den letzten Jahren enorme Fortschritte gemacht.",
+    explanation: "Künstliche Intelligenz umfasst Systeme, die Aufgaben lösen können, die typischerweise menschliche Intelligenz erfordern, z.B. maschinelles Lernen, Sprachverarbeitung, Bilderkennung.",
+    merksatz: "KI ist überall – von Smartphones bis zur Industrieautomatisierung.",
+    quiz: ["Welche Aufgaben kann KI erledigen?", "Sprachverarbeitung", "Bildklassifikation", "Mathematische Berechnungen", "Alle oben genannten", 4]
+  },
+  {
+    title: "Maschinelles Lernen",
+    intro: "Maschinelles Lernen ist ein Teilgebiet der KI.",
+    explanation: "ML-Systeme lernen Muster aus Daten und treffen Vorhersagen oder Entscheidungen ohne explizite Programmierung.",
+    merksatz: "Daten sind das Öl des maschinellen Lernens.",
+    quiz: ["Was ist ML?", "Manuelles Programmieren", "Systeme lernen aus Daten", "Zufällige Entscheidungen", "Keine der Antworten", 2]
+  },
+  {
+    title: "Neuronale Netze",
+    intro: "Neuronale Netze sind inspiriert vom menschlichen Gehirn.",
+    explanation: "Sie bestehen aus Neuronen-Schichten, die komplexe Muster und Zusammenhänge erkennen können.",
+    merksatz: "Tiefe Netze lernen tiefe Muster.",
+    quiz: ["Wofür werden neuronale Netze verwendet?", "Bilderkennung", "Sprachverarbeitung", "Alle Aufgaben der KI", "Keine", 3]
+  },
+  {
+    title: "Natürliche Sprachverarbeitung",
+    intro: "NLP ermöglicht Computern das Verstehen menschlicher Sprache.",
+    explanation: "Anwendungen umfassen Chatbots, Übersetzungen und Textanalyse.",
+    merksatz: "Sprache verstehen = KI verstehen.",
+    quiz: ["Was ist NLP?", "Datenbankmanagement", "Sprachverarbeitung", "Hardwareentwicklung", "Keine", 2]
+  },
+  {
+    title: "Computer Vision",
+    intro: "Computer Vision analysiert Bilder und Videos.",
+    explanation: "Anwendungen reichen von Gesichtserkennung bis autonomen Fahren.",
+    merksatz: "Bilder sehen = Computer Vision.",
+    quiz: ["Wofür wird Computer Vision genutzt?", "Gesichtserkennung", "Autonomes Fahren", "Alle visuellen Analysen", "Keine", 3]
+  },
+  {
+    title: "Robotik",
+    intro: "Robotik kombiniert KI und Maschinenbau.",
+    explanation: "Roboter führen Aufgaben autonom oder halb-autonom aus.",
+    merksatz: "Roboter + KI = autonome Systeme.",
+    quiz: ["Robotik ist...", "Kunsthandwerk", "Automatisierung von Aufgaben", "Nur Industrie 4.0", "Keine", 2]
+  },
+  {
+    title: "KI in der Praxis",
+    intro: "KI wird in vielen Branchen eingesetzt.",
+    explanation: "Von Medizin über Finanzen bis Industrie – KI verändert Prozesse und Entscheidungen.",
+    merksatz: "Praxisnähe macht KI greifbar.",
+    quiz: ["Wo wird KI angewendet?", "Medizin", "Finanzen", "Industrie", "Alle genannten", 4]
+  }
+];
 
-</body>
-</html>
-
-
-<!-- Beispiel Subpage (lesson1.html) -->
-
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Warum KI jetzt?</title>
-  <style>
-    body { font-family: Arial; margin: 0; background: #f5f7fa; }
-    .container { padding: 20px; }
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+// ======= Daten für Spaced Repetition =======
+const todayTopics = [
+  {name: "Warum Künstliche Intelligenz jetzt?", lastSeen: "2026-03-25"},
+  {name: "Maschinelles Lernen", lastSeen: "2026-03-26"},
+  {name: "Neuronale Netze", lastSeen: "2026-03-27"},
+  {name: "Computer Vision", lastSeen: "2026-03-28"}
+];
+function showTodayTopics() {
+  const list = document.getElementById('spacedRepetitionList');
+  list.innerHTML = '';
+  const today = new Date();
+  todayTopics.forEach(t => {
+    const last = new Date(t.lastSeen);
+    const diff = Math.floor((today - last)/(1000*60*60*24));
+    if(diff >= 1){
+      const li = document.createElement('li');
+      li.textContent = t.name;
+      li.onclick = () => { 
+        const index = lectures.findIndex(l => l.title === t.name);
+        openLecture(index);
+      };
+      list.appendChild(li);
     }
-  </style>
-</head>
-<body>
+  });
+}
+showTodayTopics();
 
-<div class="container">
-  <h1>Warum Künstliche Intelligenz jetzt?</h1>
+// ======= Funktionen zum Anzeigen der Vorlesungen =======
+function openLecture(index){
+  const container = document.getElementById('lectureContainer');
+  container.innerHTML = '';
+  const lecture = lectures[index];
+  const div = document.createElement('div');
+  div.className = 'lecture-content active';
+  div.innerHTML = `
+    <h2>${lecture.title}</h2>
+    <p><strong>Einleitung:</strong> ${lecture.intro}</p>
+    <p><strong>Erklärung:</strong> ${lecture.explanation}</p>
+    <p><strong>Merksatz:</strong> ${lecture.merksatz}</p>
+    <button onclick="openQuiz(${index})">Zum Quiz</button>
+    <button class="back-btn" onclick="backToDashboard()">Zurück zum Dashboard</button>
+  `;
+  container.appendChild(div);
+  document.getElementById('dashboard').style.display = 'none';
+}
 
-  <div class="box">
-    <h2>Intro</h2>
-    <p>Hier steht ein Einleitungssatz.</p>
-  </div>
+// ======= Funktionen für Quizzes =======
+function openQuiz(index){
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  const lecture = lectures[index];
+  const div = document.createElement('div');
+  div.className = 'quiz-section active';
+  div.innerHTML = `
+    <h2>Quiz: ${lecture.title}</h2>
+    <p>${lecture.quiz[0]}</p>
+    <ul>
+      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[1]}</li>
+      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[2]}</li>
+      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[3]}</li>
+      <li onclick="checkAnswer(this, ${lecture.quiz[5]})">${lecture.quiz[4]}</li>
+    </ul>
+    <button class="back-btn" onclick="backToDashboard()">Zurück zum Dashboard</button>
+  `;
+  container.appendChild(div);
+  document.getElementById('dashboard').style.display = 'none';
+}
 
-  <div class="box">
-    <h2>Inhalt</h2>
-    <p>Hier wird das Thema erklärt.</p>
-  </div>
+function checkAnswer(element, correctIndex){
+  const ul = element.parentNode;
+  const items = Array.from(ul.children);
+  items.forEach((li, i) => {
+    if(i+1 === correctIndex) li.style.backgroundColor = 'green';
+    else li.style.backgroundColor = 'red';
+  });
+}
 
-  <div class="box">
-    <h2>Merksatz</h2>
-    <p>Hier ist ein Merksatz.</p>
-  </div>
-
-  <div class="box">
-    <h2>Quiz</h2>
-    <p>Hier ist ein Quiz.</p>
-  </div>
-
-</div>
-
+// ======= Zurück zum Dashboard =======
+function backToDashboard(){
+  document.getElementById('lectureContainer').innerHTML = '';
+  document.getElementById('quizContainer').innerHTML = '';
+  document.getElementById('dashboard').style.display = 'flex';
+}
+</script>
 </body>
 </html>
