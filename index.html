@@ -119,6 +119,181 @@ updateUI();
 </body>
 </html>
 
+<!-- ================= LESSON SUBPAGE ================= -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warum KI jetzt?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background:#0f172a; color:#e2e8f0; margin:0; }
+    .container { padding:40px; max-width:900px; margin:auto; }
+    h1, h2 { color:white; }
+    .box { background:#020617; padding:20px; border-radius:12px; margin-bottom:20px; }
+    .btn { display:inline-block; margin-top:10px; padding:10px 15px; background:#22c55e; color:black; border:none; border-radius:10px; cursor:pointer; }
+    .quiz button { display:block; margin:10px 0; width:100%; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Warum Künstliche Intelligenz jetzt?</h1>
+
+  <div class="box">
+    <h2>Einführung</h2>
+    <p>Künstliche Intelligenz gibt es schon seit Jahrzehnten. Doch erst jetzt erlebt sie ihren Durchbruch. Warum? Weil mehrere Entwicklungen gleichzeitig zusammenkommen.</p>
+  </div>
+
+  <div class="box">
+    <h2>Inhalt</h2>
+    <ul>
+      <li><b>Daten:</b> Enorme Mengen an Daten durch Internet und Digitalisierung</li>
+      <li><b>Rechenleistung:</b> Leistungsstarke GPUs und Cloud Computing</li>
+      <li><b>Algorithmen:</b> Fortschritte im Machine Learning und Deep Learning</li>
+      <li><b>Anwendungen:</b> KI wird wirtschaftlich nutzbar (z. B. Chatbots, Bilderkennung)</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>Merksatz</h2>
+    <p><b>KI wird jetzt groß, weil Daten, Rechenleistung und Algorithmen gleichzeitig ein kritisches Niveau erreicht haben.</b></p>
+  </div>
+
+  <div class="box quiz">
+    <h2>Quiz</h2>
+    <p>Warum ist KI gerade jetzt so erfolgreich?</p>
+
+    <button onclick="answer(false)">Weil sie neu erfunden wurde</button>
+    <button onclick="answer(true)">Weil Daten, Rechenleistung und Algorithmen zusammenkommen</button>
+    <button onclick="answer(false)">Weil Computer kleiner geworden sind</button>
+
+    <p id="feedback"></p>
+  </div>
+
+  <button class="btn" onclick="completeLesson()">Lektion abschließen</button>
+
+</div>
+
+<script>
+
+function answer(correct) {
+  const feedback = document.getElementById('feedback');
+  if (correct) {
+    feedback.innerText = 'Richtig! Sehr gut.';
+  } else {
+    feedback.innerText = 'Nicht korrekt – denk an die drei Faktoren.';
+  }
+}
+
+function completeLesson() {
+  localStorage.setItem('intro', 'done');
+
+  let reviewDate = new Date();
+  reviewDate.setDate(reviewDate.getDate() + 2);
+  localStorage.setItem('intro_review', reviewDate);
+
+  alert('Lektion abgeschlossen!');
+  window.location.href = '../index.html';
+}
+
+</script>
+
+</body>
+</html>
+</html>
+
+<!-- ================= LESSON: MACHINE LEARNING ================= -->
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machine Learning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background:#0f172a; color:#e2e8f0; margin:0; }
+    .container { padding:40px; max-width:900px; margin:auto; }
+    h1, h2 { color:white; }
+    .box { background:#020617; padding:20px; border-radius:12px; margin-bottom:20px; }
+    .btn { display:inline-block; margin-top:10px; padding:10px 15px; background:#22c55e; color:black; border:none; border-radius:10px; cursor:pointer; }
+    .quiz button { display:block; margin:10px 0; width:100%; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Machine Learning</h1>
+
+  <div class="box">
+    <h2>Einführung</h2>
+    <p>Machine Learning ist ein Teilgebiet der Künstlichen Intelligenz. Statt feste Regeln zu programmieren, lernt ein System selbstständig aus Daten.</p>
+  </div>
+
+  <div class="box">
+    <h2>Inhalt</h2>
+    <ul>
+      <li><b>Supervised Learning:</b> Lernen mit gelabelten Daten (z. B. Spam-Erkennung)</li>
+      <li><b>Unsupervised Learning:</b> Muster erkennen ohne Labels (z. B. Clustering)</li>
+      <li><b>Reinforcement Learning:</b> Lernen durch Belohnung und Bestrafung</li>
+      <li><b>Ziel:</b> Vorhersagen treffen oder Entscheidungen optimieren</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>Merksatz</h2>
+    <p><b>Machine Learning bedeutet: Systeme lernen aus Daten, statt explizit programmiert zu werden.</b></p>
+  </div>
+
+  <div class="box quiz">
+    <h2>Quiz</h2>
+    <p>Was ist das zentrale Prinzip von Machine Learning?</p>
+
+    <button onclick="answerML(false)">Regeln werden manuell programmiert</button>
+    <button onclick="answerML(true)">Das System lernt aus Daten</button>
+    <button onclick="answerML(false)">Computer werden schneller</button>
+
+    <p id="feedbackML"></p>
+  </div>
+
+  <button class="btn" onclick="completeLessonML()">Lektion abschließen</button>
+
+</div>
+
+<script>
+
+function answerML(correct) {
+  const feedback = document.getElementById('feedbackML');
+  if (correct) {
+    feedback.innerText = 'Richtig! Genau so funktioniert Machine Learning.';
+  } else {
+    feedback.innerText = 'Nicht korrekt – Fokus auf Lernen aus Daten!';
+  }
+}
+
+function completeLessonML() {
+  localStorage.setItem('ml', 'done');
+
+  let reviewDate = new Date();
+  reviewDate.setDate(reviewDate.getDate() + 2);
+  localStorage.setItem('ml_review', reviewDate);
+
+  alert('Lektion abgeschlossen!');
+  window.location.href = '../index.html';
+}
+
+</script>
+
+</body>
+</html>
+
 <!--
 STRUKTUR:
 /index.html
@@ -126,4 +301,5 @@ STRUKTUR:
 /lessons/intro.html
 /lessons/regression.html
 /lessons/classification.html
+/lessons/machine-learning.html
 -->
