@@ -4,411 +4,255 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI Lernplattform</title>
+
 <style>
-/* ======= Hintergrund ======= */
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: Arial;
   background-color: #0d1b2a;
-  color: #f0f0f0;
+  color: white;
 }
 
-/* ======= Container ======= */
-.container {
-  width: 90%;
-  margin: auto;
-  padding-bottom: 2rem;
-}
-header { text-align: center; padding: 2rem 0; }
-h1 { margin: 0; }
+.container { width: 90%; margin: auto; }
+.dashboard { display: flex; flex-wrap: wrap; gap: 1rem; }
 
-/* ======= Dashboard ======= */
-.dashboard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
 .card {
-  background-color: #1a2a4c;
-  border-radius: 14px;
-  padding: 1.5rem;
-  flex: 1 1 300px;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
-}
-.card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.7);
-}
-.card h2 { margin-top: 0; text-align: center; }
-
-/* ======= Listen (Themen & Quizzes & Notizen) ======= */
-.card ul { list-style: none; padding-left: 0; }
-.card ul li {
-  margin: 0.6rem 0;
-  padding: 0.6rem;
-  background-color: #112240;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.05);
-  transition: all 0.2s ease;
-}
-.card ul li:hover { background-color: #1f3a6d; transform: translateX(5px) scale(1.02); }
-
-/* ======= Vorlesungsseiten ======= */
-.lecture-content, .quiz-section, .notes-section {
-  display: none;
-  background-color: #1a2a4c;
-  border-radius: 14px;
-  padding: 1.5rem;
-  margin-top: 1rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeInUp 0.35s forwards;
-}
-.active { display: block; }
-
-/* ======= Buttons ======= */
-button {
-  background-color: #3f51b5;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  margin-right: 0.5rem;
-  transition: all 0.2s;
-}
-button:hover { background-color: #2c387e; }
-.back-btn {
-  background-color: #bb86fc;
-}
-.back-btn:hover { background-color: #3700b3; }
-
-/* ======= Quiz ======= */
-.quiz-section ul { list-style: none; padding-left: 0; }
-.quiz-section ul li { margin: 0.6rem 0; padding: 0.6rem; border-radius: 8px; background-color: #112240; cursor: pointer; transition: all 0.2s ease; }
-.quiz-section ul li:hover { transform: translateX(5px) scale(1.02); background-color: #1f3a6d; }
-
-/* ======= Notizen ======= */
-textarea {
-  width: 100%;
-  height: 200px;
-  border-radius: 10px;
-  border: none;
+  background: #1a2a4c;
   padding: 1rem;
-  font-size: 1rem;
-  background-color: #112240;
-  color: white;
-  resize: none;
-  margin-top: 1rem;
-}
-textarea:focus { outline: 2px solid #3f51b5; }
-
-/* ======= Notiz-Boxen ======= */
-#notesList { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; }
-.note-box {
-  background-color: #112240;
-  padding: 0.8rem;
-  border-radius: 10px;
-  flex: 1 1 150px;
-  cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
-  border: 1px solid rgba(255,255,255,0.1);
-  position: relative;
-}
-.note-box:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 10px rgba(63,81,181,0.4);
-  background-color: #1f3a6d;
-}
-
-/* Cleaner Lösch-Kreuz */
-.note-box button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background: transparent;
-  border: none;
-  color: rgba(255,255,255,0.7);
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.note-box button:hover { color: #ff1744; }
-
-/* ======= Fragen-Box ======= */
-.card.questions-card {
-  background-color: #1a2a4c;
-  border-radius: 14px;
-  padding: 1.5rem;
+  border-radius: 12px;
   flex: 1 1 300px;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  transition: 0.3s;
 }
-.card.questions-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.7);
-  background-color: #233662;
-}
-.card.questions-card h2 { text-align: center; }
+.card:hover { transform: scale(1.05); }
 
-/* ======= Animation ======= */
-@keyframes fadeInUp {
-  to { opacity: 1; transform: translateY(0); }
+.file-preview img {
+  width: 100px;
+  border-radius: 8px;
+}
+
+.file-box {
+  margin-top: 10px;
+  padding: 5px;
+  background: #112240;
+  border-radius: 8px;
+}
+.file-box button {
+  float: right;
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
 }
 </style>
 </head>
+
 <body>
-
 <div class="container">
-  <header><h1>KI Methoden & Anwendungen</h1></header>
 
-  <!-- Dashboard -->
-  <div class="dashboard" id="dashboard">
-    <div class="card">
-      <h2>Vorlesungen</h2>
-      <ul>
-        <li onclick="openLecture(0)">Warum Künstliche Intelligenz jetzt?</li>
-        <li onclick="openLecture(1)">Maschinelles Lernen</li>
-        <li onclick="openLecture(2)">Neuronale Netze</li>
-        <li onclick="openLecture(3)">Natürliche Sprachverarbeitung</li>
-        <li onclick="openLecture(4)">Computer Vision</li>
-        <li onclick="openLecture(5)">Robotik</li>
-        <li onclick="openLecture(6)">KI in der Praxis</li>
-      </ul>
-    </div>
+<h1>KI Lernplattform</h1>
 
-    <div class="card">
-      <h2>Was steht heute an?</h2>
-      <ul id="spacedRepetitionList"></ul>
-    </div>
+<div class="dashboard" id="dashboard">
 
-    <div class="card">
-      <h2>Quizzes</h2>
-      <ul>
-        <li onclick="openQuiz(0)">Quiz: Warum KI jetzt?</li>
-        <li onclick="openQuiz(1)">Quiz: Maschinelles Lernen</li>
-        <li onclick="openQuiz(2)">Quiz: Neuronale Netze</li>
-        <li onclick="openQuiz(3)">Quiz: Natürliche Sprachverarbeitung</li>
-        <li onclick="openQuiz(4)">Quiz: Computer Vision</li>
-        <li onclick="openQuiz(5)">Quiz: Robotik</li>
-        <li onclick="openQuiz(6)">Quiz: KI in der Praxis</li>
-      </ul>
-    </div>
+<div class="card">
+<h2>Vorlesungen</h2>
+<ul>
+<li onclick="openLecture(0)">Warum KI jetzt?</li>
+</ul>
+</div>
 
-    <div class="card" onclick="openNotes()">
-      <h2>Notizen</h2>
-      <ul>
-        <li>Eigene Notizen erstellen</li>
-        <li>Gedanken festhalten</li>
-        <li>Lerninhalte ergänzen</li>
-      </ul>
-      <div id="notesList"></div>
-    </div>
+<div class="card" onclick="openNotes()">
+<h2>Notizen</h2>
+<div id="notesList"></div>
+</div>
 
-    <div class="card questions-card" onclick="window.open('https://chat.openai.com/', '_blank')">
-      <h2>Fragen</h2>
-      <ul>
-        <li>Fragen zu Inhalten stellen</li>
-        <li>ChatGPT für Hilfe nutzen</li>
-        <li>Antworten direkt erhalten</li>
-      </ul>
-    </div>
-  </div>
+</div>
 
-  <!-- Dynamische Container -->
-  <div id="lectureContainer"></div>
-  <div id="quizContainer"></div>
-  <div id="notesContainer"></div>
+<div id="content"></div>
+
 </div>
 
 <script>
-// ======= Vorlesungsdaten =======
+
+// ======= DATEN =======
 const lectures = [
-  {
-    title:"Warum Künstliche Intelligenz jetzt?",
-    intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.",
-    explanation:`
-    💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-    💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern – von Arbeitsweisen hin zu Interaktionen.<br><br>
-    💡 Gleichzeitig wird vor dem unvorsichtigen Umgang mit KI gewarnt, da Fehler nur schwer reversibel sein könnten.<br><br>
-    💡 Zukünftig könnte KI einen Teil unserer Arbeit übernehmen. Jobs könnten sich grundlegend verändern.
-    `,
-    merksatz:"⚠️ KI wird unsere Zukunft grundlegend verändern. Es ist wichtig, sich mit Gefahren & Potenzialen auseinanderzusetzen.",
-    quiz:[
-      "Warum gewinnt KI aktuell so stark an Bedeutung?",
-      "Weil sie nur in der Forschung genutzt wird",
-      "Weil sie viele Lebensbereiche verändern kann",
-      "Weil sie keine Risiken hat",
-      "Weil sie bereits perfekt ist",
-      2
-    ]
-  },
-  {title:"Maschinelles Lernen", intro:"Teilgebiet der KI.", explanation:"Systeme lernen aus Daten.", merksatz:"Daten = Grundlage.", quiz:["Was ist ML?","Manuelles Programmieren","Lernen aus Daten","Zufall","Keine",2]},
-  {title:"Neuronale Netze", intro:"Inspiriert vom Gehirn.", explanation:"Mehrere Schichten verarbeiten Daten.", merksatz:"Tiefe Netze = tiefe Muster.", quiz:["Wofür genutzt?","Bilderkennung","Alles","Nichts","Nur Text",2]},
-  {title:"Natürliche Sprachverarbeitung", intro:"Sprache verstehen.", explanation:"Chatbots & Übersetzung.", merksatz:"Sprache = Schlüssel.", quiz:["Was ist NLP?","Hardware","Sprache","Datenbank","Keine",2]},
-  {title:"Computer Vision", intro:"Bilder analysieren.", explanation:"Gesichtserkennung etc.", merksatz:"Sehen = CV.", quiz:["Anwendung?","Gesicht","Autonomes Fahren","Alle","Keine",3]},
-  {title:"Robotik", intro:"Maschinen + KI.", explanation:"Automatisierte Aufgaben.", merksatz:"KI + Hardware.", quiz:["Robotik ist?","Automatisierung","Kunst","Nichts","Nur Theorie",1]},
-  {title:"KI in der Praxis", intro:"Überall eingesetzt.", explanation:"Medizin, Industrie etc.", merksatz:"Praxis = wichtig.", quiz:["Wo genutzt?","Medizin","Industrie","Alle","Keine",3]}
-];
-
-// Spaced Repetition
-const todayTopics = [
-  {name: "Maschinelles Lernen", lastSeen: "2026-03-26"},
-  {name: "Neuronale Netze", lastSeen: "2026-03-27"}
-];
-function showTodayTopics() {
-  const list = document.getElementById('spacedRepetitionList');
-  list.innerHTML = '';
-  todayTopics.forEach(t => {
-    const li = document.createElement('li');
-    li.textContent = t.name;
-    li.onclick = () => {
-      const index = lectures.findIndex(l => l.title === t.name);
-      openLecture(index);
-    };
-    list.appendChild(li);
-  });
+{
+title:"Warum KI jetzt?",
+intro:"⭐️ KI gewinnt immer mehr an Relevanz.",
+explanation:"💡 KI verändert unser Leben.",
+merksatz:"⚠️ KI verändert die Zukunft."
 }
-showTodayTopics();
+];
 
-// ======= Navigation =======
+// ======= VORLESUNG =======
 function openLecture(index){
-  document.getElementById('dashboard').style.display = 'none';
-  const lecture = lectures[index];
-  document.getElementById('lectureContainer').innerHTML = `
-    <div class="lecture-content active">
-      <h2>${lecture.title}</h2>
-      <p><strong>Einleitung:</strong> ${lecture.intro}</p>
-      <p><strong>Erklärung:</strong> ${lecture.explanation}</p>
-      <p><strong>Merksatz:</strong> ${lecture.merksatz}</p>
-      <button onclick="openQuiz(${index})">Zum Quiz</button>
-      <button class="back-btn" onclick="back()">Zurück</button>
-    </div>
-  `;
+document.getElementById('dashboard').style.display='none';
+
+const files = JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
+
+document.getElementById('content').innerHTML=`
+<h2>${lectures[index].title}</h2>
+<p>${lectures[index].intro}</p>
+<p>${lectures[index].explanation}</p>
+<p>${lectures[index].merksatz}</p>
+
+<h3>Dateien hochladen</h3>
+<input type="file" multiple onchange="uploadLectureFile(event, ${index})">
+
+<div id="fileList"></div>
+
+<button onclick="back()">Zurück</button>
+`;
+
+renderLectureFiles(index);
 }
 
-function openQuiz(index){
-  document.getElementById('dashboard').style.display = 'none';
-  const q = lectures[index].quiz;
-  document.getElementById('quizContainer').innerHTML = `
-    <div class="quiz-section active">
-      <h2>Quiz: ${lectures[index].title}</h2>
-      <p>${q[0]}</p>
-      <ul>
-        <li onclick="check(this,1,${q[5]})">${q[1]}</li>
-        <li onclick="check(this,2,${q[5]})">${q[2]}</li>
-        <li onclick="check(this,3,${q[5]})">${q[3]}</li>
-        <li onclick="check(this,4,${q[5]})">${q[4]}</li>
-      </ul>
-      <button class="back-btn" onclick="back()">Zurück</button>
-    </div>
-  `;
+// Upload Lecture
+function uploadLectureFile(e, index){
+const files = e.target.files;
+let stored = JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
+
+for(let file of files){
+const reader = new FileReader();
+reader.onload = function(ev){
+stored.push({name:file.name, data:ev.target.result});
+localStorage.setItem("lectureFiles"+index, JSON.stringify(stored));
+renderLectureFiles(index);
+};
+reader.readAsDataURL(file);
+}
 }
 
-function check(el,i,correct){
-  const items = el.parentNode.children;
-  for(let j=0;j<items.length;j++){
-    items[j].style.backgroundColor = (j+1===correct) ? "green" : "red";
-  }
+// Anzeigen Lecture Dateien
+function renderLectureFiles(index){
+const container = document.getElementById("fileList");
+container.innerHTML="";
+
+let stored = JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
+
+stored.forEach((file,i)=>{
+const div = document.createElement("div");
+div.className="file-box";
+
+if(file.data.includes("image")){
+div.innerHTML = `<img src="${file.data}"><button onclick="deleteLectureFile(${index},${i})">✖</button>`;
+}else{
+div.innerHTML = `<a href="${file.data}" target="_blank">${file.name}</a><button onclick="deleteLectureFile(${index},${i})">✖</button>`;
 }
 
-// ======= Notizen =======
+container.appendChild(div);
+});
+}
+
+function deleteLectureFile(index,i){
+let stored = JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
+stored.splice(i,1);
+localStorage.setItem("lectureFiles"+index, JSON.stringify(stored));
+renderLectureFiles(index);
+}
+
+// ======= NOTIZEN =======
 function openNotes(){
-  document.getElementById('dashboard').style.display = 'none';
-  const savedNotes = JSON.parse(localStorage.getItem('notesArray') || "[]");
-  let textareaContent = savedNotes[0] || "";
-  document.getElementById('notesContainer').innerHTML = `
-    <div class="notes-section active">
-      <h2>Notizen</h2>
-      <p>Hier kannst du deine eigenen Gedanken und Lerninhalte festhalten:</p>
-      <textarea id="notesArea" placeholder="Schreibe hier deine Notizen...">${textareaContent}</textarea>
-      <br>
-      <button onclick="saveNotes()">Speichern</button>
-      <button class="back-btn" onclick="back()">Zurück</button>
-    </div>
-  `;
-}
-function saveNotes(){
-  let text = document.getElementById('notesArea').value;
-  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
-  if(text && !notesArray.includes(text)) notesArray.push(text);
-  localStorage.setItem('notesArray', JSON.stringify(notesArray));
-  alert("Notiz gespeichert!");
-  renderNotesBoxes();
+document.getElementById('dashboard').style.display='none';
+
+document.getElementById('content').innerHTML=`
+<h2>Notizen</h2>
+
+<textarea id="noteText"></textarea>
+<br>
+<input type="file" multiple onchange="uploadNoteFile(event)">
+<div id="noteFiles"></div>
+
+<button onclick="saveNote()">Speichern</button>
+<button onclick="back()">Zurück</button>
+`;
+
+renderNotes();
 }
 
-// Notiz-Kästchen
-function renderNotesBoxes(){
-  const notesList = document.getElementById('notesList');
-  notesList.innerHTML = '';
-  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
-  notesArray.forEach((note,i)=>{
-    const div = document.createElement('div');
-    div.className='note-box';
-
-    const noteText = document.createElement('span');
-    noteText.textContent = note.length>30 ? note.substring(0,27)+'...' : note;
-    noteText.style.cursor = 'pointer';
-    noteText.onclick = ()=>{
-      document.getElementById('dashboard').style.display='none';
-      document.getElementById('notesContainer').innerHTML=`
-        <div class="notes-section active">
-          <h2>Notiz bearbeiten</h2>
-          <textarea id="notesArea">${note}</textarea>
-          <br>
-          <button onclick="updateNote(${i})">Speichern</button>
-          <button class="back-btn" onclick="back()">Zurück</button>
-        </div>
-      `;
-    };
-    div.appendChild(noteText);
-
-    const delBtn = document.createElement('button');
-    delBtn.textContent = '✖';
-    delBtn.onclick = (e)=>{
-      e.stopPropagation();
-      deleteNote(i);
-    };
-    div.appendChild(delBtn);
-
-    notesList.appendChild(div);
-  });
-}
-renderNotesBoxes();
-
-function updateNote(index){
-  let text = document.getElementById('notesArea').value;
-  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
-  notesArray[index]=text;
-  localStorage.setItem('notesArray', JSON.stringify(notesArray));
-  alert("Notiz aktualisiert!");
-  renderNotesBoxes();
-  back();
+// Save Note
+function saveNote(){
+const text = document.getElementById("noteText").value;
+let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+notes.push({text:text, files:[]});
+localStorage.setItem("notes", JSON.stringify(notes));
+renderNotes();
 }
 
-function deleteNote(index){
-  let notesArray = JSON.parse(localStorage.getItem('notesArray') || "[]");
-  if(confirm("Willst du diese Notiz wirklich löschen?")){
-    notesArray.splice(index,1);
-    localStorage.setItem('notesArray', JSON.stringify(notesArray));
-    renderNotesBoxes();
-  }
+// Upload Note File
+function uploadNoteFile(e){
+const files = e.target.files;
+let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+let last = notes[notes.length-1];
+
+if(!last) return;
+
+for(let file of files){
+const reader = new FileReader();
+reader.onload = function(ev){
+last.files.push({name:file.name, data:ev.target.result});
+localStorage.setItem("notes", JSON.stringify(notes));
+renderNotes();
+};
+reader.readAsDataURL(file);
+}
 }
 
-// ======= Zurück zum Dashboard =======
+// Render Notes
+function renderNotes(){
+const container = document.getElementById("notesList");
+if(!container) return;
+
+container.innerHTML="";
+let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+
+notes.forEach((note,i)=>{
+const div = document.createElement("div");
+div.className="file-box";
+
+let filesHtml = "";
+(note.files||[]).forEach((f,fi)=>{
+filesHtml += `<div>
+<a href="${f.data}" target="_blank">${f.name}</a>
+<button onclick="deleteNoteFile(${i},${fi})">✖</button>
+</div>`;
+});
+
+div.innerHTML = `
+${note.text}
+${filesHtml}
+<button onclick="deleteNote(${i})">Notiz löschen</button>
+`;
+
+container.appendChild(div);
+});
+}
+
+// Delete Note
+function deleteNote(i){
+let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+notes.splice(i,1);
+localStorage.setItem("notes", JSON.stringify(notes));
+renderNotes();
+}
+
+// Delete Note File
+function deleteNoteFile(i,fi){
+let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+notes[i].files.splice(fi,1);
+localStorage.setItem("notes", JSON.stringify(notes));
+renderNotes();
+}
+
+// ======= NAV =======
 function back(){
-  document.getElementById('lectureContainer').innerHTML='';
-  document.getElementById('quizContainer').innerHTML='';
-  document.getElementById('notesContainer').innerHTML='';
-  document.getElementById('dashboard').style.display='flex';
+document.getElementById('content').innerHTML="";
+document.getElementById('dashboard').style.display='flex';
+renderNotes();
 }
+
+renderNotes();
+
 </script>
 
 </body>
