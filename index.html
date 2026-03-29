@@ -63,11 +63,11 @@ textarea {
 }
 
 input {
+  width:100%;
+  margin-top:8px;
   padding:8px;
   border-radius:6px;
   border:none;
-  margin-top:5px;
-  width:100%;
 }
 
 .file-box {
@@ -110,11 +110,13 @@ input {
 <div id="notesList"></div>
 </div>
 
+<!-- ✅ NEU: ANKI BOX -->
 <div class="card" onclick="openAnki()">
 <h2>Anki / Spaced Repetition</h2>
 <ul>
 <li>Karteikarten lernen</li>
 <li>Eigene Karten erstellen</li>
+<li>Wiederholung optimieren</li>
 </ul>
 </div>
 
@@ -127,15 +129,15 @@ input {
 
 <script>
 
-// ======= VORLESUNGEN =======
+// ======= DATEN =======
 const lectures = [
 {
 title:"Warum Künstliche Intelligenz jetzt?",
 intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.",
 explanation:`💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-💡 KI kann unser Leben stark verändern.<br><br>
-💡 Gleichzeitig bestehen Risiken.<br><br>
-💡 Jobs könnten sich verändern.`,
+💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen und kann unser Leben stark verändern.<br><br>
+💡 Gleichzeitig wird vor Risiken gewarnt.<br><br>
+💡 Jobs könnten sich grundlegend verändern.`,
 merksatz:"⚠️ KI wird unsere Zukunft verändern."
 }
 ];
@@ -143,6 +145,7 @@ merksatz:"⚠️ KI wird unsere Zukunft verändern."
 // ======= VORLESUNG =======
 function openLecture(index){
 document.getElementById('dashboard').style.display='none';
+
 const l = lectures[index];
 
 document.getElementById('lectureContainer').innerHTML=`
@@ -163,7 +166,7 @@ document.getElementById('lectureContainer').innerHTML=`
 renderLectureFiles(index);
 }
 
-// FILES LECTURE
+// ======= FILES =======
 function uploadLectureFile(e,index){
 let files=e.target.files;
 let stored=JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
@@ -182,6 +185,7 @@ reader.readAsDataURL(f);
 function renderLectureFiles(index){
 let container=document.getElementById("lectureFiles");
 container.innerHTML="";
+
 let stored=JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
 
 stored.forEach((f,i)=>{
@@ -286,10 +290,20 @@ notes.forEach((n,i)=>{
 let div=document.createElement("div");
 div.className="file-box";
 
+let filesHTML="";
+(n.files||[]).forEach((f,fi)=>{
+filesHTML+=`<div>
+<a href="${f.data}" target="_blank">${f.name}</a>
+<button onclick="deleteNoteFile(${i},${fi})">✖</button>
+</div>`;
+});
+
 div.innerHTML=`
 ${n.text}
-<button onclick="deleteNote(${i})">Löschen</button>
+${filesHTML}
+<button onclick="deleteNote(${i})">Notiz löschen</button>
 `;
+
 container.appendChild(div);
 });
 }
@@ -301,14 +315,22 @@ localStorage.setItem("notes",JSON.stringify(notes));
 renderNotes();
 }
 
+function deleteNoteFile(i,fi){
+let notes=JSON.parse(localStorage.getItem("notes")||"[]");
+notes[i].files.splice(fi,1);
+localStorage.setItem("notes",JSON.stringify(notes));
+renderNotes();
+}
+
 // ======= ANKI SYSTEM =======
 const defaultCards = [
-{q:"Was ist KI?", a:"Systeme, die menschliche Intelligenz nachahmen"}
+{q:"Was ist KI?", a:"Systeme, die menschliche Intelligenz nachahmen"},
+{q:"Was ist Maschinelles Lernen?", a:"Lernen aus Daten"}
 ];
 
 function initCards(){
 if(!localStorage.getItem("ankiCards")){
-let init=defaultCards.map(c=>({...c,interval:1,next:Date.now(),ease:2.5}));
+let init=defaultCards.map(c=>({...c,interval:1,ease:2.5,next:Date.now()}));
 localStorage.setItem("ankiCards",JSON.stringify(init));
 }
 }
@@ -373,9 +395,9 @@ function rateCard(type){
 let cards=JSON.parse(localStorage.getItem("ankiCards"));
 let c=cards[currentCardIndex];
 
-if(type==="again"){c.interval=1;c.ease-=0.2;}
+if(type==="again"){c.interval=1;c.ease=Math.max(1.3,c.ease-0.2);}
 if(type==="hard"){c.interval*=1.2;}
-if(type==="good"){c.interval*=c.ease;}
+if(type==="good"){c.interval*=c.ease;c.ease+=0.1;}
 
 c.next=Date.now()+c.interval*86400000;
 
@@ -387,9 +409,10 @@ function addCard(){
 let q=document.getElementById("newQ").value;
 let a=document.getElementById("newA").value;
 
-let cards=JSON.parse(localStorage.getItem("ankiCards"));
-cards.push({q,a,interval:1,next:Date.now(),ease:2.5});
+if(!q||!a){alert("Bitte ausfüllen!");return;}
 
+let cards=JSON.parse(localStorage.getItem("ankiCards"));
+cards.push({q,a,interval:1,ease:2.5,next:Date.now()});
 localStorage.setItem("ankiCards",JSON.stringify(cards));
 
 alert("Gespeichert!");
