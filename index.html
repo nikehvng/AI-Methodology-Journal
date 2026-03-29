@@ -39,7 +39,7 @@ body {
   border-radius:6px;
 }
 
-.lecture-content, .notes-section {
+.section {
   background:#1a2a4c;
   padding:1rem;
   margin-top:1rem;
@@ -56,15 +56,14 @@ button {
 
 textarea {
   width:100%;
-  height:150px;
-  margin-top:10px;
+  height:120px;
   background:#112240;
   color:white;
 }
 
 input {
   width:100%;
-  margin-top:8px;
+  margin-top:5px;
   padding:8px;
   border-radius:6px;
   border:none;
@@ -72,20 +71,9 @@ input {
 
 .file-box {
   background:#112240;
-  padding:5px;
   margin-top:5px;
+  padding:5px;
   border-radius:6px;
-}
-
-.file-box img {
-  width:100px;
-  border-radius:8px;
-}
-
-.file-box button {
-  float:right;
-  background:none;
-  color:red;
 }
 </style>
 </head>
@@ -93,7 +81,6 @@ input {
 <body>
 
 <div class="container">
-
 <h1>KI Methoden & Anwendungen</h1>
 
 <div class="dashboard" id="dashboard">
@@ -105,328 +92,223 @@ input {
 </ul>
 </div>
 
+<div class="card" onclick="openToday()">
+<h2>Was steht heute an?</h2>
+<ul>
+<li>Spaced Repetition Inhalte</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Quizzes</h2>
+<ul>
+<li onclick="openQuiz()">Warum KI jetzt Quiz</li>
+</ul>
+</div>
+
 <div class="card" onclick="openNotes()">
 <h2>Notizen</h2>
 <div id="notesList"></div>
 </div>
 
-<!-- ✅ NEU: ANKI BOX -->
 <div class="card" onclick="openAnki()">
-<h2>Anki / Spaced Repetition</h2>
+<h2>Anki</h2>
 <ul>
 <li>Karteikarten lernen</li>
-<li>Eigene Karten erstellen</li>
-<li>Wiederholung optimieren</li>
 </ul>
 </div>
 
+<div class="card">
+<h2>Fragen</h2>
+<button onclick="window.open('https://chat.openai.com','_blank')">
+Zu ChatGPT
+</button>
 </div>
 
-<div id="lectureContainer"></div>
-<div id="notesContainer"></div>
+</div>
+
+<div id="content"></div>
 
 </div>
 
 <script>
 
-// ======= DATEN =======
-const lectures = [
-{
-title:"Warum Künstliche Intelligenz jetzt?",
-intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.",
-explanation:`💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen und kann unser Leben stark verändern.<br><br>
-💡 Gleichzeitig wird vor Risiken gewarnt.<br><br>
-💡 Jobs könnten sich grundlegend verändern.`,
-merksatz:"⚠️ KI wird unsere Zukunft verändern."
-}
-];
-
-// ======= VORLESUNG =======
-function openLecture(index){
-document.getElementById('dashboard').style.display='none';
-
-const l = lectures[index];
-
-document.getElementById('lectureContainer').innerHTML=`
-<div class="lecture-content">
-<h2>${l.title}</h2>
-<p>${l.intro}</p>
-<p>${l.explanation}</p>
-<p>${l.merksatz}</p>
-
-<h3>Dateien</h3>
-<input type="file" multiple onchange="uploadLectureFile(event, ${index})">
-<div id="lectureFiles"></div>
-
+// ===== VORLESUNG =====
+function openLecture(){
+document.getElementById("dashboard").style.display="none";
+document.getElementById("content").innerHTML=`
+<div class="section">
+<h2>Warum KI jetzt?</h2>
+<p>⭐️ KI gewinnt stark an Bedeutung.</p>
+<p>💡 Große Technologie unserer Zeit</p>
+<p>⚠️ Verändert Zukunft massiv</p>
 <button onclick="back()">Zurück</button>
 </div>
 `;
-
-renderLectureFiles(index);
 }
 
-// ======= FILES =======
-function uploadLectureFile(e,index){
-let files=e.target.files;
-let stored=JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
+// ===== TODAY =====
+function openToday(){
+document.getElementById("dashboard").style.display="none";
 
-for(let f of files){
-let reader=new FileReader();
-reader.onload=function(ev){
-stored.push({name:f.name,data:ev.target.result});
-localStorage.setItem("lectureFiles"+index,JSON.stringify(stored));
-renderLectureFiles(index);
-};
-reader.readAsDataURL(f);
-}
-}
+let cards = JSON.parse(localStorage.getItem("ankiCards")||"[]");
+let due = cards.filter(c=>c.next <= Date.now());
 
-function renderLectureFiles(index){
-let container=document.getElementById("lectureFiles");
-container.innerHTML="";
+let list = due.map(c=>`<li>${c.q}</li>`).join("");
 
-let stored=JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
-
-stored.forEach((f,i)=>{
-let div=document.createElement("div");
-div.className="file-box";
-
-if(f.data.startsWith("data:image")){
-div.innerHTML=`<img src="${f.data}">
-<button onclick="deleteLectureFile(${index},${i})">✖</button>`;
-}else{
-div.innerHTML=`<a href="${f.data}" target="_blank">${f.name}</a>
-<button onclick="deleteLectureFile(${index},${i})">✖</button>`;
+document.getElementById("content").innerHTML=`
+<div class="section">
+<h2>Heute wiederholen</h2>
+<ul>${list || "Keine fälligen Themen 🎉"}</ul>
+<button onclick="openAnki()">Jetzt lernen</button>
+<button onclick="back()">Zurück</button>
+</div>
+`;
 }
 
-container.appendChild(div);
-});
+// ===== QUIZ =====
+function openQuiz(){
+alert("Quiz kommt hier rein");
 }
 
-function deleteLectureFile(index,i){
-let stored=JSON.parse(localStorage.getItem("lectureFiles"+index)||"[]");
-stored.splice(i,1);
-localStorage.setItem("lectureFiles"+index,JSON.stringify(stored));
-renderLectureFiles(index);
-}
-
-// ======= NOTIZEN =======
-let currentNoteFiles=[];
+// ===== NOTIZEN =====
+let tempFiles=[];
 
 function openNotes(){
-document.getElementById('dashboard').style.display='none';
+document.getElementById("dashboard").style.display="none";
 
-document.getElementById('notesContainer').innerHTML=`
-<div class="notes-section">
+document.getElementById("content").innerHTML=`
+<div class="section">
 <h2>Notizen</h2>
 
-<textarea id="notesArea"></textarea>
-
+<textarea id="noteText"></textarea>
 <input type="file" multiple onchange="uploadNoteFiles(event)">
-<div id="notePreview"></div>
+<div id="preview"></div>
 
 <button onclick="saveNote()">Speichern</button>
 <button onclick="back()">Zurück</button>
 </div>
 `;
 
-currentNoteFiles=[];
+tempFiles=[];
 }
 
 function uploadNoteFiles(e){
 for(let f of e.target.files){
 let reader=new FileReader();
-reader.onload=function(ev){
-currentNoteFiles.push({name:f.name,data:ev.target.result});
-renderNotePreview();
+reader.onload=(ev)=>{
+tempFiles.push({name:f.name,data:ev.target.result});
+renderPreview();
 };
 reader.readAsDataURL(f);
 }
 }
 
-function renderNotePreview(){
-let c=document.getElementById("notePreview");
-c.innerHTML="";
-currentNoteFiles.forEach((f,i)=>{
-let div=document.createElement("div");
-div.className="file-box";
-
-if(f.data.startsWith("data:image")){
-div.innerHTML=`<img src="${f.data}">
-<button onclick="removeNoteFile(${i})">✖</button>`;
-}else{
-div.innerHTML=`${f.name}
-<button onclick="removeNoteFile(${i})">✖</button>`;
-}
-c.appendChild(div);
+function renderPreview(){
+let html="";
+tempFiles.forEach((f,i)=>{
+html+=`<div class="file-box">${f.name}
+<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button>
+</div>`;
 });
-}
-
-function removeNoteFile(i){
-currentNoteFiles.splice(i,1);
-renderNotePreview();
+document.getElementById("preview").innerHTML=html;
 }
 
 function saveNote(){
-let text=document.getElementById("notesArea").value;
 let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-
-notes.push({text:text,files:currentNoteFiles});
+notes.push({text:document.getElementById("noteText").value,files:tempFiles});
 localStorage.setItem("notes",JSON.stringify(notes));
-
-renderNotes();
 back();
 }
 
-function renderNotes(){
-let container=document.getElementById("notesList");
-if(!container) return;
-
-container.innerHTML="";
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-
-notes.forEach((n,i)=>{
-let div=document.createElement("div");
-div.className="file-box";
-
-let filesHTML="";
-(n.files||[]).forEach((f,fi)=>{
-filesHTML+=`<div>
-<a href="${f.data}" target="_blank">${f.name}</a>
-<button onclick="deleteNoteFile(${i},${fi})">✖</button>
-</div>`;
-});
-
-div.innerHTML=`
-${n.text}
-${filesHTML}
-<button onclick="deleteNote(${i})">Notiz löschen</button>
-`;
-
-container.appendChild(div);
-});
-}
-
-function deleteNote(i){
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-notes.splice(i,1);
-localStorage.setItem("notes",JSON.stringify(notes));
-renderNotes();
-}
-
-function deleteNoteFile(i,fi){
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-notes[i].files.splice(fi,1);
-localStorage.setItem("notes",JSON.stringify(notes));
-renderNotes();
-}
-
-// ======= ANKI SYSTEM =======
-const defaultCards = [
-{q:"Was ist KI?", a:"Systeme, die menschliche Intelligenz nachahmen"},
-{q:"Was ist Maschinelles Lernen?", a:"Lernen aus Daten"}
+// ===== ANKI =====
+const defaultCards=[
+{q:"Was ist KI?",a:"Maschinen lernen aus Daten",interval:1,ease:2.5,next:Date.now()}
 ];
 
-function initCards(){
 if(!localStorage.getItem("ankiCards")){
-let init=defaultCards.map(c=>({...c,interval:1,ease:2.5,next:Date.now()}));
-localStorage.setItem("ankiCards",JSON.stringify(init));
+localStorage.setItem("ankiCards",JSON.stringify(defaultCards));
 }
-}
-initCards();
 
-let currentCardIndex=null;
+let current=null;
 
 function openAnki(){
-document.getElementById('dashboard').style.display='none';
+document.getElementById("dashboard").style.display="none";
 
-document.getElementById('lectureContainer').innerHTML=`
-<div class="lecture-content">
+document.getElementById("content").innerHTML=`
+<div class="section">
 <h2>Anki</h2>
+<div id="card"></div>
 
-<div id="ankiCard"></div>
+<button onclick="showAnswer()">Antwort</button><br>
 
-<button onclick="showAnswer()">Antwort anzeigen</button><br><br>
-
-<button onclick="rateCard('again')">Wiederholen</button>
-<button onclick="rateCard('hard')">Schwer</button>
-<button onclick="rateCard('good')">Gut</button>
+<button onclick="rate('again')">🔴</button>
+<button onclick="rate('good')">🟢</button>
 
 <hr>
 
 <h3>Neue Karte</h3>
-<input id="newQ" placeholder="Frage">
-<input id="newA" placeholder="Antwort">
+<input id="q">
+<input id="a">
 <button onclick="addCard()">Speichern</button>
 
-<br><br>
 <button onclick="back()">Zurück</button>
 </div>
 `;
 
-loadNextCard();
+nextCard();
 }
 
-function loadNextCard(){
+function nextCard(){
 let cards=JSON.parse(localStorage.getItem("ankiCards"));
-let now=Date.now();
+let due=cards.filter(c=>c.next<=Date.now());
 
-let due=cards.map((c,i)=>({...c,index:i}))
-.filter(c=>c.next<=now)
-.sort((a,b)=>a.next-b.next);
-
-if(due.length===0){
-document.getElementById("ankiCard").innerHTML="🎉 Keine Karten fällig!";
+if(!due.length){
+document.getElementById("card").innerHTML="🎉 Fertig!";
 return;
 }
 
-currentCardIndex=due[0].index;
-document.getElementById("ankiCard").innerHTML=`<h3>${cards[currentCardIndex].q}</h3>`;
+current=cards.indexOf(due[0]);
+document.getElementById("card").innerHTML=cards[current].q;
 }
 
 function showAnswer(){
 let cards=JSON.parse(localStorage.getItem("ankiCards"));
-let c=cards[currentCardIndex];
-document.getElementById("ankiCard").innerHTML=`<h3>${c.q}</h3><p>${c.a}</p>`;
+document.getElementById("card").innerHTML=
+cards[current].q+"<br>"+cards[current].a;
 }
 
-function rateCard(type){
+function rate(type){
 let cards=JSON.parse(localStorage.getItem("ankiCards"));
-let c=cards[currentCardIndex];
+let c=cards[current];
 
-if(type==="again"){c.interval=1;c.ease=Math.max(1.3,c.ease-0.2);}
-if(type==="hard"){c.interval*=1.2;}
-if(type==="good"){c.interval*=c.ease;c.ease+=0.1;}
+if(type==="again"){c.interval=1;}
+if(type==="good"){c.interval*=c.ease;}
 
 c.next=Date.now()+c.interval*86400000;
 
 localStorage.setItem("ankiCards",JSON.stringify(cards));
-loadNextCard();
+nextCard();
 }
 
 function addCard(){
-let q=document.getElementById("newQ").value;
-let a=document.getElementById("newA").value;
-
-if(!q||!a){alert("Bitte ausfüllen!");return;}
-
 let cards=JSON.parse(localStorage.getItem("ankiCards"));
-cards.push({q,a,interval:1,ease:2.5,next:Date.now()});
+cards.push({
+q:document.getElementById("q").value,
+a:document.getElementById("a").value,
+interval:1,
+ease:2.5,
+next:Date.now()
+});
 localStorage.setItem("ankiCards",JSON.stringify(cards));
-
-alert("Gespeichert!");
+alert("Gespeichert");
 }
 
-// ======= NAV =======
+// ===== NAV =====
 function back(){
-document.getElementById('lectureContainer').innerHTML="";
-document.getElementById('notesContainer').innerHTML="";
-document.getElementById('dashboard').style.display='flex';
-renderNotes();
+document.getElementById("content").innerHTML="";
+document.getElementById("dashboard").style.display="flex";
 }
-
-renderNotes();
 
 </script>
 
