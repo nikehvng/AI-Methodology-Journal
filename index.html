@@ -75,6 +75,13 @@ input {
   padding:5px;
   border-radius:6px;
 }
+
+.lecture-image {
+  width:100%;
+  max-width:500px;
+  border-radius:10px;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -88,34 +95,20 @@ input {
 <div class="card">
 <h2>Vorlesungen</h2>
 <ul>
-<li onclick="openLecture(0)">Warum KI jetzt?</li>
+<li onclick="openLecture()">Warum KI jetzt?</li>
 </ul>
 </div>
 
 <div class="card" onclick="openToday()">
 <h2>Was steht heute an?</h2>
-<ul>
-<li>Spaced Repetition Inhalte</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>Quizzes</h2>
-<ul>
-<li onclick="openQuiz()">Warum KI jetzt Quiz</li>
-</ul>
 </div>
 
 <div class="card" onclick="openNotes()">
 <h2>Notizen</h2>
-<div id="notesList"></div>
 </div>
 
 <div class="card" onclick="openAnki()">
 <h2>Anki</h2>
-<ul>
-<li>Karteikarten lernen</li>
-</ul>
 </div>
 
 <div class="card">
@@ -136,39 +129,81 @@ Zu ChatGPT
 // ===== VORLESUNG =====
 function openLecture(){
 document.getElementById("dashboard").style.display="none";
+
 document.getElementById("content").innerHTML=`
 <div class="section">
 <h2>Warum KI jetzt?</h2>
-<p>⭐️ KI gewinnt stark an Bedeutung.</p>
-<p>💡 Große Technologie unserer Zeit</p>
-<p>⚠️ Verändert Zukunft massiv</p>
+
+<p><strong>Einleitung:</strong><br>
+⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.</p>
+
+<p><strong>Erklärung:</strong><br>
+💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
+💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern, von Arbeitsweisen hin zu Interaktionen.<br><br>
+💡 Gleichzeitig wird vor dem unvorsichtigen Umgang mit KI gewarnt, da Fehler nur schwer reversibel sein könnten.<br><br>
+💡 Zukünftig könnte KI einen Teil unserer Arbeit übernehmen. Jobs könnten sich grundlegend verändern.</p>
+
+<p><strong>Merksatz:</strong><br>
+⚠️ KI wird unsere Zukunft grundlegend verändern. Es ist wichtig, sich mit Gefahren & Potenzialen auseinanderzusetzen.</p>
+
+<hr>
+
+<h3>Dateien zur Lektion</h3>
+<input type="file" multiple onchange="uploadLectureFiles(event)">
+<div id="lecturePreview"></div>
+
 <button onclick="back()">Zurück</button>
 </div>
 `;
+
+renderLectureFiles();
 }
 
-// ===== TODAY =====
-function openToday(){
-document.getElementById("dashboard").style.display="none";
+// ===== DATEIEN VORLESUNG =====
+function uploadLectureFiles(e){
+let files = e.target.files;
+let stored = JSON.parse(localStorage.getItem("lectureFiles")||"[]");
 
-let cards = JSON.parse(localStorage.getItem("ankiCards")||"[]");
-let due = cards.filter(c=>c.next <= Date.now());
-
-let list = due.map(c=>`<li>${c.q}</li>`).join("");
-
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Heute wiederholen</h2>
-<ul>${list || "Keine fälligen Themen 🎉"}</ul>
-<button onclick="openAnki()">Jetzt lernen</button>
-<button onclick="back()">Zurück</button>
-</div>
-`;
+for(let f of files){
+let reader=new FileReader();
+reader.onload=function(ev){
+stored.push({name:f.name,data:ev.target.result});
+localStorage.setItem("lectureFiles",JSON.stringify(stored));
+renderLectureFiles();
+};
+reader.readAsDataURL(f);
+}
 }
 
-// ===== QUIZ =====
-function openQuiz(){
-alert("Quiz kommt hier rein");
+function renderLectureFiles(){
+let container=document.getElementById("lecturePreview");
+if(!container) return;
+
+container.innerHTML="";
+let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+
+stored.forEach((f,i)=>{
+let div=document.createElement("div");
+
+if(f.data.startsWith("data:image")){
+div.innerHTML=`
+<img src="${f.data}" class="lecture-image">
+<button onclick="deleteLectureFile(${i})">Löschen</button>`;
+}else{
+div.innerHTML=`
+<a href="${f.data}" target="_blank">${f.name}</a>
+<button onclick="deleteLectureFile(${i})">Löschen</button>`;
+}
+
+container.appendChild(div);
+});
+}
+
+function deleteLectureFile(i){
+let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+stored.splice(i,1);
+localStorage.setItem("lectureFiles",JSON.stringify(stored));
+renderLectureFiles();
 }
 
 // ===== NOTIZEN =====
@@ -208,8 +243,7 @@ function renderPreview(){
 let html="";
 tempFiles.forEach((f,i)=>{
 html+=`<div class="file-box">${f.name}
-<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button>
-</div>`;
+<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;
 });
 document.getElementById("preview").innerHTML=html;
 }
@@ -219,6 +253,25 @@ let notes=JSON.parse(localStorage.getItem("notes")||"[]");
 notes.push({text:document.getElementById("noteText").value,files:tempFiles});
 localStorage.setItem("notes",JSON.stringify(notes));
 back();
+}
+
+// ===== TODAY =====
+function openToday(){
+document.getElementById("dashboard").style.display="none";
+
+let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]");
+let due=cards.filter(c=>c.next<=Date.now());
+
+let list=due.map(c=>`<li>${c.q}</li>`).join("");
+
+document.getElementById("content").innerHTML=`
+<div class="section">
+<h2>Heute lernen</h2>
+<ul>${list || "🎉 Nichts fällig"}</ul>
+<button onclick="openAnki()">Jetzt lernen</button>
+<button onclick="back()">Zurück</button>
+</div>
+`;
 }
 
 // ===== ANKI =====
@@ -238,6 +291,7 @@ document.getElementById("dashboard").style.display="none";
 document.getElementById("content").innerHTML=`
 <div class="section">
 <h2>Anki</h2>
+
 <div id="card"></div>
 
 <button onclick="showAnswer()">Antwort</button><br>
