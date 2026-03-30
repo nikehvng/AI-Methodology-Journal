@@ -27,17 +27,8 @@ body {
   border-radius:12px;
   flex:1 1 300px;
   cursor:pointer;
-  transition:0.3s;
 }
 .card:hover { transform:scale(1.05); }
-
-.card ul { list-style:none; padding:0; }
-.card li {
-  background:#112240;
-  margin:5px 0;
-  padding:8px;
-  border-radius:6px;
-}
 
 .section {
   background:#1a2a4c;
@@ -48,39 +39,33 @@ body {
 
 button {
   margin-top:10px;
-  padding:8px 12px;
+  padding:8px;
   border:none;
   border-radius:6px;
-  cursor:pointer;
 }
 
-textarea {
+textarea, input {
   width:100%;
-  height:120px;
-  background:#112240;
-  color:white;
-}
-
-input {
-  width:100%;
-  margin-top:5px;
+  margin-top:8px;
   padding:8px;
   border-radius:6px;
   border:none;
-}
-
-.file-box {
   background:#112240;
-  margin-top:5px;
-  padding:5px;
-  border-radius:6px;
+  color:white;
 }
 
 .lecture-image {
   width:100%;
   max-width:500px;
-  border-radius:10px;
   margin-top:10px;
+  border-radius:10px;
+}
+
+.file-box {
+  margin-top:10px;
+  padding:8px;
+  background:#112240;
+  border-radius:6px;
 }
 </style>
 </head>
@@ -92,30 +77,12 @@ input {
 
 <div class="dashboard" id="dashboard">
 
+<div class="card" onclick="openLecture()">📚 Vorlesung</div>
+<div class="card" onclick="openToday()">🔁 Heute</div>
+<div class="card" onclick="openNotes()">📝 Notizen</div>
+<div class="card" onclick="openAnki()">🧠 Anki</div>
 <div class="card">
-<h2>Vorlesungen</h2>
-<ul>
-<li onclick="openLecture()">Warum KI jetzt?</li>
-</ul>
-</div>
-
-<div class="card" onclick="openToday()">
-<h2>Was steht heute an?</h2>
-</div>
-
-<div class="card" onclick="openNotes()">
-<h2>Notizen</h2>
-</div>
-
-<div class="card" onclick="openAnki()">
-<h2>Anki</h2>
-</div>
-
-<div class="card">
-<h2>Fragen</h2>
-<button onclick="window.open('https://chat.openai.com','_blank')">
-Zu ChatGPT
-</button>
+<button onclick="window.open('https://chat.openai.com')">❓ Fragen</button>
 </div>
 
 </div>
@@ -139,18 +106,17 @@ document.getElementById("content").innerHTML=`
 
 <p><strong>Erklärung:</strong><br>
 💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern, von Arbeitsweisen hin zu Interaktionen.<br><br>
-💡 Gleichzeitig wird vor dem unvorsichtigen Umgang mit KI gewarnt, da Fehler nur schwer reversibel sein könnten.<br><br>
-💡 Zukünftig könnte KI einen Teil unserer Arbeit übernehmen. Jobs könnten sich grundlegend verändern.</p>
+💡 KI kann unser Leben massiv verändern.<br><br>
+💡 Risiken bestehen ebenfalls.<br><br>
+💡 Jobs verändern sich grundlegend.</p>
 
 <p><strong>Merksatz:</strong><br>
-⚠️ KI wird unsere Zukunft grundlegend verändern. Es ist wichtig, sich mit Gefahren & Potenzialen auseinanderzusetzen.</p>
+⚠️ KI verändert unsere Zukunft.</p>
 
 <hr>
 
-<h3>Dateien zur Lektion</h3>
 <input type="file" multiple onchange="uploadLectureFiles(event)">
-<div id="lecturePreview"></div>
+<div id="lectureFiles"></div>
 
 <button onclick="back()">Zurück</button>
 </div>
@@ -159,14 +125,13 @@ document.getElementById("content").innerHTML=`
 renderLectureFiles();
 }
 
-// ===== DATEIEN VORLESUNG =====
+// ===== LECTURE FILES =====
 function uploadLectureFiles(e){
-let files = e.target.files;
-let stored = JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
 
-for(let f of files){
+for(let f of e.target.files){
 let reader=new FileReader();
-reader.onload=function(ev){
+reader.onload=(ev)=>{
 stored.push({name:f.name,data:ev.target.result});
 localStorage.setItem("lectureFiles",JSON.stringify(stored));
 renderLectureFiles();
@@ -176,33 +141,36 @@ reader.readAsDataURL(f);
 }
 
 function renderLectureFiles(){
-let container=document.getElementById("lecturePreview");
-if(!container) return;
+let c=document.getElementById("lectureFiles");
+if(!c) return;
 
-container.innerHTML="";
-let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+c.innerHTML="";
+let files=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
 
-stored.forEach((f,i)=>{
+files.forEach((f,i)=>{
 let div=document.createElement("div");
+div.className="file-box";
 
 if(f.data.startsWith("data:image")){
 div.innerHTML=`
 <img src="${f.data}" class="lecture-image">
-<button onclick="deleteLectureFile(${i})">Löschen</button>`;
+<button onclick="deleteLectureFile(${i})">Löschen</button>
+`;
 }else{
 div.innerHTML=`
 <a href="${f.data}" target="_blank">${f.name}</a>
-<button onclick="deleteLectureFile(${i})">Löschen</button>`;
+<button onclick="deleteLectureFile(${i})">Löschen</button>
+`;
 }
 
-container.appendChild(div);
+c.appendChild(div);
 });
 }
 
 function deleteLectureFile(i){
-let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
-stored.splice(i,1);
-localStorage.setItem("lectureFiles",JSON.stringify(stored));
+let files=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+files.splice(i,1);
+localStorage.setItem("lectureFiles",JSON.stringify(files));
 renderLectureFiles();
 }
 
@@ -217,8 +185,9 @@ document.getElementById("content").innerHTML=`
 <h2>Notizen</h2>
 
 <textarea id="noteText"></textarea>
+
 <input type="file" multiple onchange="uploadNoteFiles(event)">
-<div id="preview"></div>
+<div id="notePreview"></div>
 
 <button onclick="saveNote()">Speichern</button>
 <button onclick="back()">Zurück</button>
@@ -233,24 +202,47 @@ for(let f of e.target.files){
 let reader=new FileReader();
 reader.onload=(ev)=>{
 tempFiles.push({name:f.name,data:ev.target.result});
-renderPreview();
+renderNotePreview();
 };
 reader.readAsDataURL(f);
 }
 }
 
-function renderPreview(){
-let html="";
+function renderNotePreview(){
+let c=document.getElementById("notePreview");
+c.innerHTML="";
+
 tempFiles.forEach((f,i)=>{
-html+=`<div class="file-box">${f.name}
-<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;
+let div=document.createElement("div");
+div.className="file-box";
+
+if(f.data.startsWith("data:image")){
+div.innerHTML=`
+<img src="${f.data}" class="lecture-image">
+<button onclick="removeTempFile(${i})">✖</button>`;
+}else{
+div.innerHTML=`
+${f.name}
+<button onclick="removeTempFile(${i})">✖</button>`;
+}
+
+c.appendChild(div);
 });
-document.getElementById("preview").innerHTML=html;
+}
+
+function removeTempFile(i){
+tempFiles.splice(i,1);
+renderNotePreview();
 }
 
 function saveNote(){
 let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-notes.push({text:document.getElementById("noteText").value,files:tempFiles});
+
+notes.push({
+text:document.getElementById("noteText").value,
+files:tempFiles
+});
+
 localStorage.setItem("notes",JSON.stringify(notes));
 back();
 }
@@ -262,25 +254,21 @@ document.getElementById("dashboard").style.display="none";
 let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]");
 let due=cards.filter(c=>c.next<=Date.now());
 
-let list=due.map(c=>`<li>${c.q}</li>`).join("");
-
 document.getElementById("content").innerHTML=`
 <div class="section">
-<h2>Heute lernen</h2>
-<ul>${list || "🎉 Nichts fällig"}</ul>
-<button onclick="openAnki()">Jetzt lernen</button>
+<h2>Heute</h2>
+<ul>${due.map(c=>"<li>"+c.q+"</li>").join("") || "🎉 Nichts fällig"}</ul>
+<button onclick="openAnki()">Lernen</button>
 <button onclick="back()">Zurück</button>
 </div>
 `;
 }
 
 // ===== ANKI =====
-const defaultCards=[
-{q:"Was ist KI?",a:"Maschinen lernen aus Daten",interval:1,ease:2.5,next:Date.now()}
-];
-
 if(!localStorage.getItem("ankiCards")){
-localStorage.setItem("ankiCards",JSON.stringify(defaultCards));
+localStorage.setItem("ankiCards",JSON.stringify([
+{q:"Was ist KI?",a:"Maschinen lernen aus Daten",interval:1,ease:2.5,next:Date.now()}
+]));
 }
 
 let current=null;
@@ -294,16 +282,15 @@ document.getElementById("content").innerHTML=`
 
 <div id="card"></div>
 
-<button onclick="showAnswer()">Antwort</button><br>
+<button onclick="showAnswer()">Antwort</button>
 
 <button onclick="rate('again')">🔴</button>
 <button onclick="rate('good')">🟢</button>
 
 <hr>
 
-<h3>Neue Karte</h3>
-<input id="q">
-<input id="a">
+<input id="q" placeholder="Frage">
+<input id="a" placeholder="Antwort">
 <button onclick="addCard()">Speichern</button>
 
 <button onclick="back()">Zurück</button>
