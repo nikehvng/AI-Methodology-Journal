@@ -3,290 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-LearnHub Ultimate | KI Methoden</title>
+    <title>AI-LearnHub Ultimate | Fixed</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.15);
-            --bg: #f8fafc;
-            --sidebar: #ffffff;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --glass: rgba(255, 255, 255, 0.7);
-        }
-
-        body.dark-mode {
-            --bg: #0f172a;
-            --sidebar: #1e293b;
-            --card-bg: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --glass: rgba(30, 41, 59, 0.7);
-        }
-
-        * { box-sizing: border-box; transition: background 0.3s, color 0.3s, transform 0.2s ease; }
+        :root { --primary: #6366f1; --primary-glow: rgba(99, 102, 241, 0.15); --bg: #f8fafc; --sidebar: #ffffff; --card-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --border: #e2e8f0; }
+        body.dark-mode { --bg: #0f172a; --sidebar: #1e293b; --card-bg: #1e293b; --text-main: #f1f5f9; --text-muted: #94a3b8; --border: #334155; }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-
-        nav { width: 260px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 2rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; backdrop-filter: blur(10px); }
-        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 12px; padding-left: 10px; }
+        nav { width: 260px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 2rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--primary); margin-bottom: 2rem; display: flex; align-items: center; gap: 12px; }
         .nav-link { padding: 12px 15px; border-radius: 14px; text-decoration: none; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .nav-link:hover { background: var(--primary-glow); color: var(--primary); }
-        .nav-link.active { background: var(--primary); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
-
-        /* Pomodoro Timer Style */
-        .pomodoro-box { margin-top: 1rem; padding: 1rem; background: var(--primary-glow); border-radius: 18px; text-align: center; border: 1px solid var(--border); }
-        #timer-display { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 10px 0; }
-
-        main { flex: 1; padding: 2rem 3rem; overflow-y: auto; scroll-behavior: smooth; }
-        .bento-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(160px, auto); gap: 1.5rem; margin-top: 2rem; }
-        .card { background: var(--card-bg); padding: 1.8rem; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02); position: relative; overflow: hidden; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); }
-        
-        .card-large { grid-column: span 2; grid-row: span 2; background: linear-gradient(135deg, var(--primary), #818cf8); color: white; }
-        .card-large h3, .card-large h1 { color: white; }
-
-        .content-section { display: none; animation: fadeIn 0.5s ease; }
-        .content-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-        .note-card { background: var(--card-bg); padding: 1.5rem; border-radius: 22px; border: 1px solid var(--border); cursor: pointer; height: 250px; display: flex; flex-direction: column; }
-        .tag-badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; background: var(--primary-glow); color: var(--primary); margin-top: 5px; }
-
-        .btn { border-radius: 14px; padding: 10px 20px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .nav-link.active { background: var(--primary); color: white; }
+        .pomodoro-box { margin-top: 1rem; padding: 1rem; background: var(--primary-glow); border-radius: 18px; text-align: center; }
+        #timer-display { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 5px 0; }
+        main { flex: 1; padding: 2rem 3rem; overflow-y: auto; }
+        .card { background: var(--card-bg); padding: 1.5rem; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .btn { border-radius: 12px; padding: 10px 20px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-small { padding: 6px 12px; font-size: 0.8rem; }
-        
-        input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); margin-bottom: 1rem; font-family: inherit; }
-
-        #noteModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(12px); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); padding: 3rem; border-radius: 32px; max-width: 850px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid var(--border); }
-        
-        /* Flashcards & Quiz */
-        .flashcard-container { perspective: 1000px; height: 250px; cursor: pointer; margin: 25px 0; }
-        .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: preserve-3d; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); margin-bottom: 1rem; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .note-card { background: var(--card-bg); padding: 1.5rem; border-radius: 22px; border: 1px solid var(--border); cursor: pointer; }
+        .flashcard-container { perspective: 1000px; height: 250px; cursor: pointer; margin: 20px 0; }
+        .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
         .flipped .flashcard-inner { transform: rotateY(180deg); }
-        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 30px; padding: 40px; font-size: 1.2rem; font-weight: 600; border: 1px solid var(--border); background: var(--card-bg); text-align: center; }
-        .card-back { background: var(--primary-glow); color: var(--primary); transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); font-size: 1.2rem; padding: 20px; text-align: center; }
+        .card-back { transform: rotateY(180deg); color: var(--primary); background: var(--primary-glow); }
+        #noteModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); padding: 2.5rem; border-radius: 25px; width: 90%; max-width: 700px; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo"><i class="fas fa-brain"></i> LearnHub</div>
-        <button class="btn btn-dark-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Mode</button>
-
         <div class="nav-link active" onclick="showSection('dashboard', this)"><i class="fas fa-shapes"></i> Dashboard</div>
         <div class="nav-link" onclick="showSection('notes', this)"><i class="fas fa-book-open"></i> Vorlesungen</div>
         <div class="nav-link" onclick="showSection('anki', this)"><i class="fas fa-bolt"></i> Anki Karten</div>
         <div class="nav-link" onclick="showSection('quiz', this)"><i class="fas fa-puzzle-piece"></i> Quiz-Master</div>
         
         <div class="pomodoro-box">
-            <small><i class="fas fa-clock"></i> Pomodoro</small>
-            <div id="timer-display">25:00</div>
-            <button class="btn btn-primary btn-small" id="timer-btn" onclick="toggleTimer()">Start</button>
+            <small>Fokus-Timer</small>
+            <div id="timer-display">45:00</div>
+            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 0.8rem;" onclick="toggleTimer()" id="timer-btn">Start</button>
         </div>
-
-        <a href="https://chatgpt.com" target="_blank" style="margin-top:auto" class="nav-link"><i class="fas fa-sparkles"></i> AI Assistant</a>
+        <button class="btn" style="margin-top: auto;" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
     </nav>
 
     <main>
         <section id="dashboard" class="content-section active">
-            <h1>Willkommen zurück! 🚀</h1>
-            <div class="bento-grid">
-                <div class="card card-large">
-                    <h3 id="user-level">Level 1: Novize</h3>
-                    <h1 id="user-xp">0 XP gesammelt</h1>
-                    <div style="background: rgba(0,0,0,0.1); border-radius: 20px; height: 10px; margin: 15px 0;">
-                        <div id="xp-bar" style="background: white; height: 100%; border-radius: 20px; width: 0%;"></div>
-                    </div>
-                    <p><i class="fas fa-fire"></i> Deine Lern-Serie: <span id="dash-streak">0</span> Tage</p>
-                </div>
-                <div class="card"><h3>Anki fällig</h3><h2 id="dash-due">0</h2><p>Karten warten</p></div>
-                <div class="card"><h3>Notizen</h3><h2 id="dash-notes">0</h2><p>Gespeicherte Fakten</p></div>
+            <h1>Willkommen! 🚀</h1>
+            <div class="card" style="background: linear-gradient(135deg, var(--primary), #818cf8); color: white;">
+                <h3 id="user-level">Level 1</h3>
+                <h2 id="user-xp">0 XP</h2>
+                <div style="background: rgba(255,255,255,0.2); height: 10px; border-radius: 10px;"><div id="xp-bar" style="background: white; width: 0%; height: 100%; border-radius: 10px;"></div></div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <div class="card" style="flex: 1;"><h3>Notizen</h3><h2 id="dash-notes">0</h2></div>
+                <div class="card" style="flex: 1;"><h3>Anki fällig</h3><h2 id="dash-due">0</h2></div>
             </div>
         </section>
 
         <section id="notes" class="content-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h1>Vorlesungsnotizen</h1>
-                <button class="btn btn-primary" onclick="toggleForm('noteFormCard')"><i class="fas fa-plus"></i> Neue Notiz</button>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <h1>Notizen</h1>
+                <button class="btn btn-primary" onclick="toggleForm('noteForm')">Neue Notiz</button>
             </div>
-            <div id="noteFormCard" class="card" style="display:none; margin-bottom: 2rem; border: 2px solid var(--primary);">
+            <div id="noteForm" class="card" style="display: none;">
                 <input type="text" id="noteTitle" placeholder="Titel">
-                <input type="text" id="noteTag" placeholder="Kategorie (z.B. Informatik)">
-                <textarea id="noteText" rows="6" placeholder="Inhalt..."></textarea>
-                <button class="btn btn-primary" onclick="saveNote()">Speichern & +5 XP</button>
+                <input type="text" id="noteTag" placeholder="Tag">
+                <textarea id="noteText" rows="4" placeholder="Inhalt..."></textarea>
+                <button class="btn btn-primary" onclick="saveNote()">Speichern</button>
             </div>
-            <div class="notes-grid" id="notesGrid"></div>
+            <div id="notesGrid" class="notes-grid"></div>
+        </section>
+
+        <section id="anki" class="content-section">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <h1>Anki Karten</h1>
+                <button class="btn btn-primary" onclick="toggleForm('ankiForm')">Neue Karte</button>
+            </div>
+            <div id="ankiForm" class="card" style="display: none;">
+                <input type="text" id="ankiFront" placeholder="Vorderseite (Frage)">
+                <input type="text" id="ankiBack" placeholder="Rückseite (Antwort)">
+                <button class="btn btn-primary" onclick="saveAnki()">Karte hinzufügen</button>
+            </div>
+            <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center;">
+                <div class="flashcard-container" id="f-container" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner">
+                        <div class="card-front" id="dispFront">Bereit?</div>
+                        <div class="card-back" id="dispBack">Antwort</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%" onclick="loadNextCard()">Nächste Karte</button>
+            </div>
         </section>
 
         <section id="quiz" class="content-section">
             <h1>Quiz-Master</h1>
-            <div class="card" style="max-width: 600px;">
-                <h3>Thema wählen:</h3>
+            <div class="card">
                 <select id="quiz-note-select"></select>
-                <button class="btn btn-primary" style="width: 100%;" onclick="generateQuiz()">Quiz generieren</button>
+                <button class="btn btn-primary" style="width: 100%" onclick="generateQuiz()">Starten</button>
             </div>
-            <div id="quiz-display" class="card" style="display:none; max-width: 600px; margin-top:1rem;">
-                <h2 id="quiz-question" style="color: var(--primary);"></h2>
-                <input type="text" id="quiz-answer" placeholder="Deine Antwort...">
+            <div id="quiz-display" class="card" style="display: none;">
+                <h3 id="quiz-question"></h3>
+                <input type="text" id="quiz-answer">
                 <div id="quiz-feedback"></div>
                 <button class="btn btn-primary" onclick="checkQuiz()">Prüfen</button>
             </div>
         </section>
-
-        <section id="anki" class="content-section">
-            <h1>Anki Training</h1>
-            <div class="card" style="max-width: 650px; margin: 0 auto; text-align: center;">
-                <div class="flashcard-container" id="f-container" onclick="this.classList.toggle('flipped')">
-                    <div class="flashcard-inner">
-                        <div class="card-front" id="dispFront">Bist du bereit?</div>
-                        <div class="card-back" id="dispBack">Antwort</div>
-                    </div>
-                </div>
-                <button id="startAnki" class="btn btn-primary" style="width:100%" onclick="loadNextCard()">Nächste Karte</button>
-            </div>
-        </section>
     </main>
 
-    <div id="noteModal">
-        <div class="modal-content">
-            <div style="float:right; display:flex; gap:10px">
-                <button class="btn btn-small" onclick="readAloud()"><i class="fas fa-volume-up"></i> Vorlesen</button>
-                <button class="btn btn-small" onclick="window.print()"><i class="fas fa-file-pdf"></i> PDF</button>
-                <button class="btn btn-small" onclick="closeNote()"><i class="fas fa-times"></i></button>
-            </div>
-            <h2 id="modalTitleDisplay" style="color:var(--primary)"></h2>
-            <div id="modalTag" class="tag-badge"></div>
-            <p id="modalTextDisplay" style="line-height:1.6; margin-top:20px; white-space: pre-wrap;"></p>
-        </div>
-    </div>
+    <div id="noteModal"><div class="modal-content">
+        <button class="btn" onclick="closeNote()">Schließen</button>
+        <h2 id="modalTitleDisplay"></h2>
+        <p id="modalTextDisplay" style="white-space: pre-wrap;"></p>
+    </div></div>
 
     <script>
-        // State Management
-        let stats = JSON.parse(localStorage.getItem('learn_stats') || '{"xp":0, "streak":0, "lastDate":null}');
         let notes = JSON.parse(localStorage.getItem('full_ai_notes') || '[]');
         let anki = JSON.parse(localStorage.getItem('full_ai_anki') || '[]');
-        let currentQuizAnswer = "";
+        let stats = JSON.parse(localStorage.getItem('learn_stats') || '{"xp":0}');
+        let currentAnkiIdx = -1;
 
-        // --- POMODORO TIMER ---
-        let timerSeconds = 1500;
+        // TIMER (45 Min)
+        let timerSeconds = 2700; 
         let timerInterval = null;
         function toggleTimer() {
             const btn = document.getElementById('timer-btn');
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                btn.innerText = "Start";
-            } else {
+            if(timerInterval) { clearInterval(timerInterval); timerInterval = null; btn.innerText = "Start"; }
+            else { 
                 timerInterval = setInterval(() => {
-                    timerSeconds--;
-                    updateTimerDisplay();
-                    if (timerSeconds <= 0) {
-                        clearInterval(timerInterval);
-                        alert("Zeit abgelaufen! +10 XP");
-                        addXP(10);
-                        timerSeconds = 1500;
-                    }
+                    timerSeconds--; updateTimerDisplay();
+                    if(timerSeconds <= 0) { clearInterval(timerInterval); addXP(50); timerSeconds = 2700; alert("45 Min geschafft! +50 XP"); }
                 }, 1000);
                 btn.innerText = "Pause";
             }
         }
         function updateTimerDisplay() {
-            const m = Math.floor(timerSeconds / 60);
-            const s = timerSeconds % 60;
+            const m = Math.floor(timerSeconds / 60); const s = timerSeconds % 60;
             document.getElementById('timer-display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        // --- GAMIFICATION ---
-        function addXP(amount) {
-            stats.xp += amount;
-            checkStreak();
-            saveStats();
-            updateDash();
+        // ANKI SPEICHERN
+        function saveAnki() {
+            const f = document.getElementById('ankiFront').value;
+            const b = document.getElementById('ankiBack').value;
+            if(!f || !b) return;
+            anki.push({ front: f, back: b, id: Date.now(), next: Date.now() });
+            localStorage.setItem('full_ai_anki', JSON.stringify(anki));
+            document.getElementById('ankiFront').value = ""; document.getElementById('ankiBack').value = "";
+            toggleForm('ankiForm'); updateDash(); addXP(5);
         }
-        function checkStreak() {
-            const today = new Date().toLocaleDateString();
-            if (stats.lastDate !== today) {
-                stats.streak = (stats.lastDate === new Date(Date.now() - 86400000).toLocaleDateString()) ? stats.streak + 1 : 1;
-                stats.lastDate = today;
-            }
-        }
-        function saveStats() { localStorage.setItem('learn_stats', JSON.stringify(stats)); }
 
-        // --- NOTES & TAGS ---
+        function loadNextCard() {
+            if(anki.length === 0) return alert("Erst Karten erstellen!");
+            document.getElementById('f-container').classList.remove('flipped');
+            currentAnkiIdx = Math.floor(Math.random() * anki.length);
+            document.getElementById('dispFront').innerText = anki[currentAnkiIdx].front;
+            document.getElementById('dispBack').innerText = anki[currentAnkiIdx].back;
+        }
+
+        // NOTIZEN SPEICHERN
         function saveNote() {
-            const title = document.getElementById('noteTitle').value;
-            const text = document.getElementById('noteText').value;
-            const tag = document.getElementById('noteTag').value || 'Allgemein';
-            if(!title) return;
-            notes.unshift({ title, text, tag, id: Date.now(), date: new Date().toLocaleDateString() });
+            const t = document.getElementById('noteTitle').value;
+            const txt = document.getElementById('noteText').value;
+            if(!t) return;
+            notes.unshift({ title: t, text: txt, tag: document.getElementById('noteTag').value, id: Date.now() });
             localStorage.setItem('full_ai_notes', JSON.stringify(notes));
-            renderNotes();
-            addXP(5);
-            toggleForm('noteFormCard');
-            updateDash();
+            renderNotes(); toggleForm('noteForm'); updateDash(); addXP(10);
         }
 
         function renderNotes() {
             document.getElementById('notesGrid').innerHTML = notes.map(n => `
                 <div class="note-card" onclick="openNote('${n.id}')">
-                    <span class="tag-badge">${n.tag}</span>
-                    <h4 style="margin:10px 0">${n.title}</h4>
-                    <p style="font-size:0.8rem; color:var(--text-muted)">${n.text.substring(0, 50)}...</p>
-                </div>
-            `).join('');
+                    <small>${n.tag || 'Allgemein'}</small>
+                    <h4>${n.title}</h4>
+                </div>`).join('');
         }
 
         function openNote(id) {
-            const note = notes.find(n => n.id == id);
-            document.getElementById('modalTitleDisplay').innerText = note.title;
-            document.getElementById('modalTextDisplay').innerText = note.text;
-            document.getElementById('modalTag').innerText = note.tag;
+            const n = notes.find(x => x.id == id);
+            document.getElementById('modalTitleDisplay').innerText = n.title;
+            document.getElementById('modalTextDisplay').innerText = n.text;
             document.getElementById('noteModal').style.display = 'flex';
         }
 
-        function closeNote() { document.getElementById('noteModal').style.display = 'none'; }
-
-        // --- AUDIO ---
-        function readAloud() {
-            const text = document.getElementById('modalTextDisplay').innerText;
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'de-DE';
-            window.speechSynthesis.speak(msg);
-        }
-
-        // --- QUIZ & DASH ---
         function updateDash() {
             document.getElementById('dash-notes').innerText = notes.length;
-            document.getElementById('dash-streak').innerText = stats.streak;
-            document.getElementById('user-xp').innerText = `${stats.xp} XP gesammelt`;
-            const level = Math.floor(stats.xp / 100) + 1;
-            const progress = stats.xp % 100;
-            document.getElementById('user-level').innerText = `Level ${level}: ${level > 5 ? 'Experte' : 'Novize'}`;
-            document.getElementById('xp-bar').style.width = `${progress}%`;
-            
+            document.getElementById('dash-due').innerText = anki.length;
+            document.getElementById('user-xp').innerText = `${stats.xp} XP`;
+            document.getElementById('xp-bar').style.width = `${stats.xp % 100}%`;
+            document.getElementById('user-level').innerText = `Level ${Math.floor(stats.xp / 100) + 1}`;
             const sel = document.getElementById('quiz-note-select');
             if(sel) sel.innerHTML = notes.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
         }
 
-        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function addXP(v) { stats.xp += v; localStorage.setItem('learn_stats', JSON.stringify(stats)); updateDash(); }
         function showSection(id, el) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            if(el) el.classList.add('active');
+            el.classList.add('active');
         }
-        function toggleForm(id) {
-            const f = document.getElementById(id);
-            f.style.display = f.style.display === 'none' ? 'block' : 'none';
-        }
+        function toggleForm(id) { const f = document.getElementById(id); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function closeNote() { document.getElementById('noteModal').style.display = 'none'; }
 
         window.onload = () => { renderNotes(); updateDash(); };
     </script>
