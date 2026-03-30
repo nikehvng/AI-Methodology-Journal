@@ -246,6 +246,47 @@ document.getElementById("content").innerHTML=`
 
 renderLectureFiles();
 }
+lectures.push({
+  title: "SVM – Support Vector Maschinen",
+  intro: "⭐️ Support Vector Machines (SVM) sind effiziente Verfahren zur Klassifizierung von Objekten, die in vielen Bereichen eingesetzt werden.",
+  explanation: `
+💡 SVM unterteilt Objekte in Klassen, sodass um die Klassengrenzen ein möglichst breiter Bereich frei von Objekten bleibt.<br><br>
+💡 Typische Anwendungen: Bild-, Text- oder Handschrifterkennung.<br><br>
+💡 Lineare und nicht-lineare Klassifizierung möglich (Soft-Margin).<br><br>
+💡 Kernel-Trick: Trainingsvektoren in höherdimensionalen Raum transformieren, um komplexe, nicht-lineare Trennflächen zu ermöglichen.<br><br>
+💡 Effizienter Rechenaufwand, anschauliche Arbeitsweise, sehr nützlich bei großen Datenmengen (Volume), schnellen Datenströmen (Velocity), vielfältigen Datenstrukturen (Variety) und Zuverlässigkeit (Veracity).<br><br>
+💡 Varianz-Kompromiss beachten: Balance zwischen Trainingsfehler und Generalisierung.
+  `,
+  merksatz: "⚠️ SVMs trennen Klassen effizient und nutzen den Kernel-Trick für komplexe Probleme – ideal für Bild-, Text- und Objekterkennung.",
+  examples: `
+<h3>Beispiele:</h3>
+<ul>
+<li>Textklassifikation: Klassifizierung von Texten anhand von Merkmalen wie Wörtern oder n-Grammen.</li>
+<li>Bilderkennung: Klassifizierung von Bildern anhand von Farb- oder Texturmerkmalen.</li>
+<li>Gesichtserkennung: Identifikation von Personen oder Emotionen über Gesichtszüge.</li>
+<li>Objekterkennung: Erkennung von Objekten in Bildern über Form, Textur oder Farbe.</li>
+<li>Finanzvorhersagen: Vorhersage von Aktienkursen oder Kreditrisiken.</li>
+</ul>
+  `,
+  algorithms: `
+<h3>Algorithmen im Vergleich:</h3>
+<ul>
+<li>Regression (linear, logistisch)</li>
+<li>k-Nearest Neighbors (kNN)</li>
+<li>SVM – Support Vector Machines</li>
+<li>Künstliche neuronale Netze (Perzeptrone / Deep Learning)</li>
+<li>Weitere: Naive Bayes, Decision Tree, kMeans, Random Forest, Gradient Boosting (XGBoost, LightGBM, CatBoost)</li>
+</ul>
+  `,
+  quiz: `
+<h3>Quiz SVM</h3>
+<p>1. Was macht der Kernel-Trick bei SVM?</p>
+<p>2. Nenne zwei typische Anwendungsbereiche von SVM.</p>
+<p>3. Was versteht man unter Soft-Margin?</p>
+<p>4. Welche Arten von Daten können SVM trennen?</p>
+`,
+  files: [] // Hier werden hochgeladene Dateien gespeichert
+});
 
 // ===== DATEIEN (VORLESUNG – CLEAN VERSION) =====
 function uploadLectureFiles(e){
