@@ -1,466 +1,292 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KI Lernplattform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-LearnHub | KI Methoden & Anwendungen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --sidebar: #1e1b4b;
+        }
 
-<style>
-body {
-  margin:0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: radial-gradient(circle at top, #1b263b, #0d1b2a);
-  color:white;
-}
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-/* Container */
-.container {
-  width:90%;
-  max-width:1100px;
-  margin:auto;
-  padding-top:20px;
-}
+        /* Sidebar */
+        nav { width: 280px; background: var(--sidebar); color: white; padding: 2rem 1.5rem; display: flex; flex-direction: column; flex-shrink: 0; }
+        nav h2 { color: #a5b4fc; font-size: 1.4rem; margin-bottom: 2rem; border-bottom: 1px solid #312e81; padding-bottom: 1rem; }
+        .nav-stats { font-size: 0.85rem; color: #94a3b8; margin-bottom: 2rem; line-height: 1.6; }
+        .nav-stats i { width: 20px; color: #a5b4fc; }
 
-/* Dashboard */
-.dashboard {
-  display:flex;
-  flex-wrap:wrap;
-  gap:1.5rem;
-  margin-top:20px;
-}
+        /* Main Content */
+        main { flex: 1; padding: 2rem; overflow-y: auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 1.5rem; }
+        h3 { margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
 
-/* Cards */
-.card {
-  backdrop-filter: blur(12px);
-  background: rgba(26,42,76,0.6);
-  border:1px solid rgba(255,255,255,0.1);
-  padding:1.5rem;
-  border-radius:18px;
-  flex:1 1 260px;
-  cursor:pointer;
-  transition:all 0.3s ease;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
+        /* Form Elements */
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .ai-link { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; text-decoration: none; text-align: center; padding: 12px; border-radius: 10px; margin-top: auto; font-weight: bold; }
 
-.card:hover {
-  transform:translateY(-8px) scale(1.03);
-  box-shadow:0 20px 40px rgba(0,0,0,0.6);
-}
+        /* Spaced Repetition Flashcards */
+        .flashcard-container { perspective: 1000px; height: 220px; cursor: pointer; margin: 15px 0; }
+        .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flipped .flashcard-inner { transform: rotateY(180deg); }
+        .card-front, .card-back { 
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+            display: flex; align-items: center; justify-content: center; border-radius: 12px; 
+            border: 2px solid #e2e8f0; padding: 25px; text-align: center; font-size: 1rem;
+        }
+        .card-back { background: #f5f3ff; color: var(--primary); transform: rotateY(180deg); font-weight: 500; }
+        
+        .rating-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; display: none; }
+        .btn-rate { border: none; color: white; padding: 10px 5px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+        
+        /* Notes & Uploads */
+        .file-zone { border: 2px dashed #cbd5e1; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 10px; color: var(--secondary); font-size: 0.9rem; }
+        .preview-img { max-width: 60px; border-radius: 4px; margin-top: 5px; }
+        .note-item { background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 10px; position: relative; border-left: 4px solid var(--primary); }
+        .delete-icon { position: absolute; right: 10px; top: 10px; color: var(--danger); cursor: pointer; opacity: 0.6; }
+        .delete-icon:hover { opacity: 1; }
 
-/* Section (content area) */
-.section {
-  backdrop-filter: blur(12px);
-  background: rgba(26,42,76,0.7);
-  padding:2rem;
-  margin-top:2rem;
-  border-radius:20px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.5);
-  animation:fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
-}
-
-/* Inputs */
-textarea, input {
-  width:100%;
-  margin-top:10px;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  background:#0f1c35;
-  color:white;
-}
-
-/* Buttons */
-button {
-  margin-top:12px;
-  padding:10px 16px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  background:linear-gradient(135deg, #3a86ff, #5aa0ff);
-  color:white;
-  transition:all 0.2s;
-}
-
-button:hover {
-  transform:scale(1.05);
-  box-shadow:0 5px 15px rgba(58,134,255,0.5);
-}
-
-/* Anki Buttons */
-button[onclick*="again"] { background:#e63946; }
-button[onclick*="hard"] { background:#f4a261; }
-button[onclick*="good"] { background:#2a9d8f; }
-button[onclick*="easy"] { background:#457b9d; }
-
-/* Lecture Images */
-.lecture-image {
-  width:6cm;
-  height:4cm;
-  object-fit:cover;
-  border-radius:10px;
-  margin:10px 0;
-  display:block;
-  box-shadow:0 6px 20px rgba(0,0,0,0.5);
-}
-
-/* FILE BOX */
-.file-box {
-  margin-top:10px;
-  padding:12px;
-  background:#0f1c35;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-/* ANKI Flip */
-.card-container {
-  perspective:1000px;
-}
-
-.flip-card {
-  width:100%;
-  max-width:500px;
-  height:150px;
-  position:relative;
-  transform-style:preserve-3d;
-  transition: transform 0.6s;
-  margin:auto;
-}
-
-.flip-card.flipped {
-  transform:rotateY(180deg);
-}
-
-.flip-side {
-  position:absolute;
-  width:100%;
-  height:100%;
-  backface-visibility:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#0f1c35;
-  border-radius:12px;
-  padding:20px;
-  text-align:center;
-}
-
-.flip-back {
-  transform:rotateY(180deg);
-}
-
-/* Progress Bar */
-.progress-bar {
-  width:100%;
-  height:10px;
-  background:#0f1c35;
-  border-radius:10px;
-  margin-top:10px;
-}
-
-.progress-fill {
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#2a9d8f,#3a86ff);
-  border-radius:10px;
-  transition:width 0.3s;
-}
-</style>
+        /* Simple Calendar */
+        .event-item { font-size: 0.85rem; padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
+    </style>
 </head>
-
 <body>
-<div class="container">
-<h1>KI Methoden & Anwendungen</h1>
 
-<div class="dashboard" id="dashboard">
+    <nav>
+        <h2>AI-LearnHub</h2>
+        <div class="nav-stats">
+            <div><i class="fas fa-layer-group"></i> Karten: <span id="stat-total">0</span></div>
+            <div><i class="fas fa-clock"></i> Fällig: <span id="stat-due">0</span></div>
+            <div><i class="fas fa-sticky-note"></i> Notizen: <span id="stat-notes">0</span></div>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <p style="font-size: 0.8rem; color: #a5b4fc; text-transform: uppercase;">Kalender-Quickies</p>
+            <div id="calendar-mini"></div>
+        </div>
 
-<div class="card">
-<h2>Vorlesungen</h2>
-<ul>
-<li onclick="openLecture(0)">Warum KI jetzt?</li>
-<li onclick="openLecture(1)">SVM – Support Vector Maschinen</li>
-</ul>
-</div>
+        <a href="https://chatgpt.com" target="_blank" class="ai-link">
+            <i class="fas fa-robot"></i> KI-Assistent fragen
+        </a>
+    </nav>
 
-<div class="card" onclick="openToday()">
-<h2>Was steht heute an?</h2>
-</div>
+    <main>
+        <header style="margin-bottom: 2rem;">
+            <h1 style="margin:0;">KI Methoden & Anwendungen</h1>
+            <small id="status-msg" style="color: var(--primary); font-weight: bold;"></small>
+        </header>
 
-<div class="card" onclick="openNotes()">
-<h2>Notizen</h2>
-</div>
+        <div class="grid">
+            <div class="col">
+                <div class="card">
+                    <h3><i class="fas fa-pen-fancy"></i> Vorlesung zusammenfassen</h3>
+                    <input type="text" id="noteTitle" placeholder="Thema (z.B. Neuronale Netze)">
+                    <textarea id="noteText" placeholder="Inhalt der Vorlesung..."></textarea>
+                    <div class="file-zone" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-image"></i> Bild/Datei hinzufügen
+                        <input type="file" id="fileInput" hidden onchange="handleFilePreview(this)">
+                        <div id="filePreview"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveNote()">Hinterlegen</button>
+                </div>
 
-<div class="card" onclick="openAnki()">
-<h2>Anki</h2>
-</div>
+                <div class="card">
+                    <h3><i class="fas fa-calendar-day"></i> Prüfungstermine</h3>
+                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                        <input type="date" id="eventDate" style="margin:0; flex:1;">
+                        <input type="text" id="eventText" placeholder="Was steht an?" style="margin:0; flex:2;">
+                        <button class="btn btn-primary" onclick="addEvent()" style="width:auto;"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div id="eventList"></div>
+                </div>
 
-<div class="card">
-<h2>Fragen</h2>
-<button onclick="window.open('https://chat.openai.com','_blank')">Zu ChatGPT</button>
-</div>
+                <div class="card" style="max-height: 300px; overflow-y: auto;">
+                    <h3><i class="fas fa-history"></i> Letzte Notizen</h3>
+                    <div id="notesContainer"></div>
+                </div>
+            </div>
 
-</div>
+            <div class="col">
+                <div class="card">
+                    <h3><i class="fas fa-plus-square"></i> Neue Karte erstellen (Anki)</h3>
+                    <input type="text" id="ankiFront" placeholder="Frage auf der Vorderseite">
+                    <textarea id="ankiBack" placeholder="Antwort auf der Rückseite"></textarea>
+                    <button class="btn btn-primary" onclick="addAnkiCard()">In den Stapel legen</button>
+                </div>
 
-<div id="content"></div>
-</div>
+                <div class="card" id="studyCard">
+                    <h3><i class="fas fa-brain"></i> Lernen (Spaced Repetition)</h3>
+                    <div id="ankiDisplay">
+                        <div class="flashcard-container" id="f-container" onclick="this.classList.toggle('flipped')">
+                            <div class="flashcard-inner">
+                                <div class="card-front" id="dispFront">Starte eine Lernsession!</div>
+                                <div class="card-back" id="dispBack">Hier steht die Lösung.</div>
+                            </div>
+                        </div>
+                        <button id="btnNext" class="btn btn-primary" onclick="loadNextCard()">Nächste fällige Karte</button>
+                        
+                        <div class="rating-btns" id="rateSection">
+                            <button class="btn-rate" style="background:#ef4444" onclick="rate(1)">Sehr Schwer<br>1m</button>
+                            <button class="btn-rate" style="background:#f59e0b" onclick="rate(10)">Schwer<br>10m</button>
+                            <button class="btn-rate" style="background:#4f46e5" onclick="rate(1440)">Mittel<br>1 Tag</button>
+                            <button class="btn-rate" style="background:#10b981" onclick="rate(4320)">Leicht<br>3 Tage</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-<script>
-// ===== VORLESUNGEN =====
-const lectures = [
-{
-title:"Warum KI jetzt?",
-intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.",
-explanation:`💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben stark verändern.<br><br>
-💡 Gleichzeitig wird vor Risiken gewarnt.<br><br>
-💡 Jobs könnten sich grundlegend verändern.`,
-merksatz:"⚠️ KI wird unsere Zukunft grundlegend verändern."
-},
-{
-title:"SVM – Support Vector Maschinen",
-intro:"⭐️ Support Vector Machines (SVM) sind effiziente Verfahren zur Klassifizierung von Objekten.",
-explanation:`💡 SVM unterteilt Objekte in Klassen, sodass um die Klassengrenzen ein möglichst breiter Bereich frei von Objekten bleibt.<br><br>
-💡 Typische Anwendungen: Bild-, Text- oder Handschrifterkennung.<br><br>
-💡 Lineare und nicht-lineare Klassifizierung möglich (Soft-Margin).<br><br>
-💡 Kernel-Trick: Trainingsvektoren in höherdimensionalen Raum transformieren.<br><br>
-💡 Effizienter Rechenaufwand, anschauliche Arbeitsweise, nützlich bei großen Datenmengen (Volume), schnellen Datenströmen (Velocity), vielfältigen Datenstrukturen (Variety) und Zuverlässigkeit (Veracity).<br><br>
-💡 Varianz-Kompromiss beachten: Balance zwischen Trainingsfehler und Generalisierung.`
-}
-];
+    <script>
+        // Daten aus LocalStorage laden
+        let notes = JSON.parse(localStorage.getItem('ki_notes') || '[]');
+        let anki = JSON.parse(localStorage.getItem('ki_anki') || '[]');
+        let events = JSON.parse(localStorage.getItem('ki_events') || '[]');
+        let currentAnkiIndex = -1;
 
-// ===== OPEN LECTURE =====
-function openLecture(index){
-document.getElementById("dashboard").style.display="none";
-let lec = lectures[index];
+        // Init
+        window.onload = () => {
+            renderNotes();
+            renderEvents();
+            updateStats();
+        };
 
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>${lec.title}</h2>
-<p><strong>Einleitung:</strong><br>${lec.intro}</p>
-<p><strong>Erklärung:</strong><br>${lec.explanation}</p>
-<p><strong>Merksatz:</strong><br>${lec.merksatz || ""}</p>
+        // --- NOTIZEN LOGIK ---
+        function saveNote() {
+            const title = document.getElementById('noteTitle').value;
+            const text = document.getElementById('noteText').value;
+            if(!title) return;
 
-<hr>
-<h3>Dateien zur Lektion</h3>
-<input type="file" multiple onchange="uploadLectureFiles(event,${index})">
-<div id="lecturePreview"></div>
+            notes.unshift({ title, text, date: new Date().toLocaleDateString(), id: Date.now() });
+            localStorage.setItem('ki_notes', JSON.stringify(notes));
+            
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteText').value = '';
+            document.getElementById('filePreview').innerHTML = '';
+            renderNotes();
+            updateStats();
+            showStatus("Notiz gespeichert!");
+        }
 
-<button onclick="back()">Zurück</button>
-</div>
-`;
+        function renderNotes() {
+            const container = document.getElementById('notesContainer');
+            container.innerHTML = notes.map(n => `
+                <div class="note-item">
+                    <i class="fas fa-trash delete-icon" onclick="deleteNote(${n.id})"></i>
+                    <strong>${n.title}</strong><br><small>${n.text}</small>
+                </div>
+            `).join('');
+        }
 
-renderLectureFiles(index);
-}
+        function deleteNote(id) {
+            notes = notes.filter(n => n.id !== id);
+            localStorage.setItem('ki_notes', JSON.stringify(notes));
+            renderNotes();
+            updateStats();
+        }
 
-// ===== LECTURE FILES =====
-function uploadLectureFiles(e,index){
-let files = e.target.files;
-let stored = JSON.parse(localStorage.getItem("lectureFiles"+index) || "[]");
-for(let f of files){
-let reader = new FileReader();
-reader.onload=function(ev){
-stored.push({name:f.name,data:ev.target.result});
-localStorage.setItem("lectureFiles"+index,JSON.stringify(stored));
-renderLectureFiles(index);
-};
-reader.readAsDataURL(f);
-}
-}
+        function handleFilePreview(input) {
+            const preview = document.getElementById('filePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => preview.innerHTML = `<img src="${e.target.result}" class="preview-img">`;
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
-function renderLectureFiles(index){
-let container = document.getElementById("lecturePreview");
-if(!container) return;
+        // --- ANKI LOGIK (SPACED REPETITION) ---
+        function addAnkiCard() {
+            const front = document.getElementById('ankiFront').value;
+            const back = document.getElementById('ankiBack').value;
+            if(!front || !back) return;
 
-container.innerHTML="";
-let stored = JSON.parse(localStorage.getItem("lectureFiles"+index) || "[]");
-stored.forEach((f,i)=>{
-let div = document.createElement("div");
-if(f.data.startsWith("data:image")){
-div.innerHTML=`
-<img src="${f.data}" class="lecture-image">
-<div class="file-box">
-<span>${f.name}</span>
-<button onclick="deleteLectureFile(${index},${i})">✖</button>
-</div>`;
-}else{
-div.innerHTML=`
-<div class="file-box">
-<a href="${f.data}" target="_blank">${f.name}</a>
-<button onclick="deleteLectureFile(${index},${i})">✖</button>
-</div>`;
-}
-container.appendChild(div);
-});
-}
+            anki.push({ front, back, nextReview: Date.now(), id: Date.now() });
+            localStorage.setItem('ki_anki', JSON.stringify(anki));
+            
+            document.getElementById('ankiFront').value = '';
+            document.getElementById('ankiBack').value = '';
+            updateStats();
+            showStatus("Karteikarte erstellt!");
+        }
 
-function deleteLectureFile(index,i){
-let stored = JSON.parse(localStorage.getItem("lectureFiles"+index) || "[]");
-stored.splice(i,1);
-localStorage.setItem("lectureFiles"+index,JSON.stringify(stored));
-renderLectureFiles(index);
-}
+        function loadNextCard() {
+            const now = Date.now();
+            const dueCards = anki.filter(c => c.nextReview <= now);
+            
+            if(dueCards.length === 0) {
+                document.getElementById('dispFront').innerText = "Glückwunsch! Alles gelernt. 🎉";
+                document.getElementById('dispBack').innerText = "Keine Karten mehr fällig.";
+                return;
+            }
 
-// ===== NOTIZEN =====
-let tempFiles=[];
-function openNotes(){
-document.getElementById("dashboard").style.display="none";
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Notizen</h2>
-<textarea id="noteText"></textarea>
-<input type="file" multiple onchange="uploadNoteFiles(event)">
-<div id="preview"></div>
-<button onclick="saveNote()">Speichern</button>
-<button onclick="back()">Zurück</button>
-</div>`;
-tempFiles=[];
-}
+            const card = dueCards[0];
+            currentAnkiIndex = anki.indexOf(card);
+            
+            document.getElementById('dispFront').innerText = card.front;
+            document.getElementById('dispBack').innerText = card.back;
+            document.getElementById('f-container').classList.remove('flipped');
+            document.getElementById('btnNext').style.display = "none";
+            document.getElementById('rateSection').style.display = "grid";
+        }
 
-function uploadNoteFiles(e){
-for(let f of e.target.files){
-let reader = new FileReader();
-reader.onload = (ev)=>{
-tempFiles.push({name:f.name,data:ev.target.result});
-renderPreview();
-};
-reader.readAsDataURL(f);
-}
-}
+        function rate(minutes) {
+            const nextReview = Date.now() + (minutes * 60 * 1000);
+            anki[currentAnkiIndex].nextReview = nextReview;
+            localStorage.setItem('ki_anki', JSON.stringify(anki));
+            
+            document.getElementById('rateSection').style.display = "none";
+            document.getElementById('btnNext').style.display = "block";
+            updateStats();
+            loadNextCard();
+        }
 
-function renderPreview(){
-let container=document.getElementById("preview");
-container.innerHTML="";
-tempFiles.forEach((f,i)=>{
-let div=document.createElement("div");
-div.className="file-box";
-if(f.data.startsWith("data:image")){
-div.innerHTML=`<img src="${f.data}" class="lecture-image"><span>${f.name}</span><button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button>`;
-}else{
-div.innerHTML=`<span>${f.name}</span><button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button>`;
-}
-container.appendChild(div);
-});
-}
+        // --- KALENDER LOGIK ---
+        function addEvent() {
+            const date = document.getElementById('eventDate').value;
+            const text = document.getElementById('eventText').value;
+            if(!date || !text) return;
 
-function saveNote(){
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-notes.push({text:document.getElementById("noteText").value,files:tempFiles});
-localStorage.setItem("notes",JSON.stringify(notes));
-back();
-}
+            events.push({ date, text });
+            events.sort((a,b) => new Date(a.date) - new Date(b.date));
+            localStorage.setItem('ki_events', JSON.stringify(events));
+            renderEvents();
+        }
 
-// ===== TODAY =====
-function openToday(){
-document.getElementById("dashboard").style.display="none";
-let cards = JSON.parse(localStorage.getItem("ankiCards")||"[]");
-let due=cards.filter(c=>c.next <= Date.now());
-let list = due.map(c=>`<li>${c.q}</li>`).join("");
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Heute wiederholen</h2>
-<ul>${list || "🎉 Keine fälligen Themen"}</ul>
-<button onclick="openAnki()">Jetzt lernen</button>
-<button onclick="back()">Zurück</button>
-</div>`;
-}
+        function renderEvents() {
+            const container = document.getElementById('eventList');
+            container.innerHTML = events.map(e => `
+                <div class="event-item"><strong>${e.date}:</strong> ${e.text}</div>
+            `).join('');
+        }
 
-// ===== ANKI =====
-if(!localStorage.getItem("ankiCards")) localStorage.setItem("ankiCards","[]");
-let dueCards = [];
-let currentIndex=0;
-function loadDueCards(){
-let allCards = JSON.parse(localStorage.getItem("ankiCards")||"[]");
-dueCards = allCards;
-currentIndex=0;
-}
-loadDueCards();
+        // --- UTILS ---
+        function updateStats() {
+            document.getElementById('stat-total').innerText = anki.length;
+            document.getElementById('stat-due').innerText = anki.filter(c => c.nextReview <= Date.now()).length;
+            document.getElementById('stat-notes').innerText = notes.length;
+        }
 
-function openAnki(){
-document.getElementById("dashboard").style.display="none";
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Anki</h2>
-<div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-<div class="card-container">
-<div id="flipCard" class="flip-card">
-<div class="flip-side" id="front"></div>
-<div class="flip-side flip-back" id="back"></div>
-</div>
-</div>
-<button onclick="flipCard()">Antwort anzeigen</button><br><br>
-<button onclick="rateCard('again')">🔴</button>
-<button onclick="rateCard('hard')">🟠</button>
-<button onclick="rateCard('good')">🟢</button>
-<button onclick="rateCard('easy')">🔵</button>
-<hr>
-<input id="q" placeholder="Frage">
-<input id="a" placeholder="Antwort">
-<button onclick="addCard()">Speichern</button>
-<button onclick="back()">Zurück</button>
-</div>`;
-loadDueCards();
-showNextCard();
-}
-
-function showNextCard(){
-if(dueCards.length===0){
-document.getElementById("front").innerHTML="🎉 Fertig!";
-document.getElementById("back").innerHTML="";
-document.getElementById("progressFill").style.width="100%";
-return;
-}
-let c = dueCards[0];
-currentIndex=0;
-document.getElementById("flipCard").classList.remove("flipped");
-document.getElementById("front").innerHTML = `<h3>${c.q}</h3>`;
-document.getElementById("back").innerHTML = `<h3>${c.a}</h3>`;
-let progress=(1-(dueCards.length/JSON.parse(localStorage.getItem("ankiCards")).length))*100;
-document.getElementById("progressFill").style.width = progress+"%";
-}
-
-function flipCard(){
-document.getElementById("flipCard").classList.toggle("flipped");
-}
-
-function rateCard(type){
-let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]");
-let c=cards[currentIndex];
-if(type==="again"){c.interval=1;c.ease=Math.max(1.3,c.ease-0.2);}
-if(type==="hard"){c.interval*=1.2;c.ease=Math.max(1.3,c.ease-0.15);}
-if(type==="good"){c.interval*=c.ease;c.ease+=0.1;}
-if(type==="easy"){c.interval*=(c.ease+0.3);c.ease+=0.15;}
-c.next=Date.now()+c.interval*86400000;
-cards[currentIndex]=c;
-localStorage.setItem("ankiCards",JSON.stringify(cards));
-loadDueCards();
-showNextCard();
-}
-
-function addCard(){
-let q=document.getElementById("q").value.trim();
-let a=document.getElementById("a").value.trim();
-if(!q||!a){alert("Bitte Frage und Antwort eingeben!"); return;}
-let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]");
-cards.push({q:q,a:a,interval:1,ease:2.5,next:Date.now()});
-localStorage.setItem("ankiCards",JSON.stringify(cards));
-document.getElementById("q").value="";
-document.getElementById("a").value="";
-alert("Karte gespeichert!");
-}
-
-// ===== NAV =====
-function back(){
-document.getElementById("content").innerHTML="";
-document.getElementById("dashboard").style.display="flex";
-}
-</script>
+        function showStatus(msg) {
+            const s = document.getElementById('status-msg');
+            s.innerText = msg;
+            setTimeout(() => s.innerText = "", 3000);
+        }
+    </script>
 </body>
 </html>
