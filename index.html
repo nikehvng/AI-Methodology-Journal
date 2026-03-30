@@ -27,6 +27,7 @@ body {
   border-radius:12px;
   flex:1 1 300px;
   cursor:pointer;
+  transition:0.3s;
 }
 .card:hover { transform:scale(1.05); }
 
@@ -39,33 +40,32 @@ body {
 
 button {
   margin-top:10px;
-  padding:8px;
+  padding:8px 12px;
   border:none;
   border-radius:6px;
+  cursor:pointer;
 }
 
-textarea, input {
+textarea {
   width:100%;
-  margin-top:8px;
+  height:120px;
+  background:#112240;
+  color:white;
+}
+
+input {
+  width:100%;
+  margin-top:5px;
   padding:8px;
   border-radius:6px;
   border:none;
-  background:#112240;
-  color:white;
 }
 
 .lecture-image {
   width:100%;
   max-width:500px;
-  margin-top:10px;
   border-radius:10px;
-}
-
-.file-box {
   margin-top:10px;
-  padding:8px;
-  background:#112240;
-  border-radius:6px;
 }
 </style>
 </head>
@@ -77,12 +77,30 @@ textarea, input {
 
 <div class="dashboard" id="dashboard">
 
-<div class="card" onclick="openLecture()">📚 Vorlesung</div>
-<div class="card" onclick="openToday()">🔁 Heute</div>
-<div class="card" onclick="openNotes()">📝 Notizen</div>
-<div class="card" onclick="openAnki()">🧠 Anki</div>
 <div class="card">
-<button onclick="window.open('https://chat.openai.com')">❓ Fragen</button>
+<h2>Vorlesungen</h2>
+<ul>
+<li onclick="openLecture()">Warum KI jetzt?</li>
+</ul>
+</div>
+
+<div class="card" onclick="openToday()">
+<h2>Was steht heute an?</h2>
+</div>
+
+<div class="card" onclick="openNotes()">
+<h2>Notizen</h2>
+</div>
+
+<div class="card" onclick="openAnki()">
+<h2>Anki</h2>
+</div>
+
+<div class="card">
+<h2>Fragen</h2>
+<button onclick="window.open('https://chat.openai.com','_blank')">
+Zu ChatGPT
+</button>
 </div>
 
 </div>
@@ -106,17 +124,18 @@ document.getElementById("content").innerHTML=`
 
 <p><strong>Erklärung:</strong><br>
 💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-💡 KI kann unser Leben massiv verändern.<br><br>
-💡 Risiken bestehen ebenfalls.<br><br>
-💡 Jobs verändern sich grundlegend.</p>
+💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern.<br><br>
+💡 Gleichzeitig wird vor Risiken gewarnt.<br><br>
+💡 Jobs könnten sich grundlegend verändern.</p>
 
 <p><strong>Merksatz:</strong><br>
-⚠️ KI verändert unsere Zukunft.</p>
+⚠️ KI wird unsere Zukunft grundlegend verändern.</p>
 
 <hr>
 
+<h3>Dateien zur Lektion</h3>
 <input type="file" multiple onchange="uploadLectureFiles(event)">
-<div id="lectureFiles"></div>
+<div id="lecturePreview"></div>
 
 <button onclick="back()">Zurück</button>
 </div>
@@ -125,15 +144,16 @@ document.getElementById("content").innerHTML=`
 renderLectureFiles();
 }
 
-// ===== LECTURE FILES =====
+// ===== DATEIEN (VORLESUNG – CLEAN VERSION) =====
 function uploadLectureFiles(e){
-let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+let files = e.target.files;
+let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
 
-for(let f of e.target.files){
-let reader=new FileReader();
-reader.onload=(ev)=>{
+for(let f of files){
+let reader = new FileReader();
+reader.onload = function(ev){
 stored.push({name:f.name,data:ev.target.result});
-localStorage.setItem("lectureFiles",JSON.stringify(stored));
+localStorage.setItem("lectureFiles", JSON.stringify(stored));
 renderLectureFiles();
 };
 reader.readAsDataURL(f);
@@ -141,15 +161,14 @@ reader.readAsDataURL(f);
 }
 
 function renderLectureFiles(){
-let c=document.getElementById("lectureFiles");
-if(!c) return;
+let container = document.getElementById("lecturePreview");
+if(!container) return;
 
-c.innerHTML="";
-let files=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+container.innerHTML="";
+let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
 
-files.forEach((f,i)=>{
-let div=document.createElement("div");
-div.className="file-box";
+stored.forEach((f,i)=>{
+let div = document.createElement("div");
 
 if(f.data.startsWith("data:image")){
 div.innerHTML=`
@@ -163,14 +182,14 @@ div.innerHTML=`
 `;
 }
 
-c.appendChild(div);
+container.appendChild(div);
 });
 }
 
 function deleteLectureFile(i){
-let files=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
-files.splice(i,1);
-localStorage.setItem("lectureFiles",JSON.stringify(files));
+let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
+stored.splice(i,1);
+localStorage.setItem("lectureFiles", JSON.stringify(stored));
 renderLectureFiles();
 }
 
@@ -187,7 +206,7 @@ document.getElementById("content").innerHTML=`
 <textarea id="noteText"></textarea>
 
 <input type="file" multiple onchange="uploadNoteFiles(event)">
-<div id="notePreview"></div>
+<div id="preview"></div>
 
 <button onclick="saveNote()">Speichern</button>
 <button onclick="back()">Zurück</button>
@@ -202,47 +221,24 @@ for(let f of e.target.files){
 let reader=new FileReader();
 reader.onload=(ev)=>{
 tempFiles.push({name:f.name,data:ev.target.result});
-renderNotePreview();
+renderPreview();
 };
 reader.readAsDataURL(f);
 }
 }
 
-function renderNotePreview(){
-let c=document.getElementById("notePreview");
-c.innerHTML="";
-
+function renderPreview(){
+let html="";
 tempFiles.forEach((f,i)=>{
-let div=document.createElement("div");
-div.className="file-box";
-
-if(f.data.startsWith("data:image")){
-div.innerHTML=`
-<img src="${f.data}" class="lecture-image">
-<button onclick="removeTempFile(${i})">✖</button>`;
-}else{
-div.innerHTML=`
-${f.name}
-<button onclick="removeTempFile(${i})">✖</button>`;
-}
-
-c.appendChild(div);
+html+=`<div>${f.name}
+<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;
 });
-}
-
-function removeTempFile(i){
-tempFiles.splice(i,1);
-renderNotePreview();
+document.getElementById("preview").innerHTML=html;
 }
 
 function saveNote(){
 let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-
-notes.push({
-text:document.getElementById("noteText").value,
-files:tempFiles
-});
-
+notes.push({text:document.getElementById("noteText").value,files:tempFiles});
 localStorage.setItem("notes",JSON.stringify(notes));
 back();
 }
@@ -254,21 +250,25 @@ document.getElementById("dashboard").style.display="none";
 let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]");
 let due=cards.filter(c=>c.next<=Date.now());
 
+let list=due.map(c=>`<li>${c.q}</li>`).join("");
+
 document.getElementById("content").innerHTML=`
 <div class="section">
-<h2>Heute</h2>
-<ul>${due.map(c=>"<li>"+c.q+"</li>").join("") || "🎉 Nichts fällig"}</ul>
-<button onclick="openAnki()">Lernen</button>
+<h2>Heute wiederholen</h2>
+<ul>${list || "🎉 Keine fälligen Themen"}</ul>
+<button onclick="openAnki()">Jetzt lernen</button>
 <button onclick="back()">Zurück</button>
 </div>
 `;
 }
 
 // ===== ANKI =====
-if(!localStorage.getItem("ankiCards")){
-localStorage.setItem("ankiCards",JSON.stringify([
+const defaultCards=[
 {q:"Was ist KI?",a:"Maschinen lernen aus Daten",interval:1,ease:2.5,next:Date.now()}
-]));
+];
+
+if(!localStorage.getItem("ankiCards")){
+localStorage.setItem("ankiCards",JSON.stringify(defaultCards));
 }
 
 let current=null;
@@ -282,15 +282,16 @@ document.getElementById("content").innerHTML=`
 
 <div id="card"></div>
 
-<button onclick="showAnswer()">Antwort</button>
+<button onclick="showAnswer()">Antwort anzeigen</button><br>
 
-<button onclick="rate('again')">🔴</button>
-<button onclick="rate('good')">🟢</button>
+<button onclick="rate('again')">🔴 Wiederholen</button>
+<button onclick="rate('good')">🟢 Gut</button>
 
 <hr>
 
-<input id="q" placeholder="Frage">
-<input id="a" placeholder="Antwort">
+<h3>Neue Karte</h3>
+<input id="q">
+<input id="a">
 <button onclick="addCard()">Speichern</button>
 
 <button onclick="back()">Zurück</button>
