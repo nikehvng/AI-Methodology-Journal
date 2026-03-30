@@ -9,7 +9,7 @@
 body {
   margin:0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-  background:#0d1b2a;
+  background: radial-gradient(circle at top, #1b263b, #0d1b2a);
   color:white;
 }
 
@@ -20,136 +20,153 @@ body {
   margin:auto;
 }
 
-h1 {
-  margin:20px 0;
-  font-weight:600;
-}
-
 /* Dashboard */
 .dashboard {
   display:flex;
   flex-wrap:wrap;
-  gap:1.2rem;
+  gap:1.5rem;
+  margin-top:20px;
 }
 
-/* Cards */
+/* Cards (Glass Look) */
 .card {
-  background:linear-gradient(145deg, #1a2a4c, #16213e);
-  padding:1.2rem;
-  border-radius:16px;
+  backdrop-filter: blur(12px);
+  background: rgba(26,42,76,0.6);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:1.5rem;
+  border-radius:18px;
   flex:1 1 260px;
   cursor:pointer;
-  transition:all 0.25s ease;
-  box-shadow:0 6px 20px rgba(0,0,0,0.3);
+  transition:all 0.3s ease;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 .card:hover {
-  transform:translateY(-5px) scale(1.02);
-  box-shadow:0 10px 25px rgba(0,0,0,0.5);
+  transform:translateY(-8px) scale(1.03);
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
 }
 
-.card h2 {
-  margin-bottom:10px;
-}
-
-.card ul {
-  padding:0;
-  list-style:none;
-}
-
-.card li {
-  background:#0f1c35;
-  margin:6px 0;
-  padding:8px;
-  border-radius:8px;
-}
-
-/* Content Sections */
+/* Section */
 .section {
-  background:linear-gradient(145deg, #1a2a4c, #16213e);
-  padding:1.5rem;
-  margin-top:1.5rem;
-  border-radius:16px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.4);
-  line-height:1.6;
+  backdrop-filter: blur(12px);
+  background: rgba(26,42,76,0.7);
+  padding:2rem;
+  margin-top:2rem;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.5);
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
 }
 
 /* Inputs */
 textarea, input {
   width:100%;
   margin-top:10px;
-  padding:10px;
-  border-radius:8px;
+  padding:12px;
+  border-radius:10px;
   border:none;
   background:#0f1c35;
   color:white;
-  font-size:14px;
 }
 
 /* Buttons */
 button {
   margin-top:12px;
-  padding:10px 14px;
+  padding:10px 16px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   cursor:pointer;
-  font-weight:500;
-  background:#3a86ff;
+  font-weight:600;
+  background:linear-gradient(135deg, #3a86ff, #5aa0ff);
   color:white;
-  transition:0.2s;
+  transition:all 0.2s;
 }
 
 button:hover {
-  background:#5aa0ff;
-  transform:translateY(-1px);
+  transform:scale(1.05);
+  box-shadow:0 5px 15px rgba(58,134,255,0.5);
 }
 
-/* Anki Buttons Farben */
+/* Anki Buttons */
 button[onclick*="again"] { background:#e63946; }
 button[onclick*="hard"] { background:#f4a261; }
 button[onclick*="good"] { background:#2a9d8f; }
 button[onclick*="easy"] { background:#457b9d; }
 
-/* Images */
+/* FILES */
 .lecture-image {
   width:100%;
-  max-width:600px;
-  border-radius:12px;
+  max-width:650px;
+  border-radius:14px;
   margin-top:15px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.5);
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
-/* File Boxes */
+/* FILE BOX */
 .file-box {
   margin-top:10px;
-  padding:10px;
+  padding:12px;
   background:#0f1c35;
   border-radius:10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  font-size:14px;
 }
 
-/* Anki Card */
-#card {
-  margin-top:20px;
-  padding:20px;
-  background:#0f1c35;
-  border-radius:12px;
-  text-align:center;
-  font-size:18px;
-  min-height:100px;
+/* ===== ANKI CARD FLIP ===== */
+.card-container {
+  perspective:1000px;
+}
+
+.flip-card {
+  width:100%;
+  height:150px;
+  position:relative;
+  transform-style:preserve-3d;
+  transition: transform 0.6s;
+}
+
+.flip-card.flipped {
+  transform:rotateY(180deg);
+}
+
+.flip-side {
+  position:absolute;
+  width:100%;
+  height:100%;
+  backface-visibility:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
+  background:#0f1c35;
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
 }
 
-/* Progress */
-#progress {
+.flip-back {
+  transform:rotateY(180deg);
+}
+
+/* Progress Bar */
+.progress-bar {
+  width:100%;
+  height:10px;
+  background:#0f1c35;
+  border-radius:10px;
   margin-top:10px;
-  opacity:0.7;
-  font-size:14px;
+}
+
+.progress-fill {
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#2a9d8f,#3a86ff);
+  border-radius:10px;
+  transition:width 0.3s;
 }
 </style>
 </head>
@@ -374,25 +391,30 @@ document.getElementById("content").innerHTML=`
 <div class="section">
 <h2>Anki</h2>
 
-<p id="progress"></p>
+<div class="progress-bar">
+  <div id="progressFill" class="progress-fill"></div>
+</div>
 
-<div id="card"></div>
+<div class="card-container">
+  <div id="flipCard" class="flip-card">
+    <div class="flip-side" id="front"></div>
+    <div class="flip-side flip-back" id="back"></div>
+  </div>
+</div>
 
-<button onclick="showAnswer()">Antwort anzeigen</button><br><br>
+<button onclick="flipCard()">Antwort anzeigen</button><br><br>
 
-<button onclick="rateCard('again')">🔴 Again</button>
-<button onclick="rateCard('hard')">🟠 Hard</button>
-<button onclick="rateCard('good')">🟢 Good</button>
-<button onclick="rateCard('easy')">🔵 Easy</button>
+<button onclick="rateCard('again')">🔴</button>
+<button onclick="rateCard('hard')">🟠</button>
+<button onclick="rateCard('good')">🟢</button>
+<button onclick="rateCard('easy')">🔵</button>
 
 <hr>
 
-<h3>Neue Karte</h3>
 <input id="q" placeholder="Frage">
 <input id="a" placeholder="Antwort">
 <button onclick="addCard()">Speichern</button>
 
-<br><br>
 <button onclick="back()">Zurück</button>
 </div>
 `;
@@ -401,35 +423,32 @@ loadDueCards();
 showNextCard();
 }
 
-// Fällige Karten laden
-function loadDueCards(){
-let cards = JSON.parse(localStorage.getItem("ankiCards"));
-let now = Date.now();
-
-dueCards = cards
-.map((c,i)=>({...c,index:i}))
-.filter(c=>c.next <= now)
-.sort((a,b)=>a.next - b.next);
-}
-
 // Karte anzeigen
 function showNextCard(){
 if(dueCards.length === 0){
-document.getElementById("card").innerHTML = "🎉 Keine Karten fällig!";
-document.getElementById("progress").innerHTML = "";
+document.getElementById("front").innerHTML="🎉 Fertig!";
+document.getElementById("back").innerHTML="";
 return;
 }
 
-currentIndex = dueCards[0].index;
+let c = dueCards[0];
 
-document.getElementById("card").innerHTML = `
-<h3>${dueCards[0].q}</h3>
-`;
+currentIndex = c.index;
 
-document.getElementById("progress").innerHTML =
-`${dueCards.length} Karten übrig`;
+document.getElementById("flipCard").classList.remove("flipped");
+
+document.getElementById("front").innerHTML = `<h3>${c.q}</h3>`;
+document.getElementById("back").innerHTML = `<h3>${c.a}</h3>`;
+
+// Progress
+let progress = (1 - (dueCards.length / JSON.parse(localStorage.getItem("ankiCards")).length)) * 100;
+document.getElementById("progressFill").style.width = progress + "%";
 }
 
+function flipCard(){
+document.getElementById("flipCard").classList.toggle("flipped");
+}
+  
 // Antwort anzeigen
 function showAnswer(){
 let cards = JSON.parse(localStorage.getItem("ankiCards"));
