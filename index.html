@@ -183,7 +183,8 @@ button[onclick*="easy"] { background:#457b9d; }
 <div class="card">
 <h2>Vorlesungen</h2>
 <ul>
-<li onclick="openLecture()">Warum KI jetzt?</li>
+<li onclick="openLecture(0)">Warum KI jetzt?</li>
+<li onclick="openLecture(1)">SVM – Support Vector Maschinen</li>
 </ul>
 </div>
 
@@ -214,393 +215,263 @@ Zu ChatGPT
 
 <script>
 
-// ===== VORLESUNG =====
-function openLecture(){
-document.getElementById("dashboard").style.display="none";
-
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Warum KI jetzt?</h2>
-
-<p><strong>Einleitung:</strong><br>
-⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.</p>
-
-<p><strong>Erklärung:</strong><br>
-💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br><br>
-💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern.<br><br>
-💡 Gleichzeitig wird vor Risiken gewarnt.<br><br>
-💡 Jobs könnten sich grundlegend verändern.</p>
-
-<p><strong>Merksatz:</strong><br>
-⚠️ KI wird unsere Zukunft grundlegend verändern.</p>
-
-<hr>
-
-<h3>Dateien zur Lektion</h3>
-<input type="file" multiple onchange="uploadLectureFiles(event)">
-<div id="lecturePreview"></div>
-
-<button onclick="back()">Zurück</button>
-</div>
-`;
-
-renderLectureFiles();
-}
-lectures.push({
-  title: "SVM – Support Vector Maschinen",
+// ===== VORLESUNGEN =====
+let lectures = [
+{
+  title:"Warum KI jetzt?",
+  intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.",
+  explanation:`💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br>
+💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern.<br>
+💡 Gleichzeitig wird vor Risiken gewarnt.<br>
+💡 Jobs könnten sich grundlegend verändern.`,
+  merksatz:"⚠️ KI wird unsere Zukunft grundlegend verändern.",
+  files:[]
+},
+{
+  title:"SVM – Support Vector Maschinen",
   intro: "⭐️ Support Vector Machines (SVM) sind effiziente Verfahren zur Klassifizierung von Objekten, die in vielen Bereichen eingesetzt werden.",
-  explanation: `
-💡 SVM unterteilt Objekte in Klassen, sodass um die Klassengrenzen ein möglichst breiter Bereich frei von Objekten bleibt.<br><br>
-💡 Typische Anwendungen: Bild-, Text- oder Handschrifterkennung.<br><br>
-💡 Lineare und nicht-lineare Klassifizierung möglich (Soft-Margin).<br><br>
-💡 Kernel-Trick: Trainingsvektoren in höherdimensionalen Raum transformieren, um komplexe, nicht-lineare Trennflächen zu ermöglichen.<br><br>
-💡 Effizienter Rechenaufwand, anschauliche Arbeitsweise, sehr nützlich bei großen Datenmengen (Volume), schnellen Datenströmen (Velocity), vielfältigen Datenstrukturen (Variety) und Zuverlässigkeit (Veracity).<br><br>
-💡 Varianz-Kompromiss beachten: Balance zwischen Trainingsfehler und Generalisierung.
-  `,
-  merksatz: "⚠️ SVMs trennen Klassen effizient und nutzen den Kernel-Trick für komplexe Probleme – ideal für Bild-, Text- und Objekterkennung.",
-  examples: `
-<h3>Beispiele:</h3>
+  explanation:`💡 SVM unterteilt Objekte in Klassen, sodass um die Klassengrenzen ein möglichst breiter Bereich frei von Objekten bleibt.<br><br>
+💡 Typische Anwendungen: Bild-, Text- oder Handschrifterkennung.<br>
+💡 Lineare und nicht-lineare Klassifizierung möglich (Soft-Margin).<br>
+💡 Kernel-Trick: Trainingsvektoren in höherdimensionalen Raum transformieren, um komplexe, nicht-lineare Trennflächen zu ermöglichen.<br>
+💡 Effizienter Rechenaufwand, anschauliche Arbeitsweise, sehr nützlich bei großen Datenmengen (Volume), schnellen Datenströmen (Velocity), vielfältigen Datenstrukturen (Variety) und Zuverlässigkeit (Veracity).<br>
+💡 Varianz-Kompromiss beachten: Balance zwischen Trainingsfehler und Generalisierung.`,
+  merksatz:"⚠️ SVMs trennen Klassen effizient und nutzen den Kernel-Trick für komplexe Probleme – ideal für Bild-, Text- und Objekterkennung.",
+  examples:`<h3>Beispiele:</h3>
 <ul>
 <li>Textklassifikation: Klassifizierung von Texten anhand von Merkmalen wie Wörtern oder n-Grammen.</li>
 <li>Bilderkennung: Klassifizierung von Bildern anhand von Farb- oder Texturmerkmalen.</li>
 <li>Gesichtserkennung: Identifikation von Personen oder Emotionen über Gesichtszüge.</li>
 <li>Objekterkennung: Erkennung von Objekten in Bildern über Form, Textur oder Farbe.</li>
 <li>Finanzvorhersagen: Vorhersage von Aktienkursen oder Kreditrisiken.</li>
-</ul>
-  `,
-  algorithms: `
-<h3>Algorithmen im Vergleich:</h3>
+</ul>`,
+  algorithms:`<h3>Algorithmen im Vergleich:</h3>
 <ul>
 <li>Regression (linear, logistisch)</li>
 <li>k-Nearest Neighbors (kNN)</li>
 <li>SVM – Support Vector Machines</li>
 <li>Künstliche neuronale Netze (Perzeptrone / Deep Learning)</li>
 <li>Weitere: Naive Bayes, Decision Tree, kMeans, Random Forest, Gradient Boosting (XGBoost, LightGBM, CatBoost)</li>
-</ul>
-  `,
-  quiz: `
-<h3>Quiz SVM</h3>
+</ul>`,
+  quiz:`<h3>Quiz SVM</h3>
 <p>1. Was macht der Kernel-Trick bei SVM?</p>
 <p>2. Nenne zwei typische Anwendungsbereiche von SVM.</p>
 <p>3. Was versteht man unter Soft-Margin?</p>
-<p>4. Welche Arten von Daten können SVM trennen?</p>
-`,
-  files: [] // Hier werden hochgeladene Dateien gespeichert
-});
-
-// ===== DATEIEN (VORLESUNG – CLEAN VERSION) =====
-function uploadLectureFiles(e){
-let files = e.target.files;
-let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
-
-for(let f of files){
-let reader = new FileReader();
-reader.onload = function(ev){
-stored.push({name:f.name,data:ev.target.result});
-localStorage.setItem("lectureFiles", JSON.stringify(stored));
-renderLectureFiles();
-};
-reader.readAsDataURL(f);
+<p>4. Welche Arten von Daten können SVM trennen?</p>`,
+  files:[]
 }
-}
+];
 
-function renderLectureFiles(){
-let container = document.getElementById("lecturePreview");
-if(!container) return;
+// ===== Lektionsanzeige =====
+function openLecture(index){
+  let lecture = lectures[index];
+  document.getElementById("dashboard").style.display="none";
 
-container.innerHTML="";
+  document.getElementById("content").innerHTML = `
+  <div class="section">
+    <h2>${lecture.title}</h2>
+    <p><strong>Einleitung:</strong><br>${lecture.intro}</p>
+    <p><strong>Erklärung:</strong><br>${lecture.explanation}</p>
+    <p><strong>Merksatz:</strong><br>${lecture.merksatz}</p>
+    ${lecture.examples || ""}
+    ${lecture.algorithms || ""}
+    ${lecture.quiz || ""}
+    <hr>
+    <h3>Dateien zur Lektion</h3>
+    <input type="file" multiple onchange="uploadLectureFiles(event, ${index})">
+    <div id="lecturePreview"></div>
+    <button onclick="back()">Zurück</button>
+  </div>
+  `;
 
-let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
-
-stored.forEach((f,i)=>{
-let div = document.createElement("div");
-
-if(f.data.startsWith("data:image")){
-div.innerHTML=`
-<img src="${f.data}" class="lecture-image">
-
-<div class="file-box">
-<span>${f.name}</span>
-<button onclick="deleteLectureFile(${i})">✖</button>
-</div>
-`;
-}else{
-div.innerHTML=`
-<div class="file-box">
-<a href="${f.data}" target="_blank">${f.name}</a>
-<button onclick="deleteLectureFile(${i})">✖</button>
-</div>
-`;
+  renderLectureFiles(index);
 }
 
-container.appendChild(div);
-});
+// ===== DATEIEN (VORLESUNG) =====
+function uploadLectureFiles(e, index){
+  let files = e.target.files;
+  let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
+
+  for(let f of files){
+    let reader = new FileReader();
+    reader.onload = function(ev){
+      stored.push({lecture:index, name:f.name, data:ev.target.result});
+      localStorage.setItem("lectureFiles", JSON.stringify(stored));
+      renderLectureFiles(index);
+    };
+    reader.readAsDataURL(f);
+  }
+}
+
+function renderLectureFiles(index){
+  let container = document.getElementById("lecturePreview");
+  if(!container) return;
+
+  container.innerHTML = "";
+  let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
+  stored.filter(f => f.lecture === index).forEach((f,i)=>{
+    let div = document.createElement("div");
+    if(f.data.startsWith("data:image")){
+      div.innerHTML = `
+        <img src="${f.data}" class="lecture-image">
+        <div class="file-box">
+          <span>${f.name}</span>
+          <button onclick="deleteLectureFile(${i})">✖</button>
+        </div>`;
+    }else{
+      div.innerHTML = `
+        <div class="file-box">
+          <a href="${f.data}" target="_blank">${f.name}</a>
+          <button onclick="deleteLectureFile(${i})">✖</button>
+        </div>`;
+    }
+    container.appendChild(div);
+  });
 }
 
 function deleteLectureFile(i){
-let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
-stored.splice(i,1);
-localStorage.setItem("lectureFiles", JSON.stringify(stored));
-renderLectureFiles();
+  let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
+  stored.splice(i,1);
+  localStorage.setItem("lectureFiles", JSON.stringify(stored));
+  renderLectureFiles(0);
 }
 
 // ===== NOTIZEN =====
 let tempFiles=[];
-
 function openNotes(){
-document.getElementById("dashboard").style.display="none";
-
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Notizen</h2>
-
-<textarea id="noteText"></textarea>
-
-<input type="file" multiple onchange="uploadNoteFiles(event)">
-<div id="preview"></div>
-
-<button onclick="saveNote()">Speichern</button>
-<button onclick="back()">Zurück</button>
-</div>
-`;
-
-tempFiles=[];
+  document.getElementById("dashboard").style.display="none";
+  document.getElementById("content").innerHTML=`
+  <div class="section">
+    <h2>Notizen</h2>
+    <textarea id="noteText"></textarea>
+    <input type="file" multiple onchange="uploadNoteFiles(event)">
+    <div id="preview"></div>
+    <button onclick="saveNote()">Speichern</button>
+    <button onclick="back()">Zurück</button>
+  </div>
+  `;
+  tempFiles=[];
 }
 
 function uploadNoteFiles(e){
-for(let f of e.target.files){
-let reader=new FileReader();
-reader.onload=(ev)=>{
-tempFiles.push({name:f.name,data:ev.target.result});
-renderPreview();
-};
-reader.readAsDataURL(f);
-}
+  for(let f of e.target.files){
+    let reader = new FileReader();
+    reader.onload = (ev) => {
+      tempFiles.push({name:f.name,data:ev.target.result});
+      renderPreview();
+    };
+    reader.readAsDataURL(f);
+  }
 }
 
 function renderPreview(){
-let html="";
-tempFiles.forEach((f,i)=>{
-html+=`<div>${f.name}
-<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;
-});
-document.getElementById("preview").innerHTML=html;
+  let html="";
+  tempFiles.forEach((f,i)=>{
+    html+=`<div>${f.name} <button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;
+  });
+  document.getElementById("preview").innerHTML=html;
 }
 
 function saveNote(){
-let notes=JSON.parse(localStorage.getItem("notes")||"[]");
-notes.push({text:document.getElementById("noteText").value,files:tempFiles});
-localStorage.setItem("notes",JSON.stringify(notes));
-back();
+  let notes = JSON.parse(localStorage.getItem("notes")||"[]");
+  notes.push({text:document.getElementById("noteText").value, files:tempFiles});
+  localStorage.setItem("notes",JSON.stringify(notes));
+  back();
 }
 
 // ===== TODAY =====
 function openToday(){
-document.getElementById("dashboard").style.display="none";
+  document.getElementById("dashboard").style.display="none";
 
-let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]");
-let due=cards.filter(c=>c.next<=Date.now());
+  let cards = JSON.parse(localStorage.getItem("ankiCards")||"[]");
+  let due = cards.filter(c=>c.next<=Date.now());
+  let list = due.map(c=>`<li>${c.q}</li>`).join("");
 
-let list=due.map(c=>`<li>${c.q}</li>`).join("");
-
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Heute wiederholen</h2>
-<ul>${list || "🎉 Keine fälligen Themen"}</ul>
-<button onclick="openAnki()">Jetzt lernen</button>
-<button onclick="back()">Zurück</button>
-</div>
-`;
+  document.getElementById("content").innerHTML=`
+  <div class="section">
+    <h2>Heute wiederholen</h2>
+    <ul>${list || "🎉 Keine fälligen Themen"}</ul>
+    <button onclick="openAnki()">Jetzt lernen</button>
+    <button onclick="back()">Zurück</button>
+  </div>
+  `;
 }
 
 // ===== ANKI (OPTIMIERT) =====
+if(!localStorage.getItem("ankiCards")) localStorage.setItem("ankiCards","[]");
+let ankiCards = JSON.parse(localStorage.getItem("ankiCards"));
+let currentCardIndex = 0;
 
-const defaultCards = [
-{
-q:"Was ist KI?",
-a:"Maschinen lernen aus Daten",
-interval:1,
-ease:2.5,
-next:Date.now()
-}
-];
-
-// ===== ANKI INITIALISIERUNG =====
-
-// Prüfen, ob schon Karten im localStorage sind
-// Falls nicht: leeres Array anlegen
-if(!localStorage.getItem("ankiCards") || JSON.parse(localStorage.getItem("ankiCards")).length === 0){
-    localStorage.setItem("ankiCards", JSON.stringify([]));
-}
-
-// Array zum Laden der fälligen Karten
-let dueCards = [];
-
-// Aktueller Kartenindex
-let currentIndex = 0;
-
-// Hilfsfunktion: Lade alle fälligen Karten (hier simplifiziert)
-function loadDueCards(){
-    let allCards = JSON.parse(localStorage.getItem("ankiCards") || "[]");
-
-    // für Demo: alle Karten gelten als fällig
-    dueCards = allCards;
-
-    currentIndex = 0;
+function showCard(){
+  if(ankiCards.length===0){
+    document.getElementById("front").innerHTML="🎉 Keine Karten vorhanden!";
+    document.getElementById("back").innerHTML="";
+    document.getElementById("progressFill").style.width="0%";
+    return;
+  }
+  let c = ankiCards[currentCardIndex];
+  document.getElementById("front").innerHTML=`<h3>${c.q}</h3>`;
+  document.getElementById("back").innerHTML=`<h3>${c.a}</h3>`;
+  document.getElementById("flipCard").classList.remove("flipped");
+  let progress=((currentCardIndex+1)/ankiCards.length)*100;
+  document.getElementById("progressFill").style.width=progress+"%";
 }
 
-// Karten initial laden
-loadDueCards();
-// Öffnen
-function openAnki(){
-document.getElementById("dashboard").style.display="none";
+function flipCard(){ document.getElementById("flipCard").classList.toggle("flipped"); }
+function nextCard(){ if(ankiCards.length===0) return; currentCardIndex=(currentCardIndex+1)%ankiCards.length; showCard(); }
+function prevCard(){ if(ankiCards.length===0) return; currentCardIndex=(currentCardIndex-1+ankiCards.length)%ankiCards.length; showCard(); }
 
-document.getElementById("content").innerHTML=`
-<div class="section">
-<h2>Anki</h2>
-
-<div class="progress-bar">
-  <div id="progressFill" class="progress-fill"></div>
-</div>
-
-<div class="card-container">
-  <div id="flipCard" class="flip-card">
-    <div class="flip-side" id="front"></div>
-    <div class="flip-side flip-back" id="back"></div>
-  </div>
-</div>
-
-<button onclick="flipCard()">Antwort anzeigen</button><br><br>
-
-<button onclick="rateCard('again')">🔴</button>
-<button onclick="rateCard('hard')">🟠</button>
-<button onclick="rateCard('good')">🟢</button>
-<button onclick="rateCard('easy')">🔵</button>
-
-<hr>
-
-<input id="q" placeholder="Frage">
-<input id="a" placeholder="Antwort">
-<button onclick="addCard()">Speichern</button>
-
-<button onclick="back()">Zurück</button>
-</div>
-`;
-
-loadDueCards();
-showNextCard();
-}
-
-// Karte anzeigen
-function showNextCard(){
-if(dueCards.length === 0){
-document.getElementById("front").innerHTML="🎉 Fertig!";
-document.getElementById("back").innerHTML="";
-return;
-}
-
-let c = dueCards[0];
-
-currentIndex = c.index;
-
-document.getElementById("flipCard").classList.remove("flipped");
-
-document.getElementById("front").innerHTML = `<h3>${c.q}</h3>`;
-document.getElementById("back").innerHTML = `<h3>${c.a}</h3>`;
-
-// Progress
-let progress = (1 - (dueCards.length / JSON.parse(localStorage.getItem("ankiCards")).length)) * 100;
-document.getElementById("progressFill").style.width = progress + "%";
-}
-
-function flipCard(){
-document.getElementById("flipCard").classList.toggle("flipped");
-}
-  
-// Antwort anzeigen
-function showAnswer(){
-let cards = JSON.parse(localStorage.getItem("ankiCards"));
-let c = cards[currentIndex];
-
-document.getElementById("card").innerHTML = `
-<h3>${c.q}</h3>
-<p><strong>${c.a}</strong></p>
-`;
-}
-
-// Bewertungssystem
-function rateCard(type){
-let cards = JSON.parse(localStorage.getItem("ankiCards"));
-let c = cards[currentIndex];
-
-// SM-2 ähnlich
-if(type === "again"){
-c.interval = 1;
-c.ease = Math.max(1.3, c.ease - 0.2);
-}
-
-if(type === "hard"){
-c.interval *= 1.2;
-c.ease = Math.max(1.3, c.ease - 0.15);
-}
-
-if(type === "good"){
-c.interval *= c.ease;
-c.ease += 0.1;
-}
-
-if(type === "easy"){
-c.interval *= (c.ease + 0.3);
-c.ease += 0.15;
-}
-
-// nächste Wiederholung
-c.next = Date.now() + c.interval * 86400000;
-
-cards[currentIndex] = c;
-localStorage.setItem("ankiCards", JSON.stringify(cards));
-
-// nächste Karte
-loadDueCards();
-showNextCard();
-}
-
-// Neue Karte hinzufügen
 function addCard(){
-let q = document.getElementById("q").value.trim();
-let a = document.getElementById("a").value.trim();
-
-if(!q || !a){
-alert("Bitte Frage und Antwort eingeben!");
-return;
+  let q=document.getElementById("q").value.trim();
+  let a=document.getElementById("a").value.trim();
+  if(!q||!a){alert("Bitte Frage und Antwort eingeben!"); return;}
+  ankiCards.push({q,q,a:a,interval:1,ease:2.5,next:Date.now()});
+  localStorage.setItem("ankiCards",JSON.stringify(ankiCards));
+  document.getElementById("q").value="";
+  document.getElementById("a").value="";
+  alert("Karte gespeichert!");
+  showCard();
 }
 
-let cards = JSON.parse(localStorage.getItem("ankiCards") || "[]");
-
-cards.push({
-q: q,
-a: a,
-interval: 1,
-ease: 2.5,
-next: Date.now()
-});
-
-localStorage.setItem("ankiCards", JSON.stringify(cards));
-
-// Reset Inputs
-document.getElementById("q").value = "";
-document.getElementById("a").value = "";
-
-alert("Karte gespeichert!");
-}
-  
-// ===== NAV =====
-function back(){
-document.getElementById("content").innerHTML="";
-document.getElementById("dashboard").style.display="flex";
+function rateCard(type){
+  if(ankiCards.length===0) return;
+  let c = ankiCards[currentCardIndex];
+  if(type==="again"){ c.interval=1; c.ease=Math.max(1.3,c.ease-0.2);}
+  if(type==="hard"){ c.interval*=1.2; c.ease=Math.max(1.3,c.ease-0.15);}
+  if(type==="good"){ c.interval*=c.ease; c.ease+=0.1;}
+  if(type==="easy"){ c.interval*=(c.ease+0.3); c.ease+=0.15;}
+  c.next = Date.now() + c.interval*86400000;
+  ankiCards[currentCardIndex]=c;
+  localStorage.setItem("ankiCards",JSON.stringify(ankiCards));
+  nextCard();
 }
 
-</script>
-
-</body>
-</html>
+function openAnki(){
+  document.getElementById("dashboard").style.display="none";
+  document.getElementById("content").innerHTML=`
+  <div class="section">
+    <h2>Anki</h2>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    <div class="card-container">
+      <div id="flipCard" class="flip-card">
+        <div class="flip-side" id="front"></div>
+        <div class="flip-side flip-back" id="back"></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <button onclick="flipCard()">Antwort anzeigen</button>
+      <button onclick="prevCard()">←</button>
+      <button onclick="nextCard()">→</button>
+    </div>
+    <div style="margin-top:10px;">
+      <button onclick="rateCard('again')">🔴</button>
+      <button onclick="rateCard('hard')">🟠</button>
+      <button onclick="rateCard('good')">🟢</button>
+      <button onclick="rateCard('easy')">🔵</button>
+    </div>
+    <hr>
+    <input id="q" placeholder="Frage">
+    <input id="a" placeholder="Antwort">
+    <button onclick="addCard()">Speichern</button>
+    <button onclick="back()">Zurück</button>
+  </div>
