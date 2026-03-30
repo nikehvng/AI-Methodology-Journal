@@ -4,474 +4,156 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KI Lernplattform</title>
-
 <style>
-body {
-  margin:0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-  background: radial-gradient(circle at top, #1b263b, #0d1b2a);
-  color:white;
-}
-
-/* Layout */
-.container {
-  width:90%;
-  max-width:1100px;
-  margin:auto;
-}
-
-/* Dashboard */
-.dashboard {
-  display:flex;
-  flex-wrap:wrap;
-  gap:1.5rem;
-  margin-top:20px;
-}
-
-/* Cards (Glass Look) */
-.card {
-  backdrop-filter: blur(12px);
-  background: rgba(26,42,76,0.6);
-  border:1px solid rgba(255,255,255,0.1);
-  padding:1.5rem;
-  border-radius:18px;
-  flex:1 1 260px;
-  cursor:pointer;
-  transition:all 0.3s ease;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
-}
-
-.card:hover {
-  transform:translateY(-8px) scale(1.03);
-  box-shadow:0 20px 40px rgba(0,0,0,0.6);
-}
-
-/* Section */
-.section {
-  backdrop-filter: blur(12px);
-  background: rgba(26,42,76,0.7);
-  padding:2rem;
-  margin-top:2rem;
-  border-radius:20px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.5);
-  animation:fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
-}
-
-/* Inputs */
-textarea, input {
-  width:100%;
-  margin-top:10px;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  background:#0f1c35;
-  color:white;
-}
-
-/* Buttons */
-button {
-  margin-top:12px;
-  padding:10px 16px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:600;
-  background:linear-gradient(135deg, #3a86ff, #5aa0ff);
-  color:white;
-  transition:all 0.2s;
-}
-
-button:hover {
-  transform:scale(1.05);
-  box-shadow:0 5px 15px rgba(58,134,255,0.5);
-}
-
-/* Anki Buttons */
-button[onclick*="again"] { background:#e63946; }
-button[onclick*="hard"] { background:#f4a261; }
-button[onclick*="good"] { background:#2a9d8f; }
-button[onclick*="easy"] { background:#457b9d; }
-
-/* FILES */
-.lecture-image {
-  width:6cm;
-  height:4cm;
-  object-fit:cover;
-  border-radius:10px;
-  margin:10px 0;
-  display:block;
-  box-shadow:0 6px 20px rgba(0,0,0,0.5);
-}
-
-/* FILE BOX */
-.file-box {
-  margin-top:10px;
-  padding:12px;
-  background:#0f1c35;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-/* ===== ANKI CARD FLIP ===== */
-.card-container {
-  perspective:1000px;
-}
-
-.flip-card {
-  width:100%;
-  height:150px;
-  position:relative;
-  transform-style:preserve-3d;
-  transition: transform 0.6s;
-}
-
-.flip-card.flipped {
-  transform:rotateY(180deg);
-}
-
-.flip-side {
-  position:absolute;
-  width:100%;
-  height:100%;
-  backface-visibility:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#0f1c35;
-  border-radius:12px;
-  padding:20px;
-  text-align:center;
-}
-
-.flip-back {
-  transform:rotateY(180deg);
-}
-
-/* Progress Bar */
-.progress-bar {
-  width:100%;
-  height:10px;
-  background:#0f1c35;
-  border-radius:10px;
-  margin-top:10px;
-}
-
-.progress-fill {
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#2a9d8f,#3a86ff);
-  border-radius:10px;
-  transition:width 0.3s;
-}
+body { margin:0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; background: radial-gradient(circle at top, #1b263b, #0d1b2a); color:white;}
+.container { width:90%; max-width:1100px; margin:auto;}
+.dashboard { display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:20px;}
+.card { backdrop-filter:blur(12px); background:rgba(26,42,76,0.6); border:1px solid rgba(255,255,255,0.1); padding:1.5rem; border-radius:18px; flex:1 1 260px; cursor:pointer; transition:all 0.3s ease; box-shadow:0 10px 30px rgba(0,0,0,0.4);}
+.card:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 20px 40px rgba(0,0,0,0.6);}
+.section { backdrop-filter:blur(12px); background:rgba(26,42,76,0.7); padding:2rem; margin-top:2rem; border-radius:20px; box-shadow:0 15px 40px rgba(0,0,0,0.5); animation:fadeIn 0.4s ease;}
+@keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+textarea,input { width:100%; margin-top:10px; padding:12px; border-radius:10px; border:none; background:#0f1c35; color:white;}
+button { margin-top:12px; padding:10px 16px; border:none; border-radius:10px; cursor:pointer; font-weight:600; background:linear-gradient(135deg, #3a86ff, #5aa0ff); color:white; transition:all 0.2s;}
+button:hover { transform:scale(1.05); box-shadow:0 5px 15px rgba(58,134,255,0.5);}
+button[onclick*="again"]{background:#e63946;}
+button[onclick*="hard"]{background:#f4a261;}
+button[onclick*="good"]{background:#2a9d8f;}
+button[onclick*="easy"]{background:#457b9d;}
+.lecture-image{width:6cm;height:4cm;object-fit:cover;border-radius:10px;margin:10px 0;display:block;box-shadow:0 6px 20px rgba(0,0,0,0.5);}
+.file-box{margin-top:10px;padding:12px;background:#0f1c35;border-radius:10px;display:flex;justify-content:space-between;align-items:center;}
+.card-container{perspective:1000px;}
+.flip-card{width:100%;height:150px;position:relative;transform-style:preserve-3d;transition: transform 0.6s;}
+.flip-card.flipped{transform:rotateY(180deg);}
+.flip-side{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;background:#0f1c35;border-radius:12px;padding:20px;text-align:center;}
+.flip-back{transform:rotateY(180deg);}
+.progress-bar{width:100%;height:10px;background:#0f1c35;border-radius:10px;margin-top:10px;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#2a9d8f,#3a86ff);border-radius:10px;transition:width 0.3s;}
 </style>
 </head>
-
 <body>
-
 <div class="container">
 <h1>KI Methoden & Anwendungen</h1>
-
 <div class="dashboard" id="dashboard">
-
-<div class="card">
-<h2>Vorlesungen</h2>
-<ul>
-<li onclick="openLecture(0)">Warum KI jetzt?</li>
-<li onclick="openLecture(1)">SVM – Support Vector Maschinen</li>
-</ul>
+<div class="card"><h2>Vorlesungen</h2><ul id="lectureList"></ul></div>
+<div class="card" onclick="openToday()"><h2>Was steht heute an?</h2></div>
+<div class="card" onclick="openNotes()"><h2>Notizen</h2></div>
+<div class="card" onclick="openAnki()"><h2>Anki</h2></div>
+<div class="card"><h2>Fragen</h2><button onclick="window.open('https://chat.openai.com','_blank')">Zu ChatGPT</button></div>
 </div>
-
-<div class="card" onclick="openToday()">
-<h2>Was steht heute an?</h2>
-</div>
-
-<div class="card" onclick="openNotes()">
-<h2>Notizen</h2>
-</div>
-
-<div class="card" onclick="openAnki()">
-<h2>Anki</h2>
-</div>
-
-<div class="card">
-<h2>Fragen</h2>
-<button onclick="window.open('https://chat.openai.com','_blank')">
-Zu ChatGPT
-</button>
-</div>
-
-</div>
-
 <div id="content"></div>
-
 </div>
 
 <script>
-
-// ===== VORLESUNGEN =====
-let lectures = [
-{
-  title:"Warum KI jetzt?",
-  intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz und Potenzial.",
-  explanation:`💡 Sie ist großer Bestandteil der 5 Top Tech Themen.<br>
-💡 KI wird als eine der wichtigsten Technologien der aktuellen Zeit gesehen. Expertenmeinungen zufolge kann sie unser Leben in vielerlei Hinsicht verändern.<br>
-💡 Gleichzeitig wird vor Risiken gewarnt.<br>
-💡 Jobs könnten sich grundlegend verändern.`,
-  merksatz:"⚠️ KI wird unsere Zukunft grundlegend verändern.",
-  files:[]
-},
-{
-  title:"SVM – Support Vector Maschinen",
-  intro: "⭐️ Support Vector Machines (SVM) sind effiziente Verfahren zur Klassifizierung von Objekten, die in vielen Bereichen eingesetzt werden.",
-  explanation:`💡 SVM unterteilt Objekte in Klassen, sodass um die Klassengrenzen ein möglichst breiter Bereich frei von Objekten bleibt.<br><br>
-💡 Typische Anwendungen: Bild-, Text- oder Handschrifterkennung.<br>
-💡 Lineare und nicht-lineare Klassifizierung möglich (Soft-Margin).<br>
-💡 Kernel-Trick: Trainingsvektoren in höherdimensionalen Raum transformieren, um komplexe, nicht-lineare Trennflächen zu ermöglichen.<br>
-💡 Effizienter Rechenaufwand, anschauliche Arbeitsweise, sehr nützlich bei großen Datenmengen (Volume), schnellen Datenströmen (Velocity), vielfältigen Datenstrukturen (Variety) und Zuverlässigkeit (Veracity).<br>
-💡 Varianz-Kompromiss beachten: Balance zwischen Trainingsfehler und Generalisierung.`,
-  merksatz:"⚠️ SVMs trennen Klassen effizient und nutzen den Kernel-Trick für komplexe Probleme – ideal für Bild-, Text- und Objekterkennung.",
-  examples:`<h3>Beispiele:</h3>
-<ul>
-<li>Textklassifikation: Klassifizierung von Texten anhand von Merkmalen wie Wörtern oder n-Grammen.</li>
-<li>Bilderkennung: Klassifizierung von Bildern anhand von Farb- oder Texturmerkmalen.</li>
-<li>Gesichtserkennung: Identifikation von Personen oder Emotionen über Gesichtszüge.</li>
-<li>Objekterkennung: Erkennung von Objekten in Bildern über Form, Textur oder Farbe.</li>
-<li>Finanzvorhersagen: Vorhersage von Aktienkursen oder Kreditrisiken.</li>
-</ul>`,
-  algorithms:`<h3>Algorithmen im Vergleich:</h3>
-<ul>
-<li>Regression (linear, logistisch)</li>
-<li>k-Nearest Neighbors (kNN)</li>
-<li>SVM – Support Vector Machines</li>
-<li>Künstliche neuronale Netze (Perzeptrone / Deep Learning)</li>
-<li>Weitere: Naive Bayes, Decision Tree, kMeans, Random Forest, Gradient Boosting (XGBoost, LightGBM, CatBoost)</li>
-</ul>`,
-  quiz:`<h3>Quiz SVM</h3>
-<p>1. Was macht der Kernel-Trick bei SVM?</p>
-<p>2. Nenne zwei typische Anwendungsbereiche von SVM.</p>
-<p>3. Was versteht man unter Soft-Margin?</p>
-<p>4. Welche Arten von Daten können SVM trennen?</p>`,
-  files:[]
-}
+// ===== Vorlesungen =====
+let lectures=[
+{title:"Warum KI jetzt?", intro:"⭐️ Künstliche Intelligenz gewinnt immer mehr an Relevanz.", explanation:"💡 Teil der Top 5 Tech-Themen.<br>💡 KI kann unser Leben verändern.<br>💡 Risiken & Jobveränderungen.", merksatz:"⚠️ KI wird unsere Zukunft verändern.", examples:"", algorithms:"", quiz:"", files:[]},
+{title:"SVM – Support Vector Maschinen", intro:"⭐️ SVM sind effiziente Klassifikatoren.", explanation:"💡 Klassen werden getrennt.<br>💡 Lineare & nicht-lineare Klassifizierung.<br>💡 Kernel-Trick für komplexe Trennungen.", merksatz:"⚠️ Effiziente Klassentrennung via Kernel.", examples:"<h3>Beispiele:</h3><ul><li>Textklassifikation</li><li>Bilderkennung</li><li>Gesichtserkennung</li></ul>", algorithms:"<h3>Algorithmen:</h3><ul><li>Regression</li><li>kNN</li><li>SVM</li></ul>", quiz:"<h3>Quiz:</h3><p>1. Was macht der Kernel-Trick?</p><p>2. Typische Anwendungsbereiche?</p>", files:[]}
 ];
 
-// ===== Lektionsanzeige =====
+function renderLectureList(){
+let ul=document.getElementById("lectureList"); ul.innerHTML="";
+lectures.forEach((lec,i)=>{
+let li=document.createElement("li"); li.textContent=lec.title; li.style.cursor="pointer"; li.onclick=()=>openLecture(i); ul.appendChild(li);
+});
+}
+renderLectureList();
+
 function openLecture(index){
-  let lecture = lectures[index];
-  document.getElementById("dashboard").style.display="none";
-
-  document.getElementById("content").innerHTML = `
-  <div class="section">
-    <h2>${lecture.title}</h2>
-    <p><strong>Einleitung:</strong><br>${lecture.intro}</p>
-    <p><strong>Erklärung:</strong><br>${lecture.explanation}</p>
-    <p><strong>Merksatz:</strong><br>${lecture.merksatz}</p>
-    ${lecture.examples || ""}
-    ${lecture.algorithms || ""}
-    ${lecture.quiz || ""}
-    <hr>
-    <h3>Dateien zur Lektion</h3>
-    <input type="file" multiple onchange="uploadLectureFiles(event, ${index})">
-    <div id="lecturePreview"></div>
-    <button onclick="back()">Zurück</button>
-  </div>
-  `;
-
-  renderLectureFiles(index);
+let lec=lectures[index];
+document.getElementById("dashboard").style.display="none";
+document.getElementById("content").innerHTML=`
+<div class="section">
+<h2>${lec.title}</h2>
+<p><strong>Einleitung:</strong><br>${lec.intro}</p>
+<p><strong>Erklärung:</strong><br>${lec.explanation}</p>
+<p><strong>Merksatz:</strong><br>${lec.merksatz}</p>
+${lec.examples || ""} ${lec.algorithms || ""} ${lec.quiz || ""}
+<hr>
+<h3>Dateien zur Lektion</h3>
+<input type="file" multiple onchange="uploadLectureFiles(event,${index})">
+<div id="lecturePreview"></div>
+<button onclick="back()">Zurück</button>
+</div>`;
+renderLectureFiles(index);
 }
 
-// ===== DATEIEN (VORLESUNG) =====
-function uploadLectureFiles(e, index){
-  let files = e.target.files;
-  let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
-
-  for(let f of files){
-    let reader = new FileReader();
-    reader.onload = function(ev){
-      stored.push({lecture:index, name:f.name, data:ev.target.result});
-      localStorage.setItem("lectureFiles", JSON.stringify(stored));
-      renderLectureFiles(index);
-    };
-    reader.readAsDataURL(f);
-  }
+// ===== Dateien Vorlesung =====
+function uploadLectureFiles(e,index){
+let files=e.target.files;
+let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+for(let f of files){
+let reader=new FileReader();
+reader.onload=(ev)=>{ stored.push({lecture:index,name:f.name,data:ev.target.result}); localStorage.setItem("lectureFiles",JSON.stringify(stored)); renderLectureFiles(index);};
+reader.readAsDataURL(f);
 }
-
+}
 function renderLectureFiles(index){
-  let container = document.getElementById("lecturePreview");
-  if(!container) return;
-
-  container.innerHTML = "";
-  let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
-  stored.filter(f => f.lecture === index).forEach((f,i)=>{
-    let div = document.createElement("div");
-    if(f.data.startsWith("data:image")){
-      div.innerHTML = `
-        <img src="${f.data}" class="lecture-image">
-        <div class="file-box">
-          <span>${f.name}</span>
-          <button onclick="deleteLectureFile(${i})">✖</button>
-        </div>`;
-    }else{
-      div.innerHTML = `
-        <div class="file-box">
-          <a href="${f.data}" target="_blank">${f.name}</a>
-          <button onclick="deleteLectureFile(${i})">✖</button>
-        </div>`;
-    }
-    container.appendChild(div);
-  });
+let container=document.getElementById("lecturePreview");
+if(!container) return;
+container.innerHTML="";
+let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]");
+stored.filter(f=>f.lecture===index).forEach((f,i)=>{
+let div=document.createElement("div");
+if(f.data.startsWith("data:image")){ div.innerHTML=`<img src="${f.data}" class="lecture-image"><div class="file-box"><span>${f.name}</span><button onclick="deleteLectureFile(${i})">✖</button></div>`; } 
+else { div.innerHTML=`<div class="file-box"><a href="${f.data}" target="_blank">${f.name}</a><button onclick="deleteLectureFile(${i})">✖</button></div>`;}
+container.appendChild(div);
+});
 }
-
 function deleteLectureFile(i){
-  let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
-  stored.splice(i,1);
-  localStorage.setItem("lectureFiles", JSON.stringify(stored));
-  renderLectureFiles(0);
+let stored=JSON.parse(localStorage.getItem("lectureFiles")||"[]"); stored.splice(i,1); localStorage.setItem("lectureFiles",JSON.stringify(stored)); renderLectureList();
 }
 
-// ===== NOTIZEN =====
+// ===== Notizen =====
 let tempFiles=[];
 function openNotes(){
-  document.getElementById("dashboard").style.display="none";
-  document.getElementById("content").innerHTML=`
-  <div class="section">
-    <h2>Notizen</h2>
-    <textarea id="noteText"></textarea>
-    <input type="file" multiple onchange="uploadNoteFiles(event)">
-    <div id="preview"></div>
-    <button onclick="saveNote()">Speichern</button>
-    <button onclick="back()">Zurück</button>
-  </div>
-  `;
-  tempFiles=[];
+document.getElementById("dashboard").style.display="none";
+document.getElementById("content").innerHTML=`
+<div class="section">
+<h2>Notizen</h2>
+<textarea id="noteText"></textarea>
+<input type="file" multiple onchange="uploadNoteFiles(event)">
+<div id="preview"></div>
+<button onclick="saveNote()">Speichern</button>
+<button onclick="back()">Zurück</button>
+</div>`;
+tempFiles=[];
 }
+function uploadNoteFiles(e){ for(let f of e.target.files){ let reader=new FileReader(); reader.onload=(ev)=>{ tempFiles.push({name:f.name,data:ev.target.result}); renderPreview();}; reader.readAsDataURL(f);}}
+function renderPreview(){ let html=""; tempFiles.forEach((f,i)=>{ html+=`<div>${f.name}<button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;}); document.getElementById("preview").innerHTML=html;}
+function saveNote(){ let notes=JSON.parse(localStorage.getItem("notes")||"[]"); notes.push({text:document.getElementById("noteText").value,files:tempFiles}); localStorage.setItem("notes",JSON.stringify(notes)); back();}
 
-function uploadNoteFiles(e){
-  for(let f of e.target.files){
-    let reader = new FileReader();
-    reader.onload = (ev) => {
-      tempFiles.push({name:f.name,data:ev.target.result});
-      renderPreview();
-    };
-    reader.readAsDataURL(f);
-  }
-}
+// ===== Today =====
+function openToday(){ document.getElementById("dashboard").style.display="none"; let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]"); let due=cards.filter(c=>c.next<=Date.now()); let list=due.map(c=>`<li>${c.q}</li>`).join(""); document.getElementById("content").innerHTML=`<div class="section"><h2>Heute wiederholen</h2><ul>${list || "🎉 Keine fälligen Themen"}</ul><button onclick="openAnki()">Jetzt lernen</button><button onclick="back()">Zurück</button></div>`;}
 
-function renderPreview(){
-  let html="";
-  tempFiles.forEach((f,i)=>{
-    html+=`<div>${f.name} <button onclick="tempFiles.splice(${i},1);renderPreview()">✖</button></div>`;
-  });
-  document.getElementById("preview").innerHTML=html;
-}
-
-function saveNote(){
-  let notes = JSON.parse(localStorage.getItem("notes")||"[]");
-  notes.push({text:document.getElementById("noteText").value, files:tempFiles});
-  localStorage.setItem("notes",JSON.stringify(notes));
-  back();
-}
-
-// ===== TODAY =====
-function openToday(){
-  document.getElementById("dashboard").style.display="none";
-
-  let cards = JSON.parse(localStorage.getItem("ankiCards")||"[]");
-  let due = cards.filter(c=>c.next<=Date.now());
-  let list = due.map(c=>`<li>${c.q}</li>`).join("");
-
-  document.getElementById("content").innerHTML=`
-  <div class="section">
-    <h2>Heute wiederholen</h2>
-    <ul>${list || "🎉 Keine fälligen Themen"}</ul>
-    <button onclick="openAnki()">Jetzt lernen</button>
-    <button onclick="back()">Zurück</button>
-  </div>
-  `;
-}
-
-// ===== ANKI (OPTIMIERT) =====
-if(!localStorage.getItem("ankiCards")) localStorage.setItem("ankiCards","[]");
-let ankiCards = JSON.parse(localStorage.getItem("ankiCards"));
-let currentCardIndex = 0;
-
-function showCard(){
-  if(ankiCards.length===0){
-    document.getElementById("front").innerHTML="🎉 Keine Karten vorhanden!";
-    document.getElementById("back").innerHTML="";
-    document.getElementById("progressFill").style.width="0%";
-    return;
-  }
-  let c = ankiCards[currentCardIndex];
-  document.getElementById("front").innerHTML=`<h3>${c.q}</h3>`;
-  document.getElementById("back").innerHTML=`<h3>${c.a}</h3>`;
-  document.getElementById("flipCard").classList.remove("flipped");
-  let progress=((currentCardIndex+1)/ankiCards.length)*100;
-  document.getElementById("progressFill").style.width=progress+"%";
-}
-
-function flipCard(){ document.getElementById("flipCard").classList.toggle("flipped"); }
-function nextCard(){ if(ankiCards.length===0) return; currentCardIndex=(currentCardIndex+1)%ankiCards.length; showCard(); }
-function prevCard(){ if(ankiCards.length===0) return; currentCardIndex=(currentCardIndex-1+ankiCards.length)%ankiCards.length; showCard(); }
-
-function addCard(){
-  let q=document.getElementById("q").value.trim();
-  let a=document.getElementById("a").value.trim();
-  if(!q||!a){alert("Bitte Frage und Antwort eingeben!"); return;}
-  ankiCards.push({q,q,a:a,interval:1,ease:2.5,next:Date.now()});
-  localStorage.setItem("ankiCards",JSON.stringify(ankiCards));
-  document.getElementById("q").value="";
-  document.getElementById("a").value="";
-  alert("Karte gespeichert!");
-  showCard();
-}
-
-function rateCard(type){
-  if(ankiCards.length===0) return;
-  let c = ankiCards[currentCardIndex];
-  if(type==="again"){ c.interval=1; c.ease=Math.max(1.3,c.ease-0.2);}
-  if(type==="hard"){ c.interval*=1.2; c.ease=Math.max(1.3,c.ease-0.15);}
-  if(type==="good"){ c.interval*=c.ease; c.ease+=0.1;}
-  if(type==="easy"){ c.interval*=(c.ease+0.3); c.ease+=0.15;}
-  c.next = Date.now() + c.interval*86400000;
-  ankiCards[currentCardIndex]=c;
-  localStorage.setItem("ankiCards",JSON.stringify(ankiCards));
-  nextCard();
-}
-
+// ===== Anki =====
+if(!localStorage.getItem("ankiCards")) localStorage.setItem("ankiCards",JSON.stringify([]));
+let dueCards=[]; let currentIndex=0;
+function loadDueCards(){ let all=JSON.parse(localStorage.getItem("ankiCards")||"[]"); dueCards=all; currentIndex=0; }
 function openAnki(){
-  document.getElementById("dashboard").style.display="none";
-  document.getElementById("content").innerHTML=`
-  <div class="section">
-    <h2>Anki</h2>
-    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-    <div class="card-container">
-      <div id="flipCard" class="flip-card">
-        <div class="flip-side" id="front"></div>
-        <div class="flip-side flip-back" id="back"></div>
-      </div>
-    </div>
-    <div style="margin-top:10px;">
-      <button onclick="flipCard()">Antwort anzeigen</button>
-      <button onclick="prevCard()">←</button>
-      <button onclick="nextCard()">→</button>
-    </div>
-    <div style="margin-top:10px;">
-      <button onclick="rateCard('again')">🔴</button>
-      <button onclick="rateCard('hard')">🟠</button>
-      <button onclick="rateCard('good')">🟢</button>
-      <button onclick="rateCard('easy')">🔵</button>
-    </div>
-    <hr>
-    <input id="q" placeholder="Frage">
-    <input id="a" placeholder="Antwort">
-    <button onclick="addCard()">Speichern</button>
-    <button onclick="back()">Zurück</button>
-  </div>
+document.getElementById("dashboard").style.display="none";
+document.getElementById("content").innerHTML=`
+<div class="section">
+<h2>Anki</h2>
+<div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+<div class="card-container"><div id="flipCard" class="flip-card"><div class="flip-side" id="front"></div><div class="flip-side flip-back" id="back"></div></div></div>
+<button onclick="flipCard()">Antwort anzeigen</button><br><br>
+<button onclick="rateCard('again')">🔴</button>
+<button onclick="rateCard('hard')">🟠</button>
+<button onclick="rateCard('good')">🟢</button>
+<button onclick="rateCard('easy')">🔵</button>
+<hr>
+<input id="q" placeholder="Frage"><input id="a" placeholder="Antwort"><button onclick="addCard()">Speichern</button>
+<button onclick="back()">Zurück</button>
+</div>`;
+loadDueCards(); showNextCard();
+}
+function showNextCard(){ if(dueCards.length===0){ document.getElementById("front").innerHTML="🎉 Fertig!"; document.getElementById("back").innerHTML=""; return; } let c=dueCards[0]; currentIndex=0; document.getElementById("flipCard").classList.remove("flipped"); document.getElementById("front").innerHTML=`<h3>${c.q}</h3>`; document.getElementById("back").innerHTML=`<h3>${c.a}</h3>`; let progress=(1-dueCards.length/JSON.parse(localStorage.getItem("ankiCards")).length)*100; document.getElementById("progressFill").style.width=progress+"%";}
+function flipCard(){ document.getElementById("flipCard").classList.toggle("flipped");}
+function rateCard(type){ let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]"); let c=cards[currentIndex]; if(type==="again"){ c.interval=1;c.ease=Math.max(1.3,c.ease-0.2);} if(type==="hard"){c.interval*=1.2;c.ease=Math.max(1.3,c.ease-0.15);} if(type==="good"){c.interval*=c.ease;c.ease+=0.1;} if(type==="easy"){c.interval*=(c.ease+0.3);c.ease+=0.15;} c.next=Date.now()+c.interval*86400000; cards[currentIndex]=c; localStorage.setItem("ankiCards",JSON.stringify(cards)); loadDueCards(); showNextCard();}
+function addCard(){ let q=document.getElementById("q").value.trim(), a=document.getElementById("a").value.trim(); if(!q||!a){alert("Bitte Frage und Antwort eingeben!"); return;} let cards=JSON.parse(localStorage.getItem("ankiCards")||"[]"); cards.push({q:q,a:a,interval:1,ease:2.5,next:Date.now()}); localStorage.setItem("ankiCards",JSON.stringify(cards)); document.getElementById("q").value=""; document.getElementById("a").value=""; alert("Karte gespeichert!");}
+
+// ===== Back =====
+function back(){ document.getElementById("content").innerHTML=""; document.getElementById("dashboard").style.display="flex";}
+</script>
+</body>
+</html>
