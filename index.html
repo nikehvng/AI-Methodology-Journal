@@ -384,14 +384,32 @@ next:Date.now()
 }
 ];
 
-// Initialisierung
-if(!localStorage.getItem("ankiCards")){
-localStorage.setItem("ankiCards", JSON.stringify(defaultCards));
+// ===== ANKI INITIALISIERUNG =====
+
+// Prüfen, ob schon Karten im localStorage sind
+// Falls nicht: leeres Array anlegen
+if(!localStorage.getItem("ankiCards") || JSON.parse(localStorage.getItem("ankiCards")).length === 0){
+    localStorage.setItem("ankiCards", JSON.stringify([]));
 }
 
-let currentIndex = null;
+// Array zum Laden der fälligen Karten
 let dueCards = [];
 
+// Aktueller Kartenindex
+let currentIndex = 0;
+
+// Hilfsfunktion: Lade alle fälligen Karten (hier simplifiziert)
+function loadDueCards(){
+    let allCards = JSON.parse(localStorage.getItem("ankiCards") || "[]");
+
+    // für Demo: alle Karten gelten als fällig
+    dueCards = allCards;
+
+    currentIndex = 0;
+}
+
+// Karten initial laden
+loadDueCards();
 // Öffnen
 function openAnki(){
 document.getElementById("dashboard").style.display="none";
@@ -508,28 +526,29 @@ showNextCard();
 
 // Neue Karte hinzufügen
 function addCard(){
-let q = document.getElementById("q").value;
-let a = document.getElementById("a").value;
+let q = document.getElementById("q").value.trim();
+let a = document.getElementById("a").value.trim();
 
 if(!q || !a){
-alert("Bitte ausfüllen!");
+alert("Bitte Frage und Antwort eingeben!");
 return;
 }
 
-let cards = JSON.parse(localStorage.getItem("ankiCards"));
+let cards = JSON.parse(localStorage.getItem("ankiCards") || "[]");
 
 cards.push({
-q:q,
-a:a,
-interval:1,
-ease:2.5,
-next:Date.now()
+q: q,
+a: a,
+interval: 1,
+ease: 2.5,
+next: Date.now()
 });
 
 localStorage.setItem("ankiCards", JSON.stringify(cards));
 
-document.getElementById("q").value="";
-document.getElementById("a").value="";
+// Reset Inputs
+document.getElementById("q").value = "";
+document.getElementById("a").value = "";
 
 alert("Karte gespeichert!");
 }
