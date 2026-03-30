@@ -99,11 +99,13 @@ button[onclick*="easy"] { background:#457b9d; }
 
 /* FILES */
 .lecture-image {
-  width:100%;
-  max-width:650px;
-  border-radius:14px;
-  margin-top:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+  width:6cm;
+  height:4cm;
+  object-fit:cover;
+  border-radius:10px;
+  margin:10px 0;
+  display:block;
+  box-shadow:0 6px 20px rgba(0,0,0,0.5);
 }
 
 /* FILE BOX */
@@ -266,6 +268,7 @@ let container = document.getElementById("lecturePreview");
 if(!container) return;
 
 container.innerHTML="";
+
 let stored = JSON.parse(localStorage.getItem("lectureFiles") || "[]");
 
 stored.forEach((f,i)=>{
@@ -274,12 +277,18 @@ let div = document.createElement("div");
 if(f.data.startsWith("data:image")){
 div.innerHTML=`
 <img src="${f.data}" class="lecture-image">
-<button onclick="deleteLectureFile(${i})">Löschen</button>
+
+<div class="file-box">
+<span>${f.name}</span>
+<button onclick="deleteLectureFile(${i})">✖</button>
+</div>
 `;
 }else{
 div.innerHTML=`
+<div class="file-box">
 <a href="${f.data}" target="_blank">${f.name}</a>
-<button onclick="deleteLectureFile(${i})">Löschen</button>
+<button onclick="deleteLectureFile(${i})">✖</button>
+</div>
 `;
 }
 
