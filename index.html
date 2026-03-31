@@ -162,6 +162,7 @@
         let currentEditId = null;
         let currentAnkiEditId = null;
         let currentAnkiCard = null;
+        let currentQuizAnswer = "";
 
         function updateDash() {
             const dueCount = anki.filter(c => !c.nextReview || c.nextReview <= Date.now()).length;
@@ -180,7 +181,6 @@
 
         function addXP(v) { stats.xp += v; localStorage.setItem('learn_stats', JSON.stringify(stats)); updateDash(); }
 
-        // --- NEU: ANKI MANAGER LISTE ---
         function renderAnkiManager() {
             const list = document.getElementById('anki-manager-list');
             if(!list) return;
@@ -222,7 +222,6 @@
             document.getElementById('ankiForm').scrollIntoView({behavior: "smooth"});
         }
 
-        // --- SRS ANKI LOGIK ---
         function prepareNewAnki() {
             currentAnkiEditId = null;
             document.getElementById('ankiFront').value = "";
@@ -287,7 +286,6 @@
             updateDash(); loadNextCard();
         }
 
-        // --- NOTIZEN ---
         function deleteNote(id) {
             if(confirm("Diese Notiz wirklich löschen?")) {
                 notes = notes.filter(n => n.id != id);
@@ -347,7 +345,35 @@
             document.getElementById('noteModal').style.display = 'flex';
         }
 
-        // --- TIMER & UI ---
+        // --- QUIZ FUNKTIONEN ---
+        function generateQuiz() {
+            const noteId = document.getElementById('quiz-note-select').value;
+            const note = notes.find(n => n.id == noteId);
+            if(!note) return;
+            const lines = note.text.split('.').filter(l => l.length > 20);
+            if(lines.length === 0) { alert("Notiz zu kurz für ein Quiz!"); return; }
+            const randomLine = lines[Math.floor(Math.random() * lines.length)];
+            const words = randomLine.trim().split(' ');
+            const targetWordIdx = Math.floor(words.length / 2);
+            currentQuizAnswer = words[targetWordIdx].replace(/[.,!?;]/g, "");
+            words[targetWordIdx] = "______";
+            document.getElementById('quiz-question').innerText = words.join(' ');
+            document.getElementById('quiz-display').style.display = "block";
+            document.getElementById('quiz-feedback').innerText = "";
+            document.getElementById('quiz-answer').value = "";
+        }
+
+        function checkQuiz() {
+            const userAns = document.getElementById('quiz-answer').value.trim();
+            const feedback = document.getElementById('quiz-feedback');
+            if(userAns.toLowerCase() === currentQuizAnswer.toLowerCase()) {
+                feedback.innerText = "Richtig! +15 XP"; feedback.style.color = "#10b981"; addXP(15);
+                setTimeout(() => { document.getElementById('quiz-display').style.display = "none"; }, 1500);
+            } else {
+                feedback.innerText = `Falsch. Die Antwort war: ${currentQuizAnswer}`; feedback.style.color = "#ef4444";
+            }
+        }
+
         let timerSeconds = 2700; let timerInterval = null;
         function toggleTimer() {
             const btn = document.getElementById('timer-btn');
