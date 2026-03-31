@@ -71,9 +71,12 @@
         </section>
 
         <section id="notes" class="content-section">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                <h1>Notizen</h1>
-                <button class="btn btn-primary" onclick="prepareNewNote()">Neue Notiz</button>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; gap: 10px;">
+                <h1>Vorlesungen</h1>
+                <div>
+                    <button class="btn btn-outline" onclick="exportAllForNotebookLM()"><i class="fas fa-file-export"></i> Für NotebookLM exportieren</button>
+                    <button class="btn btn-primary" onclick="prepareNewNote()">Neue Notiz</button>
+                </div>
             </div>
             <div id="noteForm" class="card" style="display: none;">
                 <input type="text" id="noteTitle" placeholder="Titel">
@@ -345,7 +348,25 @@
             document.getElementById('noteModal').style.display = 'flex';
         }
 
-        // --- QUIZ FUNKTIONEN ---
+        function exportAllForNotebookLM() {
+            if (notes.length === 0) {
+                alert("Keine Notizen zum Exportieren vorhanden!");
+                return;
+            }
+            let combinedText = "STUDIEN-NOTIZEN SAMMLUNG\n\n";
+            notes.forEach(n => {
+                combinedText += `--- TITEL: ${n.title} ---\n`;
+                combinedText += `KATEGORIE: ${n.tag || 'Allgemein'}\n\n`;
+                combinedText += `${n.text}\n\n`;
+                combinedText += "-------------------------------------------\n\n";
+            });
+            const blob = new Blob([combinedText], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `LernHub_Export_${new Date().toLocaleDateString()}.txt`;
+            a.click();
+        }
+
         function generateQuiz() {
             const noteId = document.getElementById('quiz-note-select').value;
             const note = notes.find(n => n.id == noteId);
