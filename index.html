@@ -53,7 +53,9 @@
             <div id="timer-display">45:00</div>
             <button class="btn btn-primary" style="padding: 5px 15px; font-size: 0.8rem;" onclick="toggleTimer()" id="timer-btn">Start</button>
         </div>
-        <button class="btn" style="margin-top: auto;" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+        <button class="btn" style="margin-top: auto;" onclick="toggleDarkMode()" id="theme-toggle-btn">
+            <i class="fas fa-moon"></i> <span>Dark Mode</span>
+        </button>
     </nav>
 
     <main>
@@ -417,11 +419,34 @@
             el.classList.add('active');
         }
         function toggleForm(id) { const f = document.getElementById(id); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
-        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        
+        function toggleDarkMode() { 
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeUI(isDark);
+        }
+
+        function updateThemeUI(isDark) {
+            const btn = document.getElementById('theme-toggle-btn');
+            if(isDark) {
+                btn.innerHTML = '<i class="fas fa-sun"></i> <span>Light Mode</span>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
+            }
+        }
+
         function closeNote() { document.getElementById('noteModal').style.display = 'none'; }
         function prepareNewNote() { currentEditId = null; document.getElementById('noteTitle').value = ""; document.getElementById('noteText').value = ""; document.getElementById('noteTag').value = ""; document.getElementById('saveNoteBtn').innerText = "Speichern"; toggleForm('noteForm'); }
 
-        window.onload = () => { renderNotes(); updateDash(); };
+        window.onload = () => { 
+            // Theme laden
+            if(localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateThemeUI(true);
+            }
+            renderNotes(); 
+            updateDash(); 
+        };
     </script>
 </body>
 </html>
