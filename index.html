@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-LearnHub Ultimate | SRS & Delete Edition</title>
+    <title>AI-LearnHub Ultimate | SRS & Management Edition</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -36,6 +36,7 @@
         #noteModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content { background: var(--card-bg); padding: 2.5rem; border-radius: 25px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; }
         .modal-img { max-width: 100%; border-radius: 15px; margin: 15px 0; }
+        .anki-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -87,15 +88,18 @@
         <section id="anki" class="content-section">
             <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
                 <h1>Anki Karten (SRS)</h1>
-                <button class="btn btn-primary" onclick="toggleForm('ankiForm')">Neue Karte</button>
+                <button class="btn btn-primary" onclick="prepareNewAnki()">Neue Karte</button>
             </div>
+            
             <div id="ankiForm" class="card" style="display: none;">
                 <input type="text" id="ankiFront" placeholder="Frage">
                 <input type="text" id="ankiBack" placeholder="Antwort">
                 <input type="text" id="ankiCat" placeholder="Kategorie (z.B. Biologie)">
-                <button class="btn btn-primary" onclick="saveAnki()">Karte hinzufügen</button>
+                <button class="btn btn-primary" id="saveAnkiBtn" onclick="saveAnki()">Karte hinzufügen</button>
+                <button class="btn btn-outline" onclick="toggleForm('ankiForm')">Abbrechen</button>
             </div>
-            <div class="card" style="max-width: 500px; margin: 0 auto; text-align: center;">
+
+            <div class="card" style="max-width: 500px; margin: 0 auto 2rem auto; text-align: center;">
                 <div id="anki-counter" style="margin-bottom: 10px; font-weight: 600; color: var(--primary);">0 Karten fällig</div>
                 <div class="flashcard-container" id="f-container" onclick="this.classList.toggle('flipped')">
                     <div class="flashcard-inner">
@@ -114,6 +118,10 @@
                 </div>
                 <button id="next-card-btn" class="btn btn-primary" style="width: 100%" onclick="loadNextCard()">Start / Nächste</button>
             </div>
+
+            <h3>Alle Karten verwalten</h3>
+            <div id="anki-manager-list" class="card" style="padding: 0.5rem;">
+                </div>
         </section>
 
         <section id="quiz" class="content-section">
@@ -152,6 +160,7 @@
         let anki = JSON.parse(localStorage.getItem('full_ai_anki') || '[]');
         let stats = JSON.parse(localStorage.getItem('learn_stats') || '{"xp":0}');
         let currentEditId = null;
+        let currentAnkiEditId = null;
         let currentAnkiCard = null;
 
         function updateDash() {
@@ -162,22 +171,84 @@
             document.getElementById('user-xp').innerText = `${stats.xp} XP`;
             document.getElementById('xp-bar').style.width = `${(stats.xp % 100)}%`;
             document.getElementById('user-level').innerText = `Level ${Math.floor(stats.xp / 100) + 1}`;
+            
             const sel = document.getElementById('quiz-note-select');
             if(sel) sel.innerHTML = notes.map(n => `<option value="${n.id}">${n.title}</option>`).join('');
+            
+            renderAnkiManager();
         }
 
         function addXP(v) { stats.xp += v; localStorage.setItem('learn_stats', JSON.stringify(stats)); updateDash(); }
 
-        // --- SRS ANKI SYSTEM (NEUE INTERVALLE) ---
+        // --- NEU: ANKI MANAGER LISTE ---
+        function renderAnkiManager() {
+            const list = document.getElementById('anki-manager-list');
+            if(!list) return;
+            if(anki.length === 0) {
+                list.innerHTML = `<p style="padding: 20px; text-align: center; color: var(--text-muted);">Noch keine Karten erstellt.</p>`;
+                return;
+            }
+            list.innerHTML = anki.map(card => `
+                <div class="anki-list-item">
+                    <div style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px;">
+                        <strong>${card.front}</strong> <br>
+                        <small style="color: var(--primary)">${card.category}</small>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn btn-outline" style="padding: 5px 10px;" onclick="editAnkiById(${card.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" style="padding: 5px 10px; background: #fee2e2;" onclick="deleteAnki(${card.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteAnki(id) {
+            if(confirm("Karte wirklich löschen?")) {
+                anki = anki.filter(c => c.id != id);
+                localStorage.setItem('full_ai_anki', JSON.stringify(anki));
+                updateDash();
+            }
+        }
+
+        function editAnkiById(id) {
+            const card = anki.find(c => c.id == id);
+            if(!card) return;
+            currentAnkiEditId = card.id;
+            document.getElementById('ankiFront').value = card.front;
+            document.getElementById('ankiBack').value = card.back;
+            document.getElementById('ankiCat').value = card.category;
+            document.getElementById('saveAnkiBtn').innerText = "Änderung speichern";
+            document.getElementById('ankiForm').style.display = "block";
+            document.getElementById('ankiForm').scrollIntoView({behavior: "smooth"});
+        }
+
+        // --- SRS ANKI LOGIK ---
+        function prepareNewAnki() {
+            currentAnkiEditId = null;
+            document.getElementById('ankiFront').value = "";
+            document.getElementById('ankiBack').value = "";
+            document.getElementById('ankiCat').value = "";
+            document.getElementById('saveAnkiBtn').innerText = "Karte hinzufügen";
+            toggleForm('ankiForm');
+        }
+
         function saveAnki() {
             const f = document.getElementById('ankiFront').value;
             const b = document.getElementById('ankiBack').value;
             const c = document.getElementById('ankiCat').value || 'Allgemein';
             if(!f || !b) return;
-            anki.push({ front: f, back: b, category: c, id: Date.now(), nextReview: Date.now() });
+
+            if(currentAnkiEditId) {
+                const idx = anki.findIndex(card => card.id == currentAnkiEditId);
+                anki[idx] = { ...anki[idx], front: f, back: b, category: c };
+            } else {
+                anki.push({ front: f, back: b, category: c, id: Date.now(), nextReview: Date.now() });
+                addXP(5);
+            }
+            
             localStorage.setItem('full_ai_anki', JSON.stringify(anki));
-            document.getElementById('ankiFront').value = ""; document.getElementById('ankiBack').value = ""; document.getElementById('ankiCat').value = "";
-            toggleForm('ankiForm'); updateDash(); addXP(5);
+            document.getElementById('ankiForm').style.display = "none";
+            updateDash();
         }
 
         function loadNextCard() {
@@ -185,6 +256,7 @@
             if(dueCards.length === 0) {
                 document.getElementById('dispFront').innerText = "Alles gelernt! 🎉";
                 document.getElementById('dispBack').innerText = "Komm später wieder.";
+                document.getElementById('dispCat').innerText = "";
                 document.getElementById('srs-actions').style.display = "none";
                 return;
             }
@@ -200,10 +272,10 @@
         function rateCard(choice) {
             let offset = 0;
             switch(choice) {
-                case 1: offset = 1 * 60 * 1000; break; // 1 Minute
-                case 2: offset = 10 * 60 * 1000; break; // 10 Minuten
-                case 3: offset = 24 * 60 * 60 * 1000; break; // 1 Tag
-                case 4: offset = 3 * 24 * 60 * 60 * 1000; break; // 3 Tage
+                case 1: offset = 1 * 60 * 1000; break;
+                case 2: offset = 10 * 60 * 1000; break;
+                case 3: offset = 24 * 60 * 60 * 1000; break;
+                case 4: offset = 3 * 24 * 60 * 60 * 1000; break;
             }
             currentAnkiCard.nextReview = Date.now() + offset;
             const idx = anki.findIndex(c => c.id === currentAnkiCard.id);
@@ -215,7 +287,7 @@
             updateDash(); loadNextCard();
         }
 
-        // --- NOTIZEN LÖSCHEN & VERWALTEN ---
+        // --- NOTIZEN ---
         function deleteNote(id) {
             if(confirm("Diese Notiz wirklich löschen?")) {
                 notes = notes.filter(n => n.id != id);
@@ -275,23 +347,7 @@
             document.getElementById('noteModal').style.display = 'flex';
         }
 
-        // --- QUIZ, TIMER & HELPER ---
-        function generateQuiz() {
-            const nid = document.getElementById('quiz-note-select').value;
-            const n = notes.find(x => x.id == nid);
-            if(!n) return;
-            document.getElementById('quiz-display').style.display = "block";
-            document.getElementById('quiz-question').innerText = `Inhalt von "${n.title}"?`;
-            currentQuizAnswer = n.text;
-        }
-
-        function checkQuiz() {
-            const userAns = document.getElementById('quiz-answer').value.toLowerCase();
-            if(currentQuizAnswer.toLowerCase().includes(userAns) && userAns.length > 3) {
-                document.getElementById('quiz-feedback').innerText = "Richtig! +15 XP"; addXP(15);
-            } else { document.getElementById('quiz-feedback').innerText = "Nicht ganz."; }
-        }
-
+        // --- TIMER & UI ---
         let timerSeconds = 2700; let timerInterval = null;
         function toggleTimer() {
             const btn = document.getElementById('timer-btn');
@@ -313,10 +369,10 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             el.classList.add('active');
         }
-        function prepareNewNote() { currentEditId = null; document.getElementById('noteTitle').value = ""; document.getElementById('noteText').value = ""; document.getElementById('noteTag').value = ""; document.getElementById('saveNoteBtn').innerText = "Speichern"; toggleForm('noteForm'); }
         function toggleForm(id) { const f = document.getElementById(id); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
         function closeNote() { document.getElementById('noteModal').style.display = 'none'; }
+        function prepareNewNote() { currentEditId = null; document.getElementById('noteTitle').value = ""; document.getElementById('noteText').value = ""; document.getElementById('noteTag').value = ""; document.getElementById('saveNoteBtn').innerText = "Speichern"; toggleForm('noteForm'); }
 
         window.onload = () => { renderNotes(); updateDash(); };
     </script>
