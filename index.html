@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-LearnHub Ultimate | SRS Edition</title>
+    <title>AI-LearnHub Ultimate | SRS & Delete Edition</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -22,6 +22,7 @@
         .btn { border-radius: 12px; padding: 10px 20px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-danger { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
         input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text-main); margin-bottom: 1rem; font-family: inherit; }
         .content-section { display: none; }
         .content-section.active { display: block; }
@@ -105,9 +106,11 @@
                         <div class="card-back" id="dispBack">Antwort</div>
                     </div>
                 </div>
-                <div id="srs-actions" style="display: none; gap: 10px; margin-top: 20px;">
-                    <button class="btn btn-outline" style="flex:1; border-color: #ef4444; color: #ef4444;" onclick="rateCard(false)">Falsch</button>
-                    <button class="btn btn-primary" style="flex:1; background: #22c55e;" onclick="rateCard(true)">Gewusst</button>
+                <div id="srs-actions" style="display: none; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-danger" style="flex:1; min-width: 100px;" onclick="rateCard(1)">Falsch (1m)</button>
+                    <button class="btn btn-outline" style="flex:1; min-width: 100px;" onclick="rateCard(2)">Gut (10m)</button>
+                    <button class="btn btn-primary" style="flex:1; min-width: 100px;" onclick="rateCard(3)">Super (1T)</button>
+                    <button class="btn btn-primary" style="flex:1; min-width: 100px; background: #10b981;" onclick="rateCard(4)">Easy (3T)</button>
                 </div>
                 <button id="next-card-btn" class="btn btn-primary" style="width: 100%" onclick="loadNextCard()">Start / Nächste</button>
             </div>
@@ -133,8 +136,9 @@
             <div style="display: flex; justify-content: space-between; align-items: start;">
                 <h2 id="modalTitleDisplay"></h2>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i></button>
-                    <button class="btn btn-outline" id="editBtn"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-outline" id="exportBtn" title="Export"><i class="fas fa-download"></i></button>
+                    <button class="btn btn-outline" id="editBtn" title="Bearbeiten"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-danger" id="deleteBtn" title="Löschen"><i class="fas fa-trash"></i></button>
                     <button class="btn" onclick="closeNote()"><i class="fas fa-times"></i></button>
                 </div>
             </div>
@@ -164,20 +168,15 @@
 
         function addXP(v) { stats.xp += v; localStorage.setItem('learn_stats', JSON.stringify(stats)); updateDash(); }
 
-        // --- SRS ANKI SYSTEM ---
+        // --- SRS ANKI SYSTEM (NEUE INTERVALLE) ---
         function saveAnki() {
             const f = document.getElementById('ankiFront').value;
             const b = document.getElementById('ankiBack').value;
             const c = document.getElementById('ankiCat').value || 'Allgemein';
             if(!f || !b) return;
-            anki.push({ 
-                front: f, back: b, category: c, id: Date.now(), 
-                level: 1, nextReview: Date.now() 
-            });
+            anki.push({ front: f, back: b, category: c, id: Date.now(), nextReview: Date.now() });
             localStorage.setItem('full_ai_anki', JSON.stringify(anki));
-            document.getElementById('ankiFront').value = ""; 
-            document.getElementById('ankiBack').value = "";
-            document.getElementById('ankiCat').value = "";
+            document.getElementById('ankiFront').value = ""; document.getElementById('ankiBack').value = ""; document.getElementById('ankiCat').value = "";
             toggleForm('ankiForm'); updateDash(); addXP(5);
         }
 
@@ -198,36 +197,31 @@
             document.getElementById('next-card-btn').style.display = "none";
         }
 
-        function rateCard(success) {
-            const intervals = [0, 1, 3, 7, 30]; // Tage pro Level
-            if(success) {
-                currentAnkiCard.level = Math.min(currentAnkiCard.level + 1, 5);
-                addXP(10);
-            } else {
-                currentAnkiCard.level = 1;
-                addXP(2);
+        function rateCard(choice) {
+            let offset = 0;
+            switch(choice) {
+                case 1: offset = 1 * 60 * 1000; break; // 1 Minute
+                case 2: offset = 10 * 60 * 1000; break; // 10 Minuten
+                case 3: offset = 24 * 60 * 60 * 1000; break; // 1 Tag
+                case 4: offset = 3 * 24 * 60 * 60 * 1000; break; // 3 Tage
             }
-            const daysToAdd = intervals[currentAnkiCard.level - 1];
-            currentAnkiCard.nextReview = Date.now() + (daysToAdd * 24 * 60 * 60 * 1000);
-            
+            currentAnkiCard.nextReview = Date.now() + offset;
             const idx = anki.findIndex(c => c.id === currentAnkiCard.id);
             anki[idx] = currentAnkiCard;
             localStorage.setItem('full_ai_anki', JSON.stringify(anki));
-            
+            addXP(choice * 3);
             document.getElementById('srs-actions').style.display = "none";
             document.getElementById('next-card-btn').style.display = "block";
-            updateDash();
-            loadNextCard();
+            updateDash(); loadNextCard();
         }
 
-        // --- RESTLICHE FUNKTIONEN (NOTIZEN, TIMER, ETC.) ---
-        function prepareNewNote() {
-            currentEditId = null;
-            document.getElementById('noteTitle').value = "";
-            document.getElementById('noteText').value = "";
-            document.getElementById('noteTag').value = "";
-            document.getElementById('saveNoteBtn').innerText = "Speichern";
-            toggleForm('noteForm');
+        // --- NOTIZEN LÖSCHEN & VERWALTEN ---
+        function deleteNote(id) {
+            if(confirm("Diese Notiz wirklich löschen?")) {
+                notes = notes.filter(n => n.id != id);
+                localStorage.setItem('full_ai_notes', JSON.stringify(notes));
+                renderNotes(); closeNote(); updateDash();
+            }
         }
 
         function saveNote() {
@@ -247,9 +241,7 @@
                 renderNotes(); toggleForm('noteForm'); updateDash();
             };
             if(imgFile) {
-                const reader = new FileReader();
-                reader.onload = (e) => finalizeSave(e.target.result);
-                reader.readAsDataURL(imgFile);
+                const reader = new FileReader(); reader.onload = (e) => finalizeSave(e.target.result); reader.readAsDataURL(imgFile);
             } else { finalizeSave(); }
         }
 
@@ -267,6 +259,7 @@
             document.getElementById('modalTitleDisplay').innerText = n.title;
             document.getElementById('modalTextDisplay').innerText = n.text;
             document.getElementById('modalImageDisplay').innerHTML = n.image ? `<img src="${n.image}" class="modal-img">` : "";
+            document.getElementById('deleteBtn').onclick = () => deleteNote(n.id);
             document.getElementById('exportBtn').onclick = () => {
                 const blob = new Blob([`Titel: ${n.title}\n\n${n.text}`], {type: 'text/plain'});
                 const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${n.title}.txt`; a.click();
@@ -282,12 +275,13 @@
             document.getElementById('noteModal').style.display = 'flex';
         }
 
+        // --- QUIZ, TIMER & HELPER ---
         function generateQuiz() {
             const nid = document.getElementById('quiz-note-select').value;
             const n = notes.find(x => x.id == nid);
             if(!n) return;
             document.getElementById('quiz-display').style.display = "block";
-            document.getElementById('quiz-question').innerText = `Was steht in "${n.title}"?`;
+            document.getElementById('quiz-question').innerText = `Inhalt von "${n.title}"?`;
             currentQuizAnswer = n.text;
         }
 
@@ -295,7 +289,7 @@
             const userAns = document.getElementById('quiz-answer').value.toLowerCase();
             if(currentQuizAnswer.toLowerCase().includes(userAns) && userAns.length > 3) {
                 document.getElementById('quiz-feedback').innerText = "Richtig! +15 XP"; addXP(15);
-            } else { document.getElementById('quiz-feedback').innerText = "Nicht ganz korrekt."; }
+            } else { document.getElementById('quiz-feedback').innerText = "Nicht ganz."; }
         }
 
         let timerSeconds = 2700; let timerInterval = null;
@@ -319,6 +313,7 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             el.classList.add('active');
         }
+        function prepareNewNote() { currentEditId = null; document.getElementById('noteTitle').value = ""; document.getElementById('noteText').value = ""; document.getElementById('noteTag').value = ""; document.getElementById('saveNoteBtn').innerText = "Speichern"; toggleForm('noteForm'); }
         function toggleForm(id) { const f = document.getElementById(id); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
         function closeNote() { document.getElementById('noteModal').style.display = 'none'; }
