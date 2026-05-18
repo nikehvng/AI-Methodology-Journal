@@ -56,6 +56,7 @@
         <button class="btn" style="margin-top: auto;" onclick="toggleDarkMode()" id="theme-toggle-btn">
             <i class="fas fa-moon"></i> <span>Dark Mode</span>
         </button>
+        <div class="nav-link" onclick="showSection('snake', this)"><i class="fas fa-gamepad"></i> Snake </div>
     </nav>
 
     <main>
@@ -142,6 +143,23 @@
                 <button class="btn btn-primary" onclick="checkQuiz()">Prüfen</button>
             </div>
         </section>
+
+        <section id="snake" class="content-section">
+    <h1>Snake Game 🐍</h1>
+
+    <div class="card" style="text-align:center; position: relative;">
+        <div id="snake-score" style="position:absolute; top:10px; right:20px; color: var(--primary); font-weight: 700;">
+            0
+        </div>
+
+        <canvas id="gameCanvas" width="600" height="400"
+            style="background:#222; border-radius:16px; border:1px solid var(--border);"></canvas>
+
+        <p style="margin-top:10px; color:var(--text-muted)">
+            Pfeiltasten zum Spielen • Space = Pause • Taste drücken zum Start
+        </p>
+    </div>
+</section>
     </main>
 
     <div id="noteModal">
@@ -413,11 +431,20 @@
             document.getElementById('timer-display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         }
         function showSection(id, el) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            el.classList.add('active');
-        }
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    el.classList.add('active');
+
+    if (id === "snake") {
+        setTimeout(() => {
+            if (typeof initSnake === "function") {
+                initSnake();
+            }
+        }, 100);
+    }
+}
         function toggleForm(id) { const f = document.getElementById(id); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
         
         function toggleDarkMode() { 
@@ -447,6 +474,146 @@
             renderNotes(); 
             updateDash(); 
         };
+        // =========================
+// SNAKE GAME MODULE
+// =========================
+
+let snakeCanvas, sCtx;
+let snake, direction, nextDirection, apple;
+let snakeScore = 0;
+let snakeInterval = null;
+let snakeRunning = false;
+let snakePaused = false;
+
+const gridSize = 20;
+const tileCount = 30;
+const tileHeight = 20;
+
+function initSnake() {
+    snakeCanvas = document.getElementById("gameCanvas");
+    if (!snakeCanvas) return;
+
+    sCtx = snakeCanvas.getContext("2d");
+
+    snake = [{ x: 10, y: 10 }];
+    direction = { x: 0, y: 0 };
+    nextDirection = { x: 0, y: 0 };
+    apple = { x: 5, y: 5 };
+    snakeScore = 0;
+
+    document.getElementById("snake-score").innerText = snakeScore;
+
+    placeApple();
+    drawSnakeGame();
+}
+
+function startSnake() {
+    if (snakeInterval) clearInterval(snakeInterval);
+
+    snakeRunning = true;
+
+    snakeInterval = setInterval(() => {
+        if (!snakePaused) {
+            moveSnake();
+            drawSnakeGame();
+        }
+    }, 100);
+}
+
+function drawSnakeGame() {
+    if (!sCtx) return;
+
+    sCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+
+    // Apple
+    sCtx.fillStyle = "#f00";
+    sCtx.beginPath();
+    sCtx.arc(
+        apple.x * gridSize + 10,
+        apple.y * gridSize + 10,
+        8,
+        0,
+        Math.PI * 2
+    );
+    sCtx.fill();
+
+    // Snake
+    sCtx.fillStyle = "#0f0";
+    snake.forEach(seg => {
+        sCtx.fillRect(seg.x * gridSize, seg.y * gridSize, 18, 18);
+    });
+}
+
+function moveSnake() {
+    direction = { ...nextDirection };
+
+    const head = {
+        x: snake[0].x + direction.x,
+        y: snake[0].y + direction.y
+    };
+
+    // Collision
+    if (
+        head.x < 0 || head.x > 29 ||
+        head.y < 0 || head.y > 19 ||
+        snake.some(s => s.x === head.x && s.y === head.y)
+    ) {
+        gameOverSnake();
+        return;
+    }
+
+    snake.unshift(head);
+
+    if (head.x === apple.x && head.y === apple.y) {
+        snakeScore++;
+        document.getElementById("snake-score").innerText = snakeScore;
+        placeApple();
+    } else {
+        snake.pop();
+    }
+}
+
+function placeApple() {
+    apple = {
+        x: Math.floor(Math.random() * 30),
+        y: Math.floor(Math.random() * 20)
+    };
+}
+
+function gameOverSnake() {
+    clearInterval(snakeInterval);
+    snakeRunning = false;
+
+    sCtx.fillStyle = "red";
+    sCtx.font = "30px Arial";
+    sCtx.fillText("GAME OVER", 200, 200);
+}
+
+document.addEventListener("keydown", e => {
+    if (!snakeRunning) {
+        initSnake();
+        startSnake();
+    }
+
+    if (e.key === " ") {
+        snakePaused = !snakePaused;
+    }
+
+    switch (e.key) {
+        case "ArrowUp":
+            if (direction.y === 0) nextDirection = { x: 0, y: -1 };
+            break;
+        case "ArrowDown":
+            if (direction.y === 0) nextDirection = { x: 0, y: 1 };
+            break;
+        case "ArrowLeft":
+            if (direction.x === 0) nextDirection = { x: -1, y: 0 };
+            break;
+        case "ArrowRight":
+            if (direction.x === 0) nextDirection = { x: 1, y: 0 };
+            break;
+    }
+});
     </script>
 </body>
 </html>
