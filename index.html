@@ -362,7 +362,7 @@
                 document.getElementById('noteTitle').value = n.title;
                 document.getElementById('noteText').value = n.text;
                 document.getElementById('noteTag').value = n.tag;
-                document.getElementById('saveNoteBtn').innerText = "Änderung speichern";
+                document.getElementById('saveNoteBtn').innerText = "Änderung保存";
                 document.getElementById('noteForm').style.display = "block";
             };
             document.getElementById('noteModal').style.display = 'flex';
@@ -430,21 +430,22 @@
             const m = Math.floor(timerSeconds / 60); const s = timerSeconds % 60;
             document.getElementById('timer-display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         }
+        
         function showSection(id, el) {
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
 
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    el.classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
 
-    if (id === "snake") {
-        setTimeout(() => {
-            if (typeof initSnake === "function") {
-                initSnake();
+            if (id === "snake") {
+                setTimeout(() => {
+                    if (typeof initSnake === "function") {
+                        initSnake();
+                    }
+                }, 100);
             }
-        }, 100);
-    }
-}
+        }
         function toggleForm(id) { const f = document.getElementById(id); f.style.display = f.style.display === 'none' ? 'block' : 'none'; }
         
         function toggleDarkMode() { 
@@ -466,7 +467,6 @@
         function prepareNewNote() { currentEditId = null; document.getElementById('noteTitle').value = ""; document.getElementById('noteText').value = ""; document.getElementById('noteTag').value = ""; document.getElementById('saveNoteBtn').innerText = "Speichern"; toggleForm('noteForm'); }
 
         window.onload = () => { 
-            // Theme laden
             if(localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-mode');
                 updateThemeUI(true);
@@ -474,146 +474,196 @@
             renderNotes(); 
             updateDash(); 
         };
+
         // =========================
-// SNAKE GAME MODULE
-// =========================
+        // SNAKE GAME MODULE
+        // =========================
 
-let snakeCanvas, sCtx;
-let snake, direction, nextDirection, apple;
-let snakeScore = 0;
-let snakeInterval = null;
-let snakeRunning = false;
-let snakePaused = false;
+        let snakeCanvas, sCtx;
+        let snake, direction, nextDirection, apple;
+        let snakeScore = 0;
+        let snakeInterval = null;
+        let snakeRunning = false;
+        let snakePaused = false;
 
-const gridSize = 20;
-const tileCount = 30;
-const tileHeight = 20;
+        const gridSize = 20;
 
-function initSnake() {
-    snakeCanvas = document.getElementById("gameCanvas");
-    if (!snakeCanvas) return;
+        function initSnake() {
+            snakeCanvas = document.getElementById("gameCanvas");
+            if (!snakeCanvas) return;
 
-    sCtx = snakeCanvas.getContext("2d");
+            sCtx = snakeCanvas.getContext("2d");
 
-    snake = [{ x: 10, y: 10 }];
-    direction = { x: 0, y: 0 };
-    nextDirection = { x: 0, y: 0 };
-    apple = { x: 5, y: 5 };
-    snakeScore = 0;
+            // Schlangenkopf mittig platzieren
+            snake = [{ x: 15, y: 10 }];
+            
+            // Startet stillstehend, bis der Nutzer eine Richtung drückt
+            direction = { x: 0, y: 0 };
+            nextDirection = { x: 0, y: 0 };
+            
+            snakeScore = 0;
+            snakeRunning = false;
+            snakePaused = false;
+            if (snakeInterval) {
+                clearInterval(snakeInterval);
+                snakeInterval = null;
+            }
 
-    document.getElementById("snake-score").innerText = snakeScore;
+            document.getElementById("snake-score").innerText = snakeScore;
 
-    placeApple();
-    drawSnakeGame();
-}
-
-function startSnake() {
-    if (snakeInterval) clearInterval(snakeInterval);
-
-    snakeRunning = true;
-
-    snakeInterval = setInterval(() => {
-        if (!snakePaused) {
-            moveSnake();
+            placeApple();
             drawSnakeGame();
         }
-    }, 100);
-}
 
-function drawSnakeGame() {
-    if (!sCtx) return;
+        function startSnake() {
+            if (snakeInterval) clearInterval(snakeInterval);
 
-    sCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+            snakeRunning = true;
 
-    // Apple
-    sCtx.fillStyle = "#f00";
-    sCtx.beginPath();
-    sCtx.arc(
-        apple.x * gridSize + 10,
-        apple.y * gridSize + 10,
-        8,
-        0,
-        Math.PI * 2
-    );
-    sCtx.fill();
+            snakeInterval = setInterval(() => {
+                if (!snakePaused) {
+                    moveSnake();
+                    drawSnakeGame();
+                }
+            }, 100);
+        }
 
-    // Snake
-    sCtx.fillStyle = "#0f0";
-    snake.forEach(seg => {
-        sCtx.fillRect(seg.x * gridSize, seg.y * gridSize, 18, 18);
-    });
-}
+        function drawSnakeGame() {
+            if (!sCtx) return;
 
-function moveSnake() {
-    direction = { ...nextDirection };
+            sCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
 
-    const head = {
-        x: snake[0].x + direction.x,
-        y: snake[0].y + direction.y
-    };
+            // Apfel (Rot)
+            sCtx.fillStyle = "#f87171";
+            sCtx.beginPath();
+            sCtx.arc(
+                apple.x * gridSize + 10,
+                apple.y * gridSize + 10,
+                8,
+                0,
+                Math.PI * 2
+            );
+            sCtx.fill();
 
-    // Collision
-    if (
-        head.x < 0 || head.x > 29 ||
-        head.y < 0 || head.y > 19 ||
-        snake.some(s => s.x === head.x && s.y === head.y)
-    ) {
-        gameOverSnake();
-        return;
-    }
+            // Schlange (Grün)
+            sCtx.fillStyle = "#4ade80";
+            snake.forEach((seg, index) => {
+                // Den Kopf etwas dunkler färben
+                if (index === 0) sCtx.fillStyle = "#22c55e";
+                else sCtx.fillStyle = "#4ade80";
+                
+                sCtx.fillRect(seg.x * gridSize, seg.y * gridSize, 18, 18);
+            });
+        }
 
-    snake.unshift(head);
+        function moveSnake() {
+            // Wenn das Spiel läuft, aber noch keine Taste gedrückt wurde, nicht bewegen
+            if (nextDirection.x === 0 && nextDirection.y === 0) return;
 
-    if (head.x === apple.x && head.y === apple.y) {
-        snakeScore++;
-        document.getElementById("snake-score").innerText = snakeScore;
-        placeApple();
-    } else {
-        snake.pop();
-    }
-}
+            direction = { ...nextDirection };
 
-function placeApple() {
-    apple = {
-        x: Math.floor(Math.random() * 30),
-        y: Math.floor(Math.random() * 20)
-    };
-}
+            const head = {
+                x: snake[0].x + direction.x,
+                y: snake[0].y + direction.y
+            };
 
-function gameOverSnake() {
-    clearInterval(snakeInterval);
-    snakeRunning = false;
+            // Kollisionsabfrage (Spielfeldrand: 600x400 Pixel bei 20px Gridzsize = 30x20 Felder)
+            if (
+                head.x < 0 || head.x >= 30 ||
+                head.y < 0 || head.y >= 20 ||
+                snake.some(s => s.x === head.x && s.y === head.y)
+            ) {
+                gameOverSnake();
+                return;
+            }
 
-    sCtx.fillStyle = "red";
-    sCtx.font = "30px Arial";
-    sCtx.fillText("GAME OVER", 200, 200);
-}
+            snake.unshift(head);
 
-document.addEventListener("keydown", e => {
-    if (!snakeRunning) {
-        initSnake();
-        startSnake();
-    }
+            // Apfel gefressen?
+            if (head.x === apple.x && head.y === apple.y) {
+                snakeScore++;
+                document.getElementById("snake-score").innerText = snakeScore;
+                addXP(2); // Dem Spieler XP für Äpfel geben!
+                placeApple();
+            } else {
+                snake.pop();
+            }
+        }
 
-    if (e.key === " ") {
-        snakePaused = !snakePaused;
-    }
+        function placeApple() {
+            let validPosition = false;
+            while (!validPosition) {
+                apple = {
+                    x: Math.floor(Math.random() * 30),
+                    y: Math.floor(Math.random() * 20)
+                };
+                // Sicherstellen, dass der Apfel nicht auf der Schlange spawnt
+                validPosition = !snake.some(s => s.x === apple.x && s.y === apple.y);
+            }
+        }
 
-    switch (e.key) {
-        case "ArrowUp":
-            if (direction.y === 0) nextDirection = { x: 0, y: -1 };
-            break;
-        case "ArrowDown":
-            if (direction.y === 0) nextDirection = { x: 0, y: 1 };
-            break;
-        case "ArrowLeft":
-            if (direction.x === 0) nextDirection = { x: -1, y: 0 };
-            break;
-        case "ArrowRight":
-            if (direction.x === 0) nextDirection = { x: 1, y: 0 };
-            break;
-    }
-});
+        function gameOverSnake() {
+            clearInterval(snakeInterval);
+            snakeInterval = null;
+            snakeRunning = false;
+
+            sCtx.fillStyle = "#ef4444";
+            sCtx.font = "bold 30px 'Plus Jakarta Sans', Arial";
+            sCtx.textAlign = "center";
+            sCtx.fillText("GAME OVER", snakeCanvas.width / 2, snakeCanvas.height / 2);
+            sCtx.font = "16px 'Plus Jakarta Sans', Arial";
+            sCtx.fillStyle = "#94a3b8";
+            sCtx.fillText("Pfeiltaste drücken für Neustart", snakeCanvas.width / 2, (snakeCanvas.height / 2) + 40);
+        }
+
+        // Globaler Keydown Listener angepasst
+        document.addEventListener("keydown", e => {
+            // Nur reagieren, wenn wir uns auch im Snake-Tab befinden
+            if (!document.getElementById("snake").classList.contains("active")) return;
+
+            const validKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "];
+            if (validKeys.includes(e.key)) {
+                e.preventDefault(); // Verhindert das lästige Scrollen der Webseite!
+            }
+
+            // Pause umschalten mit Space
+            if (e.key === " ") {
+                if (snakeRunning) {
+                    snakePaused = !snakePaused;
+                }
+                return;
+            }
+
+            // Richtungsänderungen & Spielstart
+            switch (e.key) {
+                case "ArrowUp":
+                    if (direction.y === 0) nextDirection = { x: 0, y: -1 };
+                    break;
+                case "ArrowDown":
+                    if (direction.y === 0) nextDirection = { x: 0, y: 1 };
+                    break;
+                case "ArrowLeft":
+                    if (direction.x === 0) nextDirection = { x: -1, y: 0 };
+                    break;
+                case "ArrowRight":
+                    if (direction.x === 0) nextDirection = { x: 1, y: 0 };
+                    break;
+                default:
+                    return; // Andere Tasten ignorieren
+            }
+
+            // Wenn das Spiel nicht läuft (z.B. nach Game Over oder beim ersten Mal), jetzt starten
+            if (!snakeRunning && !snakePaused) {
+                // Falls Game Over war, Werte zurücksetzen
+                if (snakeInterval === null && snake.length > 1) {
+                    initSnake();
+                }
+                startSnake();
+                // Direkt den ersten Schritt triggern, damit es sich responsiv anfühlt
+                moveSnake();
+                drawSnakeGame();
+            }
+        });
     </script>
 </body>
 </html>
